@@ -1,0 +1,8 @@
+Flask
+gunicorn
+psycopg2-binary
+sentence-transformers
+chromadb
+requests
+python-dotenv
+werkzeug

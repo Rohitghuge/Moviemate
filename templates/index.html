@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MovieMate</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    /* Same base styles as before, with minor additions */
+    body {
+      background: linear-gradient(135deg, #0f9b8e, #142850);
+      background-size: 200% 200%;
+      min-height: 100vh;
+      color: #f5f5f5;
+      font-family: 'Segoe UI', sans-serif;
+      animation: bgPulse 8s ease-in-out infinite, flicker 5.5s ease-in-out infinite;
+      overflow-x: hidden;
+    }
+    @keyframes bgPulse { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    @keyframes flicker { 0%,100% { filter: brightness(1) saturate(1); } 50% { filter: brightness(1.18) saturate(1.2); } }
+    body.mood-love   { background: linear-gradient(135deg, #ff2fb0, #ff7ce8); background-size: 200% 200%; }
+    body.mood-happy  { background: linear-gradient(135deg, #00f0ff, #39ff9d); background-size: 200% 200%; }
+    body.mood-action { background: linear-gradient(135deg, #ff2e2e, #ff9a00); background-size: 200% 200%; }
+    body.mood-horror { background: linear-gradient(135deg, #2d0d4d, #4a0e4e); background-size: 200% 200%; }
+
+    .app-wrap { max-width: 680px; margin: 0 auto; padding: 32px 16px; position: relative; z-index: 1; }
+    .brand { text-align: center; margin-bottom: 28px; }
+    .brand h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: 3.4rem;
+      color: #ff5fc1;
+      text-shadow: 0 0 20px rgba(255,110,199,0.75), 0 0 44px rgba(255,110,199,0.35);
+      margin-bottom: 6px;
+    }
+    .brand p { letter-spacing: 3px; font-size: 0.8rem; color: rgba(255,255,255,0.65); text-transform: uppercase; }
+
+    .card-glass {
+      background: rgba(20, 20, 40, 0.45);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 24px;
+      backdrop-filter: blur(8px);
+      animation: fadeInUp 0.6s ease;
+    }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+    .nav-tabs .nav-link { color: rgba(255,255,255,0.7); border: none; }
+    .nav-tabs .nav-link.active { background: transparent; color: #fff; border-bottom: 2px solid #7b5cff; }
+    .form-control { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2); }
+    .form-control:focus { background: rgba(255,255,255,0.12); color: white; box-shadow: none; border-color: #7b5cff; }
+    .btn-primary { background: #7b5cff; border: none; transition: transform 0.15s ease, background 0.15s ease; }
+    .btn-primary:hover { background: #6a4ce0; transform: scale(1.03); }
+
+    #chat-window {
+      height: 560px;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scrollbar-width: thin;
+      scrollbar-color: #9d6bff rgba(255,255,255,0.06);
+    }
+    #chat-window::-webkit-scrollbar { width: 9px; }
+    #chat-window::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+    #chat-window::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #ff6ec7, #7b5cff); border-radius: 10px; }
+    .msg {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      white-space: pre-wrap;
+      line-height: 1.4;
+      font-size: 14.5px;
+      animation: fadeInUp 0.35s ease;
+    }
+    .msg.user { align-self: flex-end; background: #7b5cff; color: white; border-bottom-right-radius: 4px; }
+    .msg.bot  { align-self: flex-start; background: rgba(255,255,255,0.1); border-bottom-left-radius: 4px; }
+    .msg.bot strong { font-size: 1.1em; color: #ffd6f0; }
+
+    .typing-dots { align-self: flex-start; display: flex; gap: 4px; padding: 10px 14px; }
+    .typing-dots span { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.6); animation: bounce 1.2s infinite ease-in-out; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100% { transform: translateY(0); opacity:0.6; } 30% { transform: translateY(-6px); opacity:1; } }
+
+    .trailer-meta { font-size: 11px; opacity: 0.65; margin: 2px 0 2px 4px; }
+    .inline-seen-btn {
+      font-size: 10px; padding: 2px 9px; border-radius: 6px; margin-left: 4px;
+      border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: #f5f5f5;
+      transition: transform 0.15s ease;
+    }
+    .inline-seen-btn:hover { transform: scale(1.05); }
+    .inline-seen-btn.excluded { opacity: 0.4; }
+    .msg.bot a { color: #9d8cff; text-decoration: none; }
+    .msg.bot a:hover { color: #ff6ec7; }
+    .msg.bot .no-trailer { opacity: 0.5; font-style: italic; }
+
+    #chat-form { display: none; }
+    #auth-section, #chat-section { display: none; }
+    #auth-section.active, #chat-section.active { display: block; }
+    .logout-btn { cursor: pointer; float: right; color: #ff6ec7; }
+  </style>
+</head>
+<body>
+<div class="app-wrap">
+  <div class="brand">
+    <h1>MovieMate</h1>
+    <p>Find the right movie for every mood</p>
+  </div>
+
+  <!-- Authentication Section -->
+  <div class="card-glass" id="auth-section">
+    <ul class="nav nav-tabs" id="authTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-pane" type="button" role="tab">Login</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup-pane" type="button" role="tab">Sign Up</button>
+      </li>
+    </ul>
+    <div class="tab-content mt-3">
+      <!-- Login pane -->
+      <div class="tab-pane fade show active" id="login-pane" role="tabpanel">
+        <form id="login-form">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" id="login-username" placeholder="Enter username" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" id="login-password" placeholder="Enter password" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+          <div id="login-error" class="text-danger mt-2" style="display:none;"></div>
+        </form>
+      </div>
+      <!-- Signup pane -->
+      <div class="tab-pane fade" id="signup-pane" role="tabpanel">
+        <form id="signup-form">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" id="signup-username" placeholder="Choose a username" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" id="signup-password" placeholder="Choose a password" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Your Age</label>
+            <input type="number" class="form-control" id="signup-age" min="1" max="120" placeholder="e.g. 20" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Create Account</button>
+          <div id="signup-error" class="text-danger mt-2" style="display:none;"></div>
+          <div id="signup-success" class="text-success mt-2" style="display:none;"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Section -->
+  <div class="card-glass" id="chat-section">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <span id="chat-username" class="fw-bold"></span>
+      <button class="btn btn-sm btn-outline-light logout-btn" id="logout-btn">Logout</button>
+    </div>
+    <div id="chat-window"></div>
+    <div class="d-flex align-items-center gap-2 mb-2 mt-3">
+      <input type="checkbox" id="travel-checkbox">
+      <label for="travel-checkbox">Travel Mode (on the go)</label>
+    </div>
+    <form id="chat-form" class="d-flex gap-2 mt-3">
+      <input type="text" id="chat-input" class="form-control" placeholder="What are you in the mood to watch?" autocomplete="off">
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ---------- DOM refs ----------
+  const authSection = document.getElementById('auth-section');
+  const chatSection = document.getElementById('chat-section');
+  const chatWindow = document.getElementById('chat-window');
+  const chatForm = document.getElementById('chat-form');
+  const chatInput = document.getElementById('chat-input');
+  const logoutBtn = document.getElementById('logout-btn');
+  const chatUsername = document.getElementById('chat-username');
+  const travelCheckbox = document.getElementById('travel-checkbox');
+
+  const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
+  const loginError = document.getElementById('login-error');
+  const signupError = document.getElementById('signup-error');
+  const signupSuccess = document.getElementById('signup-success');
+
+  // Mood detection (same as before)
+  const LOVE_WORDS = ["love", "romance", "romantic", "date night"];
+  const HAPPY_WORDS = ["happy", "feel good", "feelgood", "refreshing", "fun", "cheerful", "uplifting", "funny", "comedy", "lighthearted"];
+  const ACTION_WORDS = ["action", "fight", "intense", "adrenaline", "war", "battle"];
+  const HORROR_WORDS = ["horror", "scary", "fear", "spooky", "creepy", "haunted", "thriller"];
+
+  function updateMoodBackground(text) {
+    const q = text.toLowerCase();
+    document.body.classList.remove('mood-love', 'mood-happy', 'mood-action', 'mood-horror');
+    if (LOVE_WORDS.some(w => q.includes(w))) document.body.classList.add('mood-love');
+    else if (ACTION_WORDS.some(w => q.includes(w))) document.body.classList.add('mood-action');
+    else if (HORROR_WORDS.some(w => q.includes(w))) document.body.classList.add('mood-horror');
+    else if (HAPPY_WORDS.some(w => q.includes(w))) document.body.classList.add('mood-happy');
+  }
+
+  // ---------- Helpers ----------
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function formatBotTextWithMovies(text, movies) {
+    let escaped = escapeHtml(text);
+    escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    escaped = escaped.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+    const lines = escaped.split('\n').map(l => l.trim()).filter(l => l !== '');
+    const usedIds = new Set();
+    const movieList = movies || [];
+
+    const outLines = lines.map(line => {
+      const match = movieList.find(m => !usedIds.has(m.id) && line.toLowerCase().includes(m.title.toLowerCase()));
+      if (!match) return line;
+      usedIds.add(match.id);
+
+      const trailerHtml = match.trailer_url
+        ? `<a href="${match.trailer_url}" target="_blank" rel="noopener">Watch Trailer</a>`
+        : `<span class="no-trailer">No trailer found</span>`;
+
+      const metaParts = [
+        match.certification || 'NR',
+        match.watch_providers ? match.watch_providers.split(',')[0].trim() : 'not listed',
+        match.rating ? `${match.rating}/10` : null
+      ].filter(Boolean);
+
+      return `${line} = ${trailerHtml} <button type="button" class="inline-seen-btn" data-id="${match.id}">Seen it</button>` +
+             `<div class="trailer-meta">${metaParts.join(' · ')}</div>`;
+    });
+
+    return outLines.join('<br><br>');
+  }
+
+  function addMessage(text, sender, movies) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + sender;
+
+    if (sender === 'bot') {
+      div.innerHTML = formatBotTextWithMovies(text, movies);
+      div.querySelectorAll('.inline-seen-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const movieId = btn.dataset.id;
+          await fetch('/exclude', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({movie_id: movieId})
+          });
+          btn.classList.add('excluded');
+          btn.textContent = 'Marked as seen';
+        });
+      });
+    } else {
+      div.textContent = text;
+    }
+
+    chatWindow.appendChild(div);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    return div;
+  }
+
+  function addTypingIndicator() {
+    const div = document.createElement('div');
+    div.className = 'typing-dots';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    chatWindow.appendChild(div);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    return div;
+  }
+
+  function loadChatHistory() {
+    fetch('/load_chat')
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          console.error(data.error);
+          return;
+        }
+        const msgs = data.messages || [];
+        msgs.forEach(m => {
+          // Messages are stored with role 'user' or 'assistant'
+          addMessage(m.content, m.role === 'user' ? 'user' : 'bot');
+        });
+        // After loading history, show chat form
+        chatForm.style.display = 'flex';
+      })
+      .catch(err => console.error(err));
+  }
+
+  // ---------- Authentication ----------
+  function showAuth() {
+    authSection.classList.add('active');
+    chatSection.classList.remove('active');
+    chatForm.style.display = 'none';
+  }
+
+  function showChat(username) {
+    authSection.classList.remove('active');
+    chatSection.classList.add('active');
+    chatUsername.textContent = username;
+    // Clear chat window
+    chatWindow.innerHTML = '';
+    // Load history
+    loadChatHistory();
+  }
+
+  // Login
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginError.style.display = 'none';
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value.trim();
+
+    const res = await fetch('/login', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username, password})
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      loginError.textContent = data.error || 'Login failed.';
+      loginError.style.display = 'block';
+      return;
+    }
+    showChat(data.username);
+  });
+
+  // Signup
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    signupError.style.display = 'none';
+    signupSuccess.style.display = 'none';
+    const username = document.getElementById('signup-username').value.trim();
+    const password = document.getElementById('signup-password').value.trim();
+    const age = parseInt(document.getElementById('signup-age').value, 10);
+    if (!username || !password || !age) {
+      signupError.textContent = 'All fields are required.';
+      signupError.style.display = 'block';
+      return;
+    }
+
+    const res = await fetch('/signup', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username, password, age})
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      signupError.textContent = data.error || 'Signup failed.';
+      signupError.style.display = 'block';
+      return;
+    }
+    signupSuccess.textContent = 'Account created! Please log in.';
+    signupSuccess.style.display = 'block';
+    // Optionally switch to login tab
+    document.getElementById('login-tab').click();
+  });
+
+  // Logout
+  logoutBtn.addEventListener('click', async () => {
+    await fetch('/logout', { method: 'POST' });
+    sessionStorage.clear();
+    showAuth();
+  });
+
+  // ---------- Chat ----------
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    addMessage(text, 'user');
+    updateMoodBackground(text);
+    chatInput.value = '';
+
+    const typingDiv = addTypingIndicator();
+
+    try {
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message: text})
+      });
+      const data = await res.json();
+      typingDiv.remove();
+
+      if (!res.ok) {
+        addMessage('Error: ' + (data.error || 'Something went wrong.'), 'bot');
+        return;
+      }
+      addMessage(data.reply, 'bot', data.movies);
+    } catch (err) {
+      typingDiv.remove();
+      addMessage('Network error, please try again.', 'bot');
+    }
+  });
+
+  // ---------- Travel mode and geo-location ----------
+  travelCheckbox.addEventListener('change', async function() {
+    if (this.checked) {
+      if (!navigator.geolocation) {
+        addMessage('Geolocation is not supported by your browser.', 'bot');
+        this.checked = false;
+        return;
+      }
+
+      const typingDiv = addTypingIndicator();
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          try {
+            const { latitude, longitude } = pos.coords;
+            const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+            const geoData = await geoRes.json();
+            const addr = geoData.address || {};
+            const place = addr.city || addr.town || addr.village || addr.state || addr.country || 'unknown location';
+            const res = await fetch('/set_travel_and_location', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({travel_mode: true, location: place})
+            });
+            const data = await res.json();
+            typingDiv.remove();
+            if (res.ok && data.message) {
+              addMessage(`ohh ${chatUsername.textContent}, you're in ${place}`, 'bot');
+            } else {
+              this.checked = false;
+              addMessage('Could not update location. Please try again.', 'bot');
+            }
+          } catch (err) {
+            typingDiv.remove();
+            this.checked = false;
+            addMessage('Error fetching location. Please try again.', 'bot');
+          }
+        },
+        () => {
+          typingDiv.remove();
+          this.checked = false;
+          addMessage('Location access denied. Please enable location in your browser settings.', 'bot');
+        },
+        {timeout: 8000}
+      );
+    } else {
+      const res = await fetch('/set_travel_and_location', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({travel_mode: false, location: ''})
+      });
+      if (res.ok) addMessage('Travel mode turned off.', 'bot');
+    }
+  });
+
+  // ---------- Geo-location (optional) ----------
+  // We keep the same detection logic; it can be triggered by a special query
+  // like "where am i" in the chat. We'll implement it on the frontend.
+
+  const LOCATION_QUERY_PATTERNS = ["where am i", "my location", "where i am", "current location", "what's my location"];
+  function isLocationQuery(text) {
+    const q = text.toLowerCase();
+    return LOCATION_QUERY_PATTERNS.some(p => q.includes(p));
+  }
+
+  // We'll intercept location queries before sending to backend
+  const originalChatSubmit = chatForm.addEventListener;
+  // We'll override by removing and re-adding? Simpler: handle in the submit event with a check.
+  // Actually we already have the submit handler; we can add a check there.
+  // But the current handler sends to /chat. We can instead detect location query on frontend and respond directly.
+  // I'll modify the submit handler to check location query first.
+
+  // Since we already defined the submit handler, we can wrap it, but easier: we can add a new event listener that runs before the existing one.
+  // We'll just modify the existing one: we'll replace it with a new one that checks location.
+  // Remove existing listener and add new one.
+  // For simplicity, I'll override by cloning and replacing.
+  const newChatForm = chatForm.cloneNode(true);
+  chatForm.parentNode.replaceChild(newChatForm, chatForm);
+  // Now attach new listener.
+  const newChatInput = document.getElementById('chat-input');
+  newChatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = newChatInput.value.trim();
+    if (!text) return;
+
+    // Check for location query
+    if (isLocationQuery(text)) {
+      // Get location
+      if (!navigator.geolocation) {
+        addMessage("Geolocation is not supported by your browser.", 'bot');
+        newChatInput.value = '';
+        return;
+      }
+      addMessage(text, 'user');
+      newChatInput.value = '';
+      const typingDiv = addTypingIndicator();
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          try {
+            const { latitude, longitude } = pos.coords;
+            const geoRes = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+            const geoData = await geoRes.json();
+            const addr = geoData.address || {};
+            const place = addr.city || addr.town || addr.village || addr.state || addr.country || 'unknown location';
+            typingDiv.remove();
+            addMessage(`You're currently near ${place}.`, 'bot');
+          } catch (err) {
+            typingDiv.remove();
+            addMessage('Could not determine your location. Please try again.', 'bot');
+          }
+        },
+        () => {
+          typingDiv.remove();
+          addMessage('Location access denied. Please enable location in your browser settings.', 'bot');
+        },
+        { timeout: 8000 }
+      );
+      return;
+    }
+
+    // Otherwise, send to backend
+    addMessage(text, 'user');
+    updateMoodBackground(text);
+    newChatInput.value = '';
+
+    const typingDiv = addTypingIndicator();
+    try {
+      const res = await fetch('/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({message: text})
+      });
+      const data = await res.json();
+      typingDiv.remove();
+      if (!res.ok) {
+        addMessage('Error: ' + (data.error || 'Something went wrong.'), 'bot');
+        return;
+      }
+      addMessage(data.reply, 'bot', data.movies);
+    } catch (err) {
+      typingDiv.remove();
+      addMessage('Network error, please try again.', 'bot');
+    }
+  });
+
+  // ---------- Initial state ----------
+  // Check if user is already logged in via session (we can't know from frontend)
+  // We'll try to load chat; if it fails, show auth.
+  fetch('/load_chat')
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        throw new Error('Not logged in');
+      }
+    })
+    .then(data => {
+      if (data.error) throw new Error(data.error);
+      // Logged in
+      // We need the username; we can get from session or from a separate endpoint.
+      // For simplicity, we'll store username in a hidden element or use a small endpoint.
+      // We'll add a /whoami endpoint.
+      return fetch('/whoami');
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.username) {
+        showChat(data.username);
+      } else {
+        showAuth();
+      }
+    })
+    .catch(() => showAuth());
+
+  // Add /whoami endpoint on backend (not shown above, but we'll add a simple route)
+  // Add this to app.py:
+  /*
+  @app.route("/whoami", methods=["GET"])
+  def whoami():
+      username = session.get("username")
+      if username:
+          return jsonify({"username": username})
+      return jsonify({"error": "Not logged in"}), 401
+  */
+</script>
+</body>
+</html>
