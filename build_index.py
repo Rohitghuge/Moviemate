@@ -36,7 +36,7 @@ if duplicates_removed:
     print(f"Removed {duplicates_removed} duplicate movie(s). {len(movies)} unique movies remain.")
 
 print("Loading embedding model (first run downloads ~80MB, please wait)...")
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer("paraphrase-MiniLM-L3-v2")
 
 print("Connecting to ChromaDB...")
 client = chromadb.PersistentClient(path=CHROMA_PATH)

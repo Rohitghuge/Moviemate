@@ -1,145 +1,168 @@
 """
-MovieMate - Heroku version with PostgreSQL.
-All comments explain what each part does.
+app.py
+The Flask web version of MovieMate, now with real accounts.
+
+- Sign up / log in with username + password (age is captured once at signup)
+- Every chat message is saved to Postgres, per user
+- "Seen it" movies are saved to Postgres too, so they stay excluded even
+  after logging out and back in, or after the server restarts
+- Same RAG logic as before: mood search, age filtering, travel mode,
+  "movies like X" similarity search, and "more info" follow-ups
 """
 
 import os
-import json
 import re
+import json
 import difflib
-import psycopg2                     # For PostgreSQL (Heroku)
-import psycopg2.extras               # For dictionary cursors
 import requests
+import psycopg2
+import psycopg2.extras
+from datetime import datetime
 from flask import Flask, request, jsonify, session, render_template
-from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
+from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 import chromadb
 
-# ---------- Load environment variables ----------
 load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
-DATABASE_URL = os.getenv("DATABASE_URL")   # Heroku provides this
-
+DATABASE_URL = os.getenv("DATABASE_URL")
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_MODEL = "openai/gpt-oss-20b"
 HISTORY_LIMIT = 6
 
 LIGHT_GENRES = {"Comedy", "Animation", "Adventure", "Family", "Music", "Fantasy"}
 SIMILARITY_TRIGGERS = ["like ", "similar to", "similar", "such as", "in the style of", "in the vein of"]
+INFO_TRIGGERS = ["info", "detail", "tell me more", "more about", "elaborate", "know more"]
 
 if not GROQ_API_KEY:
     raise SystemExit("GROQ_API_KEY not found. Check your .env file.")
+if not DATABASE_URL:
+    raise SystemExit(
+        "DATABASE_URL not found. Add a line like:\n"
+        "DATABASE_URL=postgresql://user:password@host/dbname\n"
+        "to your .env file (get this from Neon or Supabase)."
+    )
 
-# ---------- PostgreSQL Database Helpers ----------
+# ---------------------------------------------------------------------
+# Database setup
+# ---------------------------------------------------------------------
+
 def get_db():
-    """Return a connection to the PostgreSQL database."""
-    return psycopg2.connect(DATABASE_URL)
+    conn = psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
+    return conn
+
 
 def init_db():
-    """Create the users and messages tables if they don't exist."""
     conn = get_db()
     cur = conn.cursor()
-    cur.execute('''
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
+            password_hash TEXT NOT NULL,
             age INTEGER NOT NULL,
-            travel_mode BOOLEAN DEFAULT FALSE,
-            location TEXT
+            created_at TIMESTAMP DEFAULT NOW()
         )
-    ''')
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS messages (
+    """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS watched_movies (
             id SERIAL PRIMARY KEY,
-            user_id INTEGER NOT NULL REFERENCES users(id),
+            user_id INTEGER REFERENCES users(id),
+            movie_id TEXT NOT NULL,
+            movie_title TEXT,
+            watched_at TIMESTAMP DEFAULT NOW(),
+            UNIQUE(user_id, movie_id)
+        )
+    """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS chat_messages (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER REFERENCES users(id),
             role TEXT NOT NULL,
             content TEXT NOT NULL,
-            timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMP DEFAULT NOW()
         )
-    ''')
+    """)
     conn.commit()
+    cur.close()
     conn.close()
 
-# Run this once when the app starts
-init_db()
 
-def create_user(username, password, age, travel_mode):
-    """Hash password and save new user."""
-    hashed = generate_password_hash(password)
+def get_excluded_ids(user_id):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT movie_id FROM watched_movies WHERE user_id = %s", (user_id,))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return {r["movie_id"] for r in rows}
+
+
+def add_watched(user_id, movie_id, movie_title):
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO users (username, password, age, travel_mode) VALUES (%s, %s, %s, %s)",
-        (username, hashed, age, travel_mode)
+        """INSERT INTO watched_movies (user_id, movie_id, movie_title, watched_at)
+           VALUES (%s, %s, %s, %s)
+           ON CONFLICT (user_id, movie_id) DO NOTHING""",
+        (user_id, movie_id, movie_title, datetime.utcnow()),
     )
     conn.commit()
+    cur.close()
     conn.close()
 
-def get_user_by_username(username):
-    """Fetch a user by username."""
-    conn = get_db()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("SELECT * FROM users WHERE username = %s", (username,))
-    user = cur.fetchone()
-    conn.close()
-    return user
 
-def get_user_by_id(user_id):
-    """Fetch a user by ID."""
+def get_recent_history(user_id, limit=HISTORY_LIMIT):
     conn = get_db()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("SELECT * FROM users WHERE id = %s", (user_id,))
-    user = cur.fetchone()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT role, content FROM chat_messages WHERE user_id = %s ORDER BY id DESC LIMIT %s",
+        (user_id, limit),
+    )
+    rows = list(reversed(cur.fetchall()))
+    cur.close()
     conn.close()
-    return user
+    return [{"role": r["role"], "content": r["content"]} for r in rows]
+
 
 def save_message(user_id, role, content):
-    """Save a chat message (user or assistant) to the database."""
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
-        "INSERT INTO messages (user_id, role, content) VALUES (%s, %s, %s)",
-        (user_id, role, content)
+        "INSERT INTO chat_messages (user_id, role, content, created_at) VALUES (%s, %s, %s, %s)",
+        (user_id, role, content, datetime.utcnow()),
     )
     conn.commit()
+    cur.close()
     conn.close()
 
-def get_user_messages(user_id, limit=50):
-    """Get the last `limit` messages for a user, oldest first."""
-    conn = get_db()
-    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute(
-        "SELECT role, content FROM messages WHERE user_id = %s ORDER BY timestamp ASC LIMIT %s",
-        (user_id, limit)
-    )
-    msgs = cur.fetchall()
-    conn.close()
-    return [{"role": m["role"], "content": m["content"]} for m in msgs]
 
-# ---------- Load movie data and embedding index ----------
+init_db()
+
+# ---------------------------------------------------------------------
+# Movie data + search setup
+# ---------------------------------------------------------------------
+
 print("Loading movie list...")
 with open("movies.json", "r", encoding="utf-8") as f:
     all_movies = json.load(f)
 all_titles_lower = [m["title"].lower() for m in all_movies]
 
 print("Loading embedding model...")
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer("paraphrase-MiniLM-L3-v2")
 
 print("Connecting to movie index...")
 client = chromadb.PersistentClient(path="chroma_db")
 collection = client.get_or_create_collection(name="movies")
 print(f"Ready! {collection.count()} movies loaded.")
 
-# ---------- Flask app ----------
 app = Flask(__name__)
-app.secret_key = SECRET_KEY
+app.secret_key = "moviemate-secret-key-2026"  # fine for a student project, not production
 
-# ---------- Movie helper functions (unchanged) ----------
+
 def get_min_age(certification):
     cert = (certification or "").upper()
     if "18" in cert or cert == "A" or "NC-17" in cert:
@@ -154,10 +177,12 @@ def get_min_age(certification):
         return 7
     return 0
 
+
 def is_light_genre(movie):
     genres = movie.get("genres", "")
     genre_list = [g.strip() for g in genres.split(",")] if isinstance(genres, str) else genres
     return any(g in LIGHT_GENRES for g in genre_list)
+
 
 def normalize_movie(m, movie_id=None):
     genres = m.get("genres", "")
@@ -173,6 +198,7 @@ def normalize_movie(m, movie_id=None):
         "release_date": m.get("release_date") or "",
         "rating": m.get("rating") or 0,
     }
+
 
 def find_title_matches(query, limit=2):
     query_lower = query.lower()
@@ -191,20 +217,25 @@ def find_title_matches(query, limit=2):
                     matches.append(all_movies[idx])
     return matches[:limit]
 
+
 def is_similarity_query(query):
     q = query.lower()
     return any(trigger in q for trigger in SIMILARITY_TRIGGERS)
 
-INFO_TRIGGERS = ["info", "detail", "tell me more", "more about", "elaborate", "know more"]
+
 def is_info_query(query):
     q = query.lower()
     return any(t in q for t in INFO_TRIGGERS)
+
 
 def extract_number(query):
     match = re.search(r'\d+', query)
     return int(match.group()) if match else None
 
+
 _trailer_cache = {}
+
+
 def get_trailer_url(movie_id):
     if movie_id in _trailer_cache:
         return _trailer_cache[movie_id]
@@ -228,6 +259,7 @@ def get_trailer_url(movie_id):
             url = None
     _trailer_cache[movie_id] = url
     return url
+
 
 def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5):
     excluded_ids = excluded_ids or set()
@@ -290,6 +322,7 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5):
     combined = (direct_kept + semantic_kept)[:n]
     return combined, blocked_count
 
+
 def ask_ai(user_query, movies, history, user_age, travel_mode, is_info=False):
     movie_list_text = "\n".join([
         f"- {m['title']} | Genres: {m['genres']} | Certification: {m['certification']} | "
@@ -341,144 +374,155 @@ Relevant, age-appropriate movies retrieved from the database for this message:
     response.raise_for_status()
     return response.json()["choices"][0]["message"]["content"]
 
-# ---------- Routes ----------
+
+# ---------------------------------------------------------------------
+# Routes
+# ---------------------------------------------------------------------
+
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
 @app.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
-    username = data.get("username", "").strip()
-    password = data.get("password", "").strip()
+    username = (data.get("username") or "").strip()
+    password = data.get("password") or ""
     age = data.get("age")
-    travel_mode = bool(data.get("travel_mode", False))
 
     if not username or not password:
-        return jsonify({"error": "Username and password required."}), 400
+        return jsonify({"error": "Username and password are required."}), 400
     if not isinstance(age, int) or age < 1 or age > 120:
         return jsonify({"error": "Please enter a valid age."}), 400
+    if len(password) < 4:
+        return jsonify({"error": "Password should be at least 4 characters."}), 400
 
-    if get_user_by_username(username):
-        return jsonify({"error": "Username already taken."}), 400
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT id FROM users WHERE username = %s", (username,))
+    if cur.fetchone():
+        cur.close()
+        conn.close()
+        return jsonify({"error": "That username is already taken."}), 400
 
-    create_user(username, password, age, travel_mode)
-    return jsonify({"message": "Account created! Please log in."})
+    password_hash = generate_password_hash(password)
+    cur.execute(
+        "INSERT INTO users (username, password_hash, age, created_at) VALUES (%s, %s, %s, %s) RETURNING id",
+        (username, password_hash, age, datetime.utcnow()),
+    )
+    user_id = cur.fetchone()["id"]
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    session["user_id"] = user_id
+    session["username"] = username
+    session["user_age"] = age
+    session["travel_mode"] = False
+    session["last_movies"] = []
+
+    return jsonify({"message": "ok", "username": username, "age": age})
+
 
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
-    username = data.get("username", "").strip()
-    password = data.get("password", "").strip()
-
-    user = get_user_by_username(username)
-    if not user or not check_password_hash(user["password"], password):
-        return jsonify({"error": "Invalid username or password."}), 401
-
-    session["user_id"] = user["id"]
-    session["username"] = user["username"]
-    return jsonify({"message": "Login successful", "username": user["username"]})
-
-@app.route("/set_travel_and_location", methods=["POST"])
-def set_travel_and_location():
-    user_id = session.get("user_id")
-    if not user_id:
-        return jsonify({"error": "Not logged in."}), 401
-
-    data = request.get_json() or {}
-    travel_mode = bool(data.get("travel_mode", False))
-    location = (data.get("location") or "").strip()
+    username = (data.get("username") or "").strip()
+    password = data.get("password") or ""
 
     conn = get_db()
     cur = conn.cursor()
-    cur.execute(
-        "UPDATE users SET travel_mode = %s, location = %s WHERE id = %s",
-        (travel_mode, location, user_id)
-    )
-    conn.commit()
+    cur.execute("SELECT * FROM users WHERE username = %s", (username,))
+    user = cur.fetchone()
+    cur.close()
     conn.close()
 
-    session["travel_mode"] = travel_mode
-    return jsonify({"message": "Updated", "travel_mode": travel_mode, "location": location})
+    if not user or not check_password_hash(user["password_hash"], password):
+        return jsonify({"error": "Incorrect username or password."}), 401
+
+    session["user_id"] = user["id"]
+    session["username"] = user["username"]
+    session["user_age"] = user["age"]
+    session["travel_mode"] = False
+    session["last_movies"] = []
+
+    return jsonify({"message": "ok", "username": user["username"], "age": user["age"]})
+
 
 @app.route("/logout", methods=["POST"])
 def logout():
     session.clear()
-    return jsonify({"message": "Logged out."})
+    return jsonify({"message": "ok"})
 
-@app.route("/whoami", methods=["GET"])
-def whoami():
-    username = session.get("username")
-    if username:
-        return jsonify({"username": username})
-    return jsonify({"error": "Not logged in"}), 401
 
-@app.route("/load_chat", methods=["GET"])
-def load_chat():
-    user_id = session.get("user_id")
-    if not user_id:
-        return jsonify({"error": "Not logged in."}), 401
-    messages = get_user_messages(user_id, limit=50)
-    return jsonify({"messages": messages})
+@app.route("/start", methods=["POST"])
+def start():
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in first."}), 401
+    data = request.get_json()
+    travel_mode = bool(data.get("travel_mode"))
+    session["travel_mode"] = travel_mode
+    session["last_movies"] = []
+    return jsonify({"message": "ok"})
+
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    user_id = session.get("user_id")
-    if not user_id:
-        return jsonify({"error": "Please log in first."}), 401
-
-    user = get_user_by_id(user_id)
-    if not user:
-        session.clear()
-        return jsonify({"error": "User not found."}), 401
-
-    user_age = user["age"]
-    travel_mode = bool(user["travel_mode"])
+    if "user_id" not in session:
+        return jsonify({"error": "Session expired, please log in again."}), 401
 
     data = request.get_json()
     user_query = (data.get("message") or "").strip()
     if not user_query:
         return jsonify({"error": "Please type something."}), 400
 
-    excluded_ids = set(session.get("excluded_ids", []))
-    info_query = is_info_query(user_query)
-    history = get_user_messages(user_id, limit=HISTORY_LIMIT)
-    history_for_ai = [{"role": m["role"], "content": m["content"]} for m in history]
+    user_id = session["user_id"]
+    user_age = session["user_age"]
+    travel_mode = session.get("travel_mode", False)
+    history = get_recent_history(user_id)
+    excluded_ids = get_excluded_ids(user_id)
+    last_movies = session.get("last_movies", [])
 
-    movies, blocked_count = retrieve_movies(user_query, user_age, travel_mode, excluded_ids)
+    info_query = is_info_query(user_query)
+
+    if info_query and last_movies:
+        num = extract_number(user_query)
+        if num and 1 <= num <= len(last_movies):
+            movies = [last_movies[num - 1]]
+        else:
+            movies = last_movies
+        blocked_count = 0
+    else:
+        movies, blocked_count = retrieve_movies(user_query, user_age, travel_mode, excluded_ids)
 
     for m in movies:
         m["trailer_url"] = get_trailer_url(m["id"])
 
     try:
-        answer = ask_ai(user_query, movies, history_for_ai, user_age, travel_mode, is_info=info_query)
+        answer = ask_ai(user_query, movies, history, user_age, travel_mode, is_info=info_query)
     except requests.exceptions.HTTPError as e:
         return jsonify({"error": f"AI service error: {e}"}), 500
 
     save_message(user_id, "user", user_query)
     save_message(user_id, "assistant", answer)
-
     session["last_movies"] = movies
 
     return jsonify({"reply": answer, "movies": movies, "blocked_count": blocked_count})
 
+
 @app.route("/exclude", methods=["POST"])
 def exclude():
-    user_id = session.get("user_id")
-    if not user_id:
-        return jsonify({"error": "Not logged in."}), 401
-
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in first."}), 401
     data = request.get_json()
     movie_id = str(data.get("movie_id", ""))
+    movie_title = data.get("movie_title", "")
     if not movie_id:
         return jsonify({"error": "Missing movie_id."}), 400
+    add_watched(session["user_id"], movie_id, movie_title)
+    return jsonify({"message": "excluded"})
 
-    excluded_ids = session.get("excluded_ids", [])
-    if movie_id not in excluded_ids:
-        excluded_ids.append(movie_id)
-    session["excluded_ids"] = excluded_ids
-
-    return jsonify({"message": "excluded", "excluded_ids": excluded_ids})
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

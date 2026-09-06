@@ -1,13 +1,6 @@
 """
-fetch_movies.py
-Fetches ~1000 well-known/highly-rated movies from TMDB across Hindi,
-Marathi, and English, including genre, age certification, and streaming
-platform availability. Saves everything into movies.json.
-
-Strategy: Hindi and Marathi each get a realistic target (there simply aren't
-1000s of highly-rated regional titles on TMDB). Whatever is short of 1000
-after that gets filled with English movies, so you always end up at (close
-to) your target count.
+Fetch 1,000 highly rated, child-friendly movies from TMDB:
+500 Hindi, 250 English, and 250 Marathi.
 """
 
 import requests
@@ -24,13 +17,13 @@ TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 BASE_URL = "https://api.themoviedb.org/3"
 OUTPUT_FILE = "movies.json"
 
-TARGET_MOVIES = 1000
-LANGUAGE_TARGETS = {"hi": 250, "mr": 100}  # English fills everything else, up to TARGET_MOVIES
+LANGUAGE_TARGETS = {"hi": 500, "en": 250, "mr": 250}
 LANGUAGE_NAMES = {"hi": "Hindi", "mr": "Marathi", "en": "English"}
 
-NUM_PAGES = 40
-MIN_VOTE_AVERAGE = 6.0
-MIN_VOTE_COUNT = 50
+NUM_PAGES = 100
+MAX_VIEWING_AGE = 12
+MIN_VOTE_AVERAGE = 6.5
+MIN_VOTE_COUNT = 100
 
 CATEGORIES = [
     {"name": "all_time_favorite", "sort_by": "vote_average.desc", "vote_average.gte": 7.0, "vote_count.gte": 300},
@@ -38,17 +31,6 @@ CATEGORIES = [
     {"name": "new", "sort_by": "primary_release_date.desc", "vote_average.gte": MIN_VOTE_AVERAGE, "vote_count.gte": MIN_VOTE_COUNT, "primary_release_date.lte": "2026-08-23"},
     {"name": "all_time_blockbuster", "sort_by": "vote_count.desc", "vote_average.gte": MIN_VOTE_AVERAGE, "vote_count.gte": 1000},
 ]
-
-# Regional languages (Hindi, Marathi) have far fewer TMDB voters than
-# Hollywood, so demanding 300-1000+ votes filters out almost everything.
-# These looser thresholds are used only for hi/mr.
-REGIONAL_CATEGORIES = [
-    {"name": "regional_favorite", "sort_by": "vote_average.desc", "vote_average.gte": 6.0, "vote_count.gte": 20},
-    {"name": "regional_popular", "sort_by": "popularity.desc", "vote_average.gte": 5.0, "vote_count.gte": 10},
-    {"name": "regional_new", "sort_by": "primary_release_date.desc", "vote_average.gte": 5.0, "vote_count.gte": 5, "primary_release_date.lte": "2026-08-23"},
-]
-# Fallback category used only to top off the count if the above aren't enough
-TOPOFF_CATEGORY = {"name": "popular_fill", "sort_by": "popularity.desc", "vote_average.gte": 5.0, "vote_count.gte": 20}
 
 if not TMDB_API_KEY:
     raise SystemExit(
@@ -93,6 +75,12 @@ def get_certification(movie_id):
     return "NR"
 
 
+def is_under_13(certification):
+    """Keep only certifications that explicitly allow viewers under 13."""
+    cert = (certification or "").upper().replace(" ", "")
+    return cert in {"G", "PG", "U", "UA", "U/A", "7", "7A", "12", "12A", "TV-G", "TV-PG"}
+
+
 def get_watch_providers(movie_id):
     data = safe_get(f"{BASE_URL}/movie/{movie_id}/watch/providers", {"api_key": TMDB_API_KEY})
     if not data:
@@ -111,7 +99,7 @@ def save_progress(movies):
 
 
 def fetch_for_language(language_code, limit, categories, genre_map, all_movies, seen_ids):
-    """Fetch movies for one language until `limit` new movies are added or supply runs out."""
+    """Fetch highly rated, under-13 movies for one exact language quota."""
     start_count = len(all_movies)
     lang_name = LANGUAGE_NAMES.get(language_code, language_code)
 
@@ -148,6 +136,10 @@ def fetch_for_language(language_code, limit, categories, genre_map, all_movies, 
 
                 genres = [genre_map.get(gid, "") for gid in movie.get("genre_ids", [])]
                 lang_code = movie.get("original_language")
+                certification = get_certification(movie_id)
+                if not is_under_13(certification):
+                    continue
+
                 all_movies.append({
                     "id": movie_id,
                     "title": movie.get("title"),
@@ -158,7 +150,7 @@ def fetch_for_language(language_code, limit, categories, genre_map, all_movies, 
                     "genres": genres,
                     "release_date": movie.get("release_date"),
                     "rating": movie.get("vote_average"),
-                    "certification": get_certification(movie_id),
+                    "certification": certification,
                     "watch_providers": get_watch_providers(movie_id),
                     "poster_path": movie.get("poster_path"),
                 })
@@ -179,22 +171,17 @@ def fetch_movies():
     all_movies = []
     seen_ids = set()
 
-    # Step 1: Hindi and Marathi, each up to their own realistic target,
-    # using looser quality thresholds since TMDB has far fewer regional voters
     for language_code, limit in LANGUAGE_TARGETS.items():
-        fetch_for_language(language_code, limit, REGIONAL_CATEGORIES, genre_map, all_movies, seen_ids)
+        fetch_for_language(language_code, limit, CATEGORIES, genre_map, all_movies, seen_ids)
 
-    # Step 2: English fills the rest, using the same quality categories
-    remaining = TARGET_MOVIES - len(all_movies)
-    if remaining > 0:
-        print(f"\nFilling remaining {remaining} slots with English movies...")
-        fetch_for_language("en", remaining, CATEGORIES, genre_map, all_movies, seen_ids)
-
-    # Step 3: Safety net — if still short (rare), top off with a looser filter, any language
-    remaining = TARGET_MOVIES - len(all_movies)
-    if remaining > 0:
-        print(f"\nStill {remaining} short of target, topping off with a wider search...")
-        fetch_for_language(None, remaining, [TOPOFF_CATEGORY], genre_map, all_movies, seen_ids)
+    counts = {code: sum(movie["original_language"] == code for movie in all_movies)
+              for code in LANGUAGE_TARGETS}
+    if len(all_movies) != sum(LANGUAGE_TARGETS.values()):
+        raise SystemExit(
+            "TMDB did not provide exactly 400 qualifying movies. "
+            f"Got {len(all_movies)} with counts {counts}."
+        )
+    print("Final language counts:", counts)
 
     return all_movies
 
