@@ -1,21 +1,23 @@
 """
 build_index.py
 Reads movies.json, converts each movie's overview into a vector embedding
-using a local AI model, and stores everything in a ChromaDB database
-(a local folder called chroma_db) so it can be searched by meaning later.
+using fastembed (a lightweight embedding library that does NOT require
+PyTorch, unlike sentence-transformers), and stores everything in a ChromaDB
+database (a local folder called chroma_db) so it can be searched by meaning.
 
 Run this once after fetch_movies.py has finished. If you ever change or
 re-fetch movies.json, just run this again to rebuild the index.
 """
 
 import json
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 import chromadb
 
 INPUT_FILE = "movies.json"
 CHROMA_PATH = "chroma_db"
 COLLECTION_NAME = "movies"
 BATCH_SIZE = 50
+EMBED_MODEL = "BAAI/bge-small-en-v1.5"
 
 print("Loading movies.json...")
 with open(INPUT_FILE, "r", encoding="utf-8") as f:
@@ -35,12 +37,11 @@ movies = unique_movies
 if duplicates_removed:
     print(f"Removed {duplicates_removed} duplicate movie(s). {len(movies)} unique movies remain.")
 
-print("Loading embedding model (first run downloads ~80MB, please wait)...")
-model = SentenceTransformer("paraphrase-MiniLM-L3-v2")
+print("Loading embedding model (first run downloads a small model, please wait)...")
+model = TextEmbedding(model_name=EMBED_MODEL)
 
 print("Connecting to ChromaDB...")
 client = chromadb.PersistentClient(path=CHROMA_PATH)
-# Start clean each time this script runs, so re-running never duplicates entries
 try:
     client.delete_collection(COLLECTION_NAME)
 except Exception:
@@ -69,7 +70,7 @@ for i in range(0, len(movies), BATCH_SIZE):
         "poster_path": m.get("poster_path") or "",
     } for m in batch]
 
-    embeddings = model.encode(documents).tolist()
+    embeddings = [e.tolist() for e in model.embed(documents)]
 
     collection.upsert(
         ids=ids,

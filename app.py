@@ -14,17 +14,21 @@ import os
 import re
 import json
 import difflib
+import uuid
 import requests
 import psycopg2
 import psycopg2.extras
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from flask import Flask, request, jsonify, session, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 import chromadb
 
 load_dotenv()
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 TMDB_API_KEY = os.getenv("TMDB_API_KEY")
@@ -64,9 +68,14 @@ def init_db():
             username TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
             age INTEGER NOT NULL,
+            security_question TEXT,
+            security_answer_hash TEXT,
             created_at TIMESTAMP DEFAULT NOW()
         )
     """)
+    # In case this table already existed before security questions were added
+    cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS security_question TEXT")
+    cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS security_answer_hash TEXT")
     cur.execute("""
         CREATE TABLE IF NOT EXISTS watched_movies (
             id SERIAL PRIMARY KEY,
@@ -84,6 +93,16 @@ def init_db():
             role TEXT NOT NULL,
             content TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT NOW()
+        )
+    """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS watchlist_movies (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER REFERENCES users(id),
+            movie_id TEXT NOT NULL,
+            movie_data JSONB NOT NULL,
+            added_at TIMESTAMP DEFAULT NOW(),
+            UNIQUE(user_id, movie_id)
         )
     """)
     conn.commit()
@@ -140,27 +159,95 @@ def save_message(user_id, role, content):
     conn.close()
 
 
+def get_watchlist(user_id):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT movie_data FROM watchlist_movies WHERE user_id = %s ORDER BY added_at DESC",
+        (user_id,),
+    )
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [json.loads(row["movie_data"]) if isinstance(row["movie_data"], str) else row["movie_data"] for row in rows]
+
+
+def add_to_watchlist(user_id, movie):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        """INSERT INTO watchlist_movies (user_id, movie_id, movie_data, added_at)
+           VALUES (%s, %s, %s::jsonb, %s)
+           ON CONFLICT (user_id, movie_id) DO UPDATE SET movie_data = EXCLUDED.movie_data""",
+        (user_id, str(movie["id"]), json.dumps(movie), datetime.utcnow()),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
+def remove_from_watchlist(user_id, movie_id):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "DELETE FROM watchlist_movies WHERE user_id = %s AND movie_id = %s",
+        (user_id, str(movie_id)),
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
 init_db()
+
+# ---------------------------------------------------------------------
+# Simple in-memory rate limiting (no extra dependency needed)
+# ---------------------------------------------------------------------
+
+from collections import defaultdict
+import time as _time
+
+_request_log = defaultdict(list)
+_pending_chat_requests = {}
+RATE_LIMIT = 20        # max requests
+RATE_WINDOW = 60       # per this many seconds
+
+
+def is_rate_limited(key):
+    now = _time.time()
+    timestamps = _request_log[key]
+    _request_log[key] = [t for t in timestamps if now - t < RATE_WINDOW]
+    if len(_request_log[key]) >= RATE_LIMIT:
+        return True
+    _request_log[key].append(now)
+    return False
 
 # ---------------------------------------------------------------------
 # Movie data + search setup
 # ---------------------------------------------------------------------
 
 print("Loading movie list...")
-with open("movies.json", "r", encoding="utf-8") as f:
+with open(os.path.join(BASE_DIR, "movies.json"), "r", encoding="utf-8") as f:
     all_movies = json.load(f)
 all_titles_lower = [m["title"].lower() for m in all_movies]
+movies_by_id = {str(m.get("id")): m for m in all_movies}
 
 print("Loading embedding model...")
-model = SentenceTransformer("paraphrase-MiniLM-L3-v2")
+model = TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
 
 print("Connecting to movie index...")
-client = chromadb.PersistentClient(path="chroma_db")
+client = chromadb.PersistentClient(path=os.path.join(BASE_DIR, "chroma_db"))
 collection = client.get_or_create_collection(name="movies")
 print(f"Ready! {collection.count()} movies loaded.")
 
 app = Flask(__name__)
-app.secret_key = "moviemate-secret-key-2026"  # fine for a student project, not production
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise SystemExit(
+        "SECRET_KEY not found. Add a line like SECRET_KEY=some_long_random_string to your .env file. "
+        "This protects your login sessions — don't leave it hardcoded or guessable."
+    )
+app.secret_key = SECRET_KEY
 
 
 def get_min_age(certification):
@@ -185,18 +272,24 @@ def is_light_genre(movie):
 
 
 def normalize_movie(m, movie_id=None):
-    genres = m.get("genres", "")
+    catalog_movie = movies_by_id.get(str(movie_id if movie_id is not None else m.get("id", "")), {})
+    source = {**catalog_movie, **m}
+    genres = source.get("genres", "")
     genres_str = ", ".join(genres) if isinstance(genres, list) else (genres or "")
-    providers = m.get("watch_providers", "")
+    providers = source.get("watch_providers", "")
     providers_str = ", ".join(providers) if isinstance(providers, list) else (providers or "")
     return {
-        "id": str(movie_id if movie_id is not None else m.get("id", "")),
-        "title": m.get("title") or "Unknown",
+        "id": str(movie_id if movie_id is not None else source.get("id", "")),
+        "title": source.get("title") or "Unknown",
+        "overview": source.get("overview") or "",
+        "original_language": source.get("original_language") or "",
+        "original_language_name": source.get("original_language_name") or "",
         "genres": genres_str,
-        "certification": m.get("certification") or "NR",
+        "certification": source.get("certification") or "NR",
         "watch_providers": providers_str,
-        "release_date": m.get("release_date") or "",
-        "rating": m.get("rating") or 0,
+        "release_date": source.get("release_date") or "",
+        "rating": source.get("rating") or 0,
+        "poster_path": source.get("poster_path") or "",
     }
 
 
@@ -275,9 +368,9 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5):
         if stored and len(stored.get("embeddings", [])) > 0:
             query_embedding = [stored["embeddings"][0]]
         else:
-            query_embedding = model.encode([query]).tolist()
+            query_embedding = [list(model.embed([query]))[0].tolist()]
     else:
-        query_embedding = model.encode([query]).tolist()
+        query_embedding = [list(model.embed([query]))[0].tolist()]
 
     fetch_count = (n + len(excluded_ids) + 2) * 4
     results = collection.query(query_embeddings=query_embedding, n_results=fetch_count)
@@ -326,7 +419,10 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5):
 def ask_ai(user_query, movies, history, user_age, travel_mode, is_info=False):
     movie_list_text = "\n".join([
         f"- {m['title']} | Genres: {m['genres']} | Certification: {m['certification']} | "
-        f"Available on: {m['watch_providers'] or 'not listed'} | Rating: {m['rating']}"
+        f"Available on: {m['watch_providers'] or 'not listed'} | Rating: {m['rating']} | "
+        f"Year: {m.get('release_date', '')[:4] or 'unknown'} | "
+        f"Language: {m.get('original_language_name') or m.get('original_language') or 'unknown'} | "
+        f"Overview: {m.get('overview') or 'not available'}"
         for m in movies
     ])
 
@@ -350,11 +446,11 @@ and why it's worth watching. Do NOT give just 1-2 short lines. Do NOT mention ce
 platform, or rating yourself — that information is shown automatically below your response, so repeating
 it would be redundant. Just focus on rich, specific plot and appeal details."""
     else:
-        instruction = """If this is a general mood, genre, or "movies like X" request, reply with one
-short warm sentence, then a numbered list of up to 5 movies from the list above, each with a one-line
-reason and where to watch it. If this is a specific follow-up question about one movie, just answer that
-question directly and briefly, don't repeat a full list. Only reference movies from the list above or
-from earlier in this conversation."""
+        instruction = """If this is a general mood, genre, or "movies like X" request, reply with ONE
+short, warm sentence reacting to what they asked for. Do NOT list movie titles, reasons, ratings, or
+platforms yourself — that information is shown separately as movie cards below your message, so listing
+it yourself would be redundant. If this is a specific follow-up question about one movie, answer that
+question directly and briefly instead."""
 
     user_prompt = f"""The user just said: "{user_query}"
 
@@ -384,19 +480,35 @@ def home():
     return render_template("index.html")
 
 
+@app.route("/session")
+def session_state():
+    if "user_id" not in session:
+        return jsonify({"authenticated": False})
+    return jsonify({
+        "authenticated": True,
+        "username": session.get("username"),
+        "travel_mode": bool(session.get("travel_mode", False)),
+        "has_started": bool(session.get("chat_started", False)),
+    })
+
+
 @app.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
     username = (data.get("username") or "").strip()
     password = data.get("password") or ""
     age = data.get("age")
+    security_question = (data.get("security_question") or "").strip()
+    security_answer = (data.get("security_answer") or "").strip()
 
     if not username or not password:
         return jsonify({"error": "Username and password are required."}), 400
     if not isinstance(age, int) or age < 1 or age > 120:
         return jsonify({"error": "Please enter a valid age."}), 400
-    if len(password) < 4:
-        return jsonify({"error": "Password should be at least 4 characters."}), 400
+    if len(password) < 6:
+        return jsonify({"error": "Password should be at least 6 characters."}), 400
+    if not security_question or not security_answer:
+        return jsonify({"error": "Please select a security question and provide an answer."}), 400
 
     conn = get_db()
     cur = conn.cursor()
@@ -407,9 +519,11 @@ def signup():
         return jsonify({"error": "That username is already taken."}), 400
 
     password_hash = generate_password_hash(password)
+    answer_hash = generate_password_hash(security_answer.lower())
     cur.execute(
-        "INSERT INTO users (username, password_hash, age, created_at) VALUES (%s, %s, %s, %s) RETURNING id",
-        (username, password_hash, age, datetime.utcnow()),
+        """INSERT INTO users (username, password_hash, age, security_question, security_answer_hash, created_at)
+           VALUES (%s, %s, %s, %s, %s, %s) RETURNING id""",
+        (username, password_hash, age, security_question, answer_hash, datetime.utcnow()),
     )
     user_id = cur.fetchone()["id"]
     conn.commit()
@@ -420,6 +534,7 @@ def signup():
     session["username"] = username
     session["user_age"] = age
     session["travel_mode"] = False
+    session["chat_started"] = False
     session["last_movies"] = []
 
     return jsonify({"message": "ok", "username": username, "age": age})
@@ -427,6 +542,9 @@ def signup():
 
 @app.route("/login", methods=["POST"])
 def login():
+    if is_rate_limited(f"login:{request.remote_addr}"):
+        return jsonify({"error": "Too many attempts. Please wait a minute and try again."}), 429
+
     data = request.get_json()
     username = (data.get("username") or "").strip()
     password = data.get("password") or ""
@@ -445,6 +563,7 @@ def login():
     session["username"] = user["username"]
     session["user_age"] = user["age"]
     session["travel_mode"] = False
+    session["chat_started"] = False
     session["last_movies"] = []
 
     return jsonify({"message": "ok", "username": user["username"], "age": user["age"]})
@@ -456,6 +575,53 @@ def logout():
     return jsonify({"message": "ok"})
 
 
+@app.route("/forgot-password/question", methods=["POST"])
+def forgot_password_question():
+    data = request.get_json()
+    username = (data.get("username") or "").strip()
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT security_question FROM users WHERE username = %s", (username,))
+    user = cur.fetchone()
+    cur.close()
+    conn.close()
+
+    if not user or not user["security_question"]:
+        return jsonify({"error": "No account found with that username."}), 404
+
+    return jsonify({"question": user["security_question"]})
+
+
+@app.route("/forgot-password/reset", methods=["POST"])
+def forgot_password_reset():
+    data = request.get_json()
+    username = (data.get("username") or "").strip()
+    answer = (data.get("answer") or "").strip().lower()
+    new_password = data.get("new_password") or ""
+
+    if len(new_password) < 6:
+        return jsonify({"error": "New password should be at least 6 characters."}), 400
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE username = %s", (username,))
+    user = cur.fetchone()
+
+    if not user or not user["security_answer_hash"] or not check_password_hash(user["security_answer_hash"], answer):
+        cur.close()
+        conn.close()
+        return jsonify({"error": "Incorrect answer."}), 401
+
+    new_hash = generate_password_hash(new_password)
+    cur.execute("UPDATE users SET password_hash = %s WHERE id = %s", (new_hash, user["id"]))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return jsonify({"message": "ok"})
+
+
 @app.route("/start", methods=["POST"])
 def start():
     if "user_id" not in session:
@@ -463,6 +629,7 @@ def start():
     data = request.get_json()
     travel_mode = bool(data.get("travel_mode"))
     session["travel_mode"] = travel_mode
+    session["chat_started"] = True
     session["last_movies"] = []
     return jsonify({"message": "ok"})
 
@@ -471,6 +638,9 @@ def start():
 def chat():
     if "user_id" not in session:
         return jsonify({"error": "Session expired, please log in again."}), 401
+
+    if is_rate_limited(f"chat:{session['user_id']}"):
+        return jsonify({"error": "You're sending messages too fast. Please slow down a little."}), 429
 
     data = request.get_json()
     user_query = (data.get("message") or "").strip()
@@ -496,19 +666,54 @@ def chat():
     else:
         movies, blocked_count = retrieve_movies(user_query, user_age, travel_mode, excluded_ids)
 
-    for m in movies:
-        m["trailer_url"] = get_trailer_url(m["id"])
+    session["last_movies"] = movies
+    response_token = uuid.uuid4().hex
+    _pending_chat_requests[response_token] = {
+        "user_id": user_id,
+        "user_query": user_query,
+        "movies": movies,
+        "history": history,
+        "user_age": user_age,
+        "travel_mode": travel_mode,
+        "is_info": info_query,
+    }
+
+    return jsonify({"movies": movies, "blocked_count": blocked_count, "response_token": response_token})
+
+
+@app.route("/chat/response", methods=["POST"])
+def chat_response():
+    if "user_id" not in session:
+        return jsonify({"error": "Session expired, please log in again."}), 401
+
+    data = request.get_json() or {}
+    response_token = data.get("response_token")
+    pending = _pending_chat_requests.pop(response_token, None)
+    if not pending or pending["user_id"] != session["user_id"]:
+        return jsonify({"error": "This response expired. Please send your message again."}), 400
 
     try:
-        answer = ask_ai(user_query, movies, history, user_age, travel_mode, is_info=info_query)
+        answer = ask_ai(
+            pending["user_query"], pending["movies"], pending["history"],
+            pending["user_age"], pending["travel_mode"], is_info=pending["is_info"]
+        )
     except requests.exceptions.HTTPError as e:
         return jsonify({"error": f"AI service error: {e}"}), 500
 
-    save_message(user_id, "user", user_query)
-    save_message(user_id, "assistant", answer)
-    session["last_movies"] = movies
+    save_message(session["user_id"], "user", pending["user_query"])
+    save_message(session["user_id"], "assistant", answer)
+    return jsonify({"reply": answer})
 
-    return jsonify({"reply": answer, "movies": movies, "blocked_count": blocked_count})
+
+@app.route("/trailers", methods=["POST"])
+def trailers():
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in first."}), 401
+    data = request.get_json() or {}
+    movie_ids = [str(movie_id) for movie_id in data.get("movie_ids", [])[:10] if movie_id]
+    with ThreadPoolExecutor(max_workers=min(5, len(movie_ids) or 1)) as executor:
+        trailer_urls = list(executor.map(get_trailer_url, movie_ids))
+    return jsonify({"trailers": dict(zip(movie_ids, trailer_urls))})
 
 
 @app.route("/exclude", methods=["POST"])
@@ -522,6 +727,32 @@ def exclude():
         return jsonify({"error": "Missing movie_id."}), 400
     add_watched(session["user_id"], movie_id, movie_title)
     return jsonify({"message": "excluded"})
+
+
+@app.route("/watchlist", methods=["GET"])
+def watchlist():
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in first."}), 401
+    return jsonify({"movies": get_watchlist(session["user_id"])})
+
+
+@app.route("/watchlist", methods=["POST"])
+def add_watchlist_movie():
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in first."}), 401
+    movie = request.get_json() or {}
+    if not movie.get("id") or not movie.get("title"):
+        return jsonify({"error": "Movie details are incomplete."}), 400
+    add_to_watchlist(session["user_id"], movie)
+    return jsonify({"message": "added", "movie": movie})
+
+
+@app.route("/watchlist/<movie_id>", methods=["DELETE"])
+def remove_watchlist_movie(movie_id):
+    if "user_id" not in session:
+        return jsonify({"error": "Please log in first."}), 401
+    remove_from_watchlist(session["user_id"], movie_id)
+    return jsonify({"message": "removed"})
 
 
 if __name__ == "__main__":

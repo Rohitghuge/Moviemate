@@ -1,6 +1,6 @@
 """
-Fetch 1,000 highly rated, child-friendly movies from TMDB:
-500 Hindi, 250 English, and 250 Marathi.
+Fetch 300 highly rated, child-friendly movies from TMDB:
+150 Hindi, 75 English, and 75 Marathi.
 """
 
 import requests
@@ -17,7 +17,7 @@ TMDB_API_KEY = os.getenv("TMDB_API_KEY")
 BASE_URL = "https://api.themoviedb.org/3"
 OUTPUT_FILE = "movies.json"
 
-LANGUAGE_TARGETS = {"hi": 500, "en": 250, "mr": 250}
+LANGUAGE_TARGETS = {"hi": 150, "en": 75, "mr": 75}
 LANGUAGE_NAMES = {"hi": "Hindi", "mr": "Marathi", "en": "English"}
 
 NUM_PAGES = 100
@@ -30,6 +30,12 @@ CATEGORIES = [
     {"name": "blockbuster", "sort_by": "popularity.desc", "vote_average.gte": MIN_VOTE_AVERAGE, "vote_count.gte": 500},
     {"name": "new", "sort_by": "primary_release_date.desc", "vote_average.gte": MIN_VOTE_AVERAGE, "vote_count.gte": MIN_VOTE_COUNT, "primary_release_date.lte": "2026-08-23"},
     {"name": "all_time_blockbuster", "sort_by": "vote_count.desc", "vote_average.gte": MIN_VOTE_AVERAGE, "vote_count.gte": 1000},
+]
+
+REGIONAL_CATEGORIES = [
+    {"name": "regional_favorite", "sort_by": "vote_average.desc", "vote_average.gte": 6.0, "vote_count.gte": 5},
+    {"name": "regional_popular", "sort_by": "popularity.desc", "vote_average.gte": 5.0, "vote_count.gte": 2},
+    {"name": "regional_new", "sort_by": "primary_release_date.desc", "vote_average.gte": 5.0, "vote_count.gte": 1, "primary_release_date.lte": "2026-08-23"},
 ]
 
 if not TMDB_API_KEY:
@@ -75,10 +81,31 @@ def get_certification(movie_id):
     return "NR"
 
 
+def get_min_age(certification):
+    """
+    Map a certification string (Indian or US) to a minimum viewing age.
+    Real TMDB values look like 'U/A 7+', 'U/A 13+', 'U/A 16+', 'A', 'PG-13',
+    'R', 'NC-17', 'U', 'G', 'PG', or 'NR' — this checks for the relevant
+    substrings rather than requiring an exact match, since exact-match against
+    a fixed set (the old approach) almost never hits a real TMDB value.
+    """
+    cert = (certification or "").upper()
+    if "18" in cert or cert == "A" or "NC-17" in cert:
+        return 18
+    if cert == "R" or "R-" in cert:
+        return 17
+    if "16" in cert:
+        return 16
+    if "13" in cert:
+        return 13
+    if "7" in cert:
+        return 7
+    return 0  # U, G, PG, NR, or unrecognized -> treat as all-ages
+
+
 def is_under_13(certification):
-    """Keep only certifications that explicitly allow viewers under 13."""
-    cert = (certification or "").upper().replace(" ", "")
-    return cert in {"G", "PG", "U", "UA", "U/A", "7", "7A", "12", "12A", "TV-G", "TV-PG"}
+    """Keep only certifications with no explicit age gate above MAX_VIEWING_AGE."""
+    return get_min_age(certification) <= MAX_VIEWING_AGE
 
 
 def get_watch_providers(movie_id):
@@ -172,16 +199,21 @@ def fetch_movies():
     seen_ids = set()
 
     for language_code, limit in LANGUAGE_TARGETS.items():
-        fetch_for_language(language_code, limit, CATEGORIES, genre_map, all_movies, seen_ids)
+        categories = REGIONAL_CATEGORIES if language_code == "mr" else CATEGORIES
+        fetch_for_language(language_code, limit, categories, genre_map, all_movies, seen_ids)
 
     counts = {code: sum(movie["original_language"] == code for movie in all_movies)
               for code in LANGUAGE_TARGETS}
-    if len(all_movies) != sum(LANGUAGE_TARGETS.values()):
-        raise SystemExit(
-            "TMDB did not provide exactly 400 qualifying movies. "
-            f"Got {len(all_movies)} with counts {counts}."
+    expected_total = sum(LANGUAGE_TARGETS.values())
+    if len(all_movies) != expected_total or counts != LANGUAGE_TARGETS:
+        print(
+            f"\nWarning: didn't hit the exact target of {expected_total} movies "
+            f"(got {len(all_movies)}, counts {counts}). This can happen if TMDB "
+            f"simply doesn't have enough qualifying titles for one language. "
+            f"Everything found so far has still been saved to {OUTPUT_FILE}."
         )
-    print("Final language counts:", counts)
+    else:
+        print("Final language counts:", counts)
 
     return all_movies
 

@@ -1,7 +1,7 @@
 Flask
 gunicorn
 psycopg2-binary
-sentence-transformers
+fastembed
 chromadb
 requests
 python-dotenv
