@@ -733,7 +733,11 @@ def exclude():
 def watchlist():
     if "user_id" not in session:
         return jsonify({"error": "Please log in first."}), 401
-    return jsonify({"movies": get_watchlist(session["user_id"])})
+    try:
+        return jsonify({"movies": get_watchlist(session["user_id"])})
+    except psycopg2.Error:
+        app.logger.exception("Could not load watchlist")
+        return jsonify({"error": "The watchlist database is unavailable. Check DATABASE_URL and the Render logs."}), 503
 
 
 @app.route("/watchlist", methods=["POST"])
@@ -743,7 +747,11 @@ def add_watchlist_movie():
     movie = request.get_json() or {}
     if not movie.get("id") or not movie.get("title"):
         return jsonify({"error": "Movie details are incomplete."}), 400
-    add_to_watchlist(session["user_id"], movie)
+    try:
+        add_to_watchlist(session["user_id"], movie)
+    except psycopg2.Error:
+        app.logger.exception("Could not add movie to watchlist")
+        return jsonify({"error": "The watchlist database is unavailable. Check DATABASE_URL and the Render logs."}), 503
     return jsonify({"message": "added", "movie": movie})
 
 
@@ -751,7 +759,11 @@ def add_watchlist_movie():
 def remove_watchlist_movie(movie_id):
     if "user_id" not in session:
         return jsonify({"error": "Please log in first."}), 401
-    remove_from_watchlist(session["user_id"], movie_id)
+    try:
+        remove_from_watchlist(session["user_id"], movie_id)
+    except psycopg2.Error:
+        app.logger.exception("Could not remove movie from watchlist")
+        return jsonify({"error": "The watchlist database is unavailable. Check DATABASE_URL and the Render logs."}), 503
     return jsonify({"message": "removed"})
 
 

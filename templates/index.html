@@ -566,7 +566,7 @@ async function loadWatchlist() {
 async function readJsonResponse(res) {
   const contentType = res.headers.get('content-type') || '';
   if (!contentType.includes('application/json')) {
-    throw new Error(`Watchlist server error (HTTP ${res.status}). Restart app.py so the new watchlist table and routes load.`);
+    throw new Error(`Watchlist request failed with HTTP ${res.status}. Check the Render service logs.`);
   }
   return res.json();
 }
