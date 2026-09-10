@@ -23,8 +23,8 @@ from datetime import datetime
 from flask import Flask, request, jsonify, session, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from fastembed import TextEmbedding
-import chromadb
+import pickle
+from sklearn.metrics.pairwise import cosine_similarity
 
 load_dotenv()
 
@@ -232,13 +232,14 @@ with open(os.path.join(BASE_DIR, "movies.json"), "r", encoding="utf-8") as f:
 all_titles_lower = [m["title"].lower() for m in all_movies]
 movies_by_id = {str(m.get("id")): m for m in all_movies}
 
-print("Loading embedding model...")
-model = TextEmbedding(model_name="BAAI/bge-small-en-v1.5")
-
-print("Connecting to movie index...")
-client = chromadb.PersistentClient(path=os.path.join(BASE_DIR, "chroma_db"))
-collection = client.get_or_create_collection(name="movies")
-print(f"Ready! {collection.count()} movies loaded.")
+print("Loading movie search index...")
+with open(os.path.join(BASE_DIR, "movie_index.pkl"), "rb") as f:
+    _index = pickle.load(f)
+vectorizer = _index["vectorizer"]
+tfidf_matrix = _index["matrix"]          # sparse, small in memory
+index_ids = _index["ids"]                # row position -> movie id
+id_to_row = {mid: i for i, mid in enumerate(index_ids)}
+print(f"Ready! {len(index_ids)} movies loaded.")
 
 app = Flask(__name__)
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -363,18 +364,18 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5):
         reference_movie = direct_matches[0]
         direct_matches = []
 
-    if reference_movie:
-        stored = collection.get(ids=[str(reference_movie["id"])], include=["embeddings"])
-        if stored and len(stored.get("embeddings", [])) > 0:
-            query_embedding = [stored["embeddings"][0]]
-        else:
-            query_embedding = [list(model.embed([query]))[0].tolist()]
+    if reference_movie and str(reference_movie["id"]) in id_to_row:
+        query_vector = tfidf_matrix[id_to_row[str(reference_movie["id"])]]
     else:
-        query_embedding = [list(model.embed([query]))[0].tolist()]
+        query_vector = vectorizer.transform([query])
 
-    fetch_count = (n + len(excluded_ids) + 2) * 4
-    results = collection.query(query_embeddings=query_embedding, n_results=fetch_count)
-    semantic_raw = list(zip(results["ids"][0], results["metadatas"][0]))
+    fetch_count = min((n + len(excluded_ids) + 2) * 4, len(index_ids))
+    sims = cosine_similarity(query_vector, tfidf_matrix)[0]
+    top_positions = sims.argsort()[::-1][:fetch_count]
+    semantic_raw = [
+        (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
+        for pos in top_positions
+    ]
 
     def age_ok(m):
         return get_min_age(m["certification"]) <= user_age

@@ -1,8 +1,7 @@
 Flask
 gunicorn
 psycopg2-binary
-fastembed
-chromadb
+scikit-learn
 requests
 python-dotenv
 werkzeug
