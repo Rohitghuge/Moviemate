@@ -19,6 +19,25 @@
     animation: bgPulse 8s ease-in-out infinite, flicker 5.5s ease-in-out infinite;
     overflow-x: hidden;
   }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    background-size: 200% 200%;
+    transition: opacity 1.4s ease, background 1.4s ease;
+    animation: moodDrift 10s ease-in-out infinite;
+  }
+  body.mood-love::before { opacity: 1; background: linear-gradient(135deg, #ff2fb0, #ff7ce8); }
+  body.mood-happy::before { opacity: 1; background: linear-gradient(135deg, #00f0ff, #39ff9d); }
+  body.mood-action::before { opacity: 1; background: linear-gradient(135deg, #ff2e2e, #ff9a00); }
+  body.mood-horror::before { opacity: 1; background: linear-gradient(135deg, #b026ff, #ff00e5); }
+  @keyframes moodDrift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
   @keyframes bgPulse {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -27,10 +46,7 @@
     0%, 100% { filter: brightness(1) saturate(1); }
     50% { filter: brightness(1.18) saturate(1.2); }
   }
-  body.mood-love   { background: linear-gradient(135deg, #ff2fb0, #ff7ce8); background-size: 200% 200%; }
-  body.mood-happy  { background: linear-gradient(135deg, #00f0ff, #39ff9d); background-size: 200% 200%; }
-  body.mood-action { background: linear-gradient(135deg, #ff2e2e, #ff9a00); background-size: 200% 200%; }
-  body.mood-horror { background: linear-gradient(135deg, #b026ff, #ff00e5); background-size: 200% 200%; }
+  body.mood-love, body.mood-happy, body.mood-action, body.mood-horror { background: linear-gradient(135deg, #0f9b8e, #142850); }
 
   .deco-shape {
     position: fixed; color: rgba(255,255,255,0.28); pointer-events: none;
@@ -94,9 +110,10 @@
   .auth-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
   .tab-btn {
     flex: 1; padding: 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.06); color: #f5f5f5; font-weight: 600; transition: all 0.2s ease;
+    background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7); font-weight: 600; transition: all 0.35s ease;
   }
-  .tab-btn.active { background: #7b5cff; border-color: #7b5cff; }
+  .tab-btn:hover { color: #fff; background: rgba(255,255,255,0.14); transform: translateY(-2px); }
+  .tab-btn.active { background: linear-gradient(135deg, #ff5fc1, #7b5cff); border-color: transparent; color: #fff; box-shadow: 0 8px 20px rgba(123,92,255,0.35); }
 
   .location-btn {
     width: 100%; padding: 9px; border-radius: 30px;
@@ -113,7 +130,7 @@
   }
 
   #chat-window {
-    height: auto; max-height: calc(100vh - 190px); overflow-y: auto; padding: 8px;
+    height: clamp(380px, calc(100vh - 270px), 520px); overflow-y: auto; padding: 8px;
     display: flex; flex-direction: column; gap: 12px;
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.04) transparent;
   }
@@ -127,9 +144,32 @@
     white-space: pre-wrap; line-height: 1.4; font-size: 14.5px;
     animation: fadeInUp 0.35s ease;
   }
+  #auth-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, rgba(22, 42, 73, 0.82), rgba(27, 87, 105, 0.58));
+    box-shadow: 0 18px 50px rgba(4, 19, 42, 0.28), inset 0 1px rgba(255,255,255,0.12);
+  }
+  #auth-card::before {
+    content: '';
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    top: -100px;
+    right: -55px;
+    border-radius: 50%;
+    background: rgba(255, 95, 193, 0.2);
+    filter: blur(8px);
+    pointer-events: none;
+    animation: authGlow 5s ease-in-out infinite alternate;
+  }
+  #auth-card > * { position: relative; z-index: 1; }
+  @keyframes authGlow {
+    from { transform: translate(0, 0) scale(0.9); opacity: 0.55; }
+    to { transform: translate(-35px, 35px) scale(1.2); opacity: 0.9; }
+  }
   .msg.user { align-self: flex-end; background: #7b5cff; color: white; border-bottom-right-radius: 4px; }
   .msg.bot  { align-self: flex-start; background: rgba(255,255,255,0.1); border-bottom-left-radius: 4px; }
-  .msg.bot strong { font-size: 1.1em; color: #ffd6f0; }
   .msg.bot a { color: #9d8cff; text-decoration: none; }
   .msg.bot a:hover { color: #ff6ec7; }
   .msg.bot .no-trailer { opacity: 0.5; font-style: italic; }
@@ -180,6 +220,7 @@
   .card-title { font-weight: 700; margin-bottom: 3px; line-height: 1.25; max-height: 2.5em; overflow: hidden; }
   .card-overview { color: rgba(255,255,255,0.68); line-height: 1.35; margin-bottom: 7px; height: 2.7em; overflow: hidden; }
   .card-genres { opacity: 0.6; font-size: 10px; margin-bottom: 5px; max-height: 1.3em; overflow: hidden; }
+  .card-provider { opacity: 0.72; font-size: 10px; line-height: 1.3; margin-bottom: 6px; overflow-wrap: anywhere; }
   .card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 10.5px; }
   .card-meta .rating { color: #ffd166; font-weight: 700; }
   .card-meta .platform { opacity: 0.7; max-width: 65px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -229,9 +270,16 @@
   .form-control { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2); }
   .form-control option { background: #28576a; color: #ffffff; }
   .form-control option:checked, .form-control option:hover { background: #2167c7; color: #ffffff; }
-  .form-control:focus { background: rgba(255,255,255,0.12); color: white; box-shadow: none; border-color: #7b5cff; }
-  .btn-primary { background: #7b5cff; border: none; transition: transform 0.15s ease, background 0.15s ease; }
-  .btn-primary:hover { background: #6a4ce0; transform: scale(1.03); }
+  .auth-form { animation: formReveal 0.4s ease both; }
+  @keyframes formReveal {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .form-control { background: rgba(255,255,255,0.08); color: white; border: 1px solid rgba(255,255,255,0.2); transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease; }
+  .form-control:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.35); }
+  .form-control:focus { background: rgba(255,255,255,0.15); color: white; box-shadow: 0 0 0 3px rgba(255,95,193,0.16); border-color: #ff5fc1; }
+  .btn-primary { background: linear-gradient(135deg, #ff5fc1, #7b5cff); border: none; transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease; }
+  .btn-primary:hover { background: linear-gradient(135deg, #ff72ca, #896eff); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(123,92,255,0.35); filter: saturate(1.15); }
 
   .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 13px; }
   .chat-status { min-height: 18px; color: rgba(255,255,255,0.72); font-size: 12px; margin: 0 12px 4px; }
@@ -243,9 +291,16 @@
   @media (max-width: 576px) {
     .app-wrap { padding: 20px 10px; }
     .card-glass { padding: 16px; }
-    #chat-window { max-height: calc(100vh - 150px); padding: 8px 4px; }
+    #chat-window { height: min(520px, calc(100vh - 150px)); padding: 8px 4px; }
     .msg { max-width: 92%; }
     .movie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  }
+  @media (min-width: 861px) and (max-height: 800px) {
+    .app-wrap { padding-top: 12px; }
+    .brand { margin-bottom: 12px; }
+    .brand h1 { font-size: 2.35rem; margin-bottom: 2px; }
+    .card-glass { padding: 14px; }
+    #chat-window { height: clamp(360px, calc(100vh - 250px), 430px); }
   }
   @media (max-width: 860px) {
     .workspace { display: block; }
@@ -907,7 +962,7 @@ function addMovieGrid(movies) {
     year.textContent = (m.release_date || '').slice(0, 4) || 'Year n/a';
     meta.append(rating, year);
     const provider = document.createElement('div');
-    provider.className = 'card-genres';
+    provider.className = 'card-provider';
     provider.textContent = `Watch in India: ${platform}`;
     const actions = document.createElement('div');
     actions.className = 'card-actions';
