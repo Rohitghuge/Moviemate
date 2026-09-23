@@ -134,6 +134,9 @@
     display: flex; flex-direction: column; gap: 12px;
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.04) transparent;
   }
+  #chat-card { min-height: calc(100vh - 118px); display: flex; flex-direction: column; }
+  #chat-card #chat-window { flex: 1 1 auto; min-height: 0; }
+  #chat-card .mood-chips, #chat-card #chat-form { flex-shrink: 0; }
   #chat-window::-webkit-scrollbar, .movie-grid::-webkit-scrollbar, .watchlist-panel::-webkit-scrollbar { width: 8px; height: 8px; }
   #chat-window::-webkit-scrollbar-track, .movie-grid::-webkit-scrollbar-track, .watchlist-panel::-webkit-scrollbar-track { background: transparent; }
   #chat-window::-webkit-scrollbar-thumb, .movie-grid::-webkit-scrollbar-thumb, .watchlist-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.04); border-radius: 10px; }
@@ -292,6 +295,7 @@
     .app-wrap { padding: 20px 10px; }
     .card-glass { padding: 16px; }
     #chat-window { height: min(520px, calc(100vh - 150px)); padding: 8px 4px; }
+    #chat-card { min-height: calc(100vh - 110px); }
     .msg { max-width: 92%; }
     .movie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
   }
@@ -628,10 +632,9 @@ async function readJsonResponse(res) {
 
 async function readChatResponse(res) {
   const contentType = res.headers.get('content-type') || '';
-  if (!contentType.includes('application/json')) {
-    throw new Error(`Server returned HTTP ${res.status}. Check the Render logs for the backend error.`);
-  }
-  return res.json();
+  if (contentType.includes('application/json')) return res.json();
+  const message = (await res.text()).trim();
+  throw new Error(message || `Server returned HTTP ${res.status}. Check the Render logs for the backend error.`);
 }
 
 async function addWatchlistMovie(movie, button, card) {
@@ -657,7 +660,7 @@ async function addWatchlistMovie(movie, button, card) {
 async function removeWatchlistMovie(movieId) {
   try {
     const res = await fetch(`/watchlist/${encodeURIComponent(movieId)}`, {method: 'DELETE'});
-    const data = await readJsonResponse(res);
+    const data = await readChatResponse(res);
     if (!res.ok) throw new Error(data.error || 'Could not remove this movie.');
     watchlistMovies.delete(String(movieId));
     renderWatchlist();

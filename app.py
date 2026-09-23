@@ -699,7 +699,20 @@ def chat_response():
             pending["user_age"], pending["travel_mode"], is_info=pending["is_info"]
         )
     except requests.exceptions.HTTPError as e:
-        return jsonify({"error": f"AI service error: {e}"}), 500
+        response = e.response
+        detail = "The AI provider rejected the request. Check GROQ_API_KEY and GROQ_MODEL."
+        if response is not None:
+            try:
+                provider_error = response.json().get("error", {}).get("message")
+                if provider_error:
+                    detail = f"AI service error: {provider_error}"
+            except (ValueError, TypeError):
+                pass
+        return jsonify({"error": detail}), 502
+    except requests.exceptions.RequestException:
+        return jsonify({"error": "The AI service could not be reached. Check the deployment network and Groq status."}), 502
+    except (KeyError, TypeError, ValueError):
+        return jsonify({"error": "The AI service returned an unexpected response."}), 502
 
     save_message(session["user_id"], "user", pending["user_query"])
     save_message(session["user_id"], "assistant", answer)
