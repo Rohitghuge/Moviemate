@@ -30,10 +30,12 @@
     transition: opacity 1.4s ease, background 1.4s ease;
     animation: moodDrift 10s ease-in-out infinite;
   }
-  body.mood-love::before { opacity: 1; background: linear-gradient(135deg, #ff2fb0, #ff7ce8); }
-  body.mood-happy::before { opacity: 1; background: linear-gradient(135deg, #00f0ff, #39ff9d); }
-  body.mood-action::before { opacity: 1; background: linear-gradient(135deg, #ff2e2e, #ff9a00); }
-  body.mood-horror::before { opacity: 1; background: linear-gradient(135deg, #b026ff, #ff00e5); }
+  body.mood-love::before { opacity: 1; background: linear-gradient(135deg, #ff3f9f, #ff9bd7); }
+  body.mood-happy::before { opacity: 1; background: linear-gradient(135deg, #00d9ff, #1769ff); }
+  body.mood-sad::before { opacity: 1; background: linear-gradient(135deg, #101a5c, #54209b); }
+  body.mood-action::before { opacity: 1; background: linear-gradient(135deg, #ff8a00, #f51b3b); }
+  body.mood-horror::before { opacity: 1; background: linear-gradient(135deg, #210008, #720d2c 52%, #3f0b68); }
+  body.mood-surprise::before { opacity: 1; background: linear-gradient(135deg, #ff647c, #ff9f43, #7956d8); }
   @keyframes moodDrift {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -46,7 +48,7 @@
     0%, 100% { filter: brightness(1) saturate(1); }
     50% { filter: brightness(1.18) saturate(1.2); }
   }
-  body.mood-love, body.mood-happy, body.mood-action, body.mood-horror { background: linear-gradient(135deg, #0f9b8e, #142850); }
+  body.mood-love, body.mood-happy, body.mood-sad, body.mood-action, body.mood-horror, body.mood-surprise { background: linear-gradient(135deg, #0f9b8e, #142850); }
 
   .deco-shape {
     position: fixed; color: rgba(255,255,255,0.28); pointer-events: none;
@@ -81,8 +83,8 @@
     backdrop-filter: blur(8px);
     animation: fadeInUp 0.6s ease;
   }
-  .workspace { display: flex; gap: 18px; align-items: flex-start; width: 100%; }
-  .main-column { flex: 1 1 800px; min-width: 0; }
+  .workspace { display: flex; gap: 18px; align-items: stretch; width: 100%; min-height: calc(100vh - 100px); }
+  .main-column { flex: 1 1 800px; min-width: 0; min-height: calc(100vh - 100px); display: flex; flex-direction: column; }
   .watchlist-panel {
     display: none; order: -1; flex: 0 0 255px; position: sticky; top: 20px; max-height: calc(100vh - 40px);
     overflow-y: auto; padding: 16px; background: rgba(20, 20, 40, 0.5);
@@ -134,7 +136,7 @@
     display: flex; flex-direction: column; gap: 12px;
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.04) transparent;
   }
-  #chat-card { min-height: calc(100vh - 118px); display: flex; flex-direction: column; }
+  #chat-card { height: calc(100vh - 118px); min-height: 0; display: flex; flex-direction: column; }
   #chat-card #chat-window { flex: 1 1 auto; min-height: 0; }
   #chat-card .mood-chips, #chat-card #chat-form { flex-shrink: 0; }
   #chat-window::-webkit-scrollbar, .movie-grid::-webkit-scrollbar, .watchlist-panel::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -250,12 +252,18 @@
     background: color-mix(in srgb, var(--chip-color) 30%, transparent);
     box-shadow: 0 0 14px color-mix(in srgb, var(--chip-color) 55%, transparent);
   }
-  .mood-chip[data-text*="happy"] { --chip-color: #FFD166; }
-  .mood-chip[data-text*="sad"] { --chip-color: #6EA8FE; }
-  .mood-chip[data-text*="action"] { --chip-color: #FF5A36; }
-  .mood-chip[data-text*="romantic"] { --chip-color: #FF6FB5; }
-  .mood-chip[data-text*="horror"] { --chip-color: #9B5DE5; }
-  .mood-chip[data-text*="Surprise me"] { --chip-color: #2EC4B6; }
+  .mood-chip.selected {
+    background: var(--chip-color);
+    border-color: #fff;
+    box-shadow: 0 0 18px color-mix(in srgb, var(--chip-color) 70%, transparent);
+    transform: translateY(-2px) scale(1.03);
+  }
+  .mood-chip[data-text*="happy"] { --chip-color: #00bfff; }
+  .mood-chip[data-text*="sad"] { --chip-color: #382b9e; }
+  .mood-chip[data-text*="action"] { --chip-color: #ff5a27; }
+  .mood-chip[data-text*="romantic"] { --chip-color: #ff5ca8; }
+  .mood-chip[data-text*="horror"] { --chip-color: #8d1742; }
+  .mood-chip[data-text*="Surprise me"] { --chip-color: #e87868; }
 
   .typing-dots { align-self: flex-start; display: flex; gap: 4px; padding: 10px 14px; }
   .typing-dots span {
@@ -295,7 +303,7 @@
     .app-wrap { padding: 20px 10px; }
     .card-glass { padding: 16px; }
     #chat-window { height: min(520px, calc(100vh - 150px)); padding: 8px 4px; }
-    #chat-card { min-height: calc(100vh - 110px); }
+    #chat-card { height: calc(100vh - 110px); }
     .msg { max-width: 92%; }
     .movie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
   }
@@ -307,7 +315,8 @@
     #chat-window { height: clamp(360px, calc(100vh - 250px), 430px); }
   }
   @media (max-width: 860px) {
-    .workspace { display: block; }
+    .workspace { display: block; min-height: 0; }
+    .main-column { min-height: 0; }
     .watchlist-panel { position: static; max-height: none; margin-top: 18px; }
   }
   @media (min-width: 861px) and (max-width: 1180px) {
@@ -482,15 +491,19 @@ const watchlistMovies = new Map();
 // ---------- Mood background ----------
 const LOVE_WORDS = ["love", "romance", "romantic", "date night"];
 const HAPPY_WORDS = ["happy", "feel good", "feelgood", "refreshing", "fun", "cheerful", "uplifting", "funny", "comedy", "lighthearted"];
+const SAD_WORDS = ["sad", "comforting", "comfort", "emotional", "melancholy"];
 const ACTION_WORDS = ["action", "fight", "intense", "adrenaline", "war", "battle"];
 const HORROR_WORDS = ["horror", "scary", "fear", "spooky", "creepy", "haunted", "thriller"];
+const SURPRISE_WORDS = ["surprise me", "something great"];
 
 function updateMoodBackground(text) {
   const q = text.toLowerCase();
-  document.body.classList.remove('mood-love', 'mood-happy', 'mood-action', 'mood-horror');
+  document.body.classList.remove('mood-love', 'mood-happy', 'mood-sad', 'mood-action', 'mood-horror', 'mood-surprise');
   if (LOVE_WORDS.some(w => q.includes(w))) document.body.classList.add('mood-love');
   else if (ACTION_WORDS.some(w => q.includes(w))) document.body.classList.add('mood-action');
   else if (HORROR_WORDS.some(w => q.includes(w))) document.body.classList.add('mood-horror');
+  else if (SAD_WORDS.some(w => q.includes(w))) document.body.classList.add('mood-sad');
+  else if (SURPRISE_WORDS.some(w => q.includes(w))) document.body.classList.add('mood-surprise');
   else if (HAPPY_WORDS.some(w => q.includes(w))) document.body.classList.add('mood-happy');
 }
 
@@ -1115,6 +1128,8 @@ async function loadChatReply(responseToken) {
 
 document.querySelectorAll('.mood-chip').forEach(chip => {
   chip.addEventListener('click', () => {
+    document.querySelectorAll('.mood-chip').forEach(item => item.classList.remove('selected'));
+    chip.classList.add('selected');
     sendChatMessage(chip.dataset.text);
   });
 });
