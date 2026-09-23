@@ -43,9 +43,9 @@
   @keyframes floatShape {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-14px); }
-  }t
+  }
 
-  .app-wrap { max-width: 1080px; margin: 0 auto; padding: 20px 14px; position: relative; z-index: 1; }
+  .app-wrap { width: 100%; margin: 0 auto; padding: 18px clamp(12px, 2vw, 28px); position: relative; z-index: 1; }
   .brand { text-align: center; margin-bottom: 20px; }
   .brand h1 {
     font-family: 'Playfair Display', serif;
@@ -65,7 +65,7 @@
     backdrop-filter: blur(8px);
     animation: fadeInUp 0.6s ease;
   }
-  .workspace { display: flex; gap: 18px; align-items: flex-start; }
+  .workspace { display: flex; gap: 18px; align-items: flex-start; width: 100%; }
   .main-column { flex: 1 1 800px; min-width: 0; }
   .watchlist-panel {
     display: none; order: -1; flex: 0 0 255px; position: sticky; top: 20px; max-height: calc(100vh - 40px);
@@ -113,7 +113,7 @@
   }
 
   #chat-window {
-    height: 480px; overflow-y: auto; padding: 10px;
+    height: auto; max-height: calc(100vh - 190px); overflow-y: auto; padding: 8px;
     display: flex; flex-direction: column; gap: 12px;
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.04) transparent;
   }
@@ -144,7 +144,7 @@
   .inline-seen-btn.excluded { opacity: 0.4; }
 
   .movie-grid {
-    display: flex; gap: 12px; overflow-x: auto; padding: 6px 2px 12px 2px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; overflow: visible; padding: 6px 2px 12px 2px;
     width: 100%; min-width: 0; align-self: stretch; animation: fadeInUp 0.4s ease;
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.04) transparent;
   }
@@ -156,7 +156,7 @@
     letter-spacing: 0.08em; text-transform: uppercase;
   }
   .movie-card {
-    flex: 0 0 135px; width: 135px; min-width: 135px;
+    width: 100%; min-width: 0;
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.14);
     border-radius: 12px; overflow: hidden; font-size: 11.5px;
@@ -164,9 +164,9 @@
   }
   .movie-card:hover { transform: translateY(-4px); }
   .poster-wrap { position: relative; }
-  .poster-wrap img { width: 100%; height: 180px; object-fit: cover; display: block; background: rgba(255,255,255,0.08); }
+  .poster-wrap img { width: 100%; aspect-ratio: 3 / 4; height: auto; object-fit: cover; display: block; background: rgba(255,255,255,0.08); }
   .poster-wrap .no-poster {
-    width: 100%; height: 180px; display: flex; align-items: center; justify-content: center;
+    width: 100%; aspect-ratio: 3 / 4; height: auto; display: flex; align-items: center; justify-content: center;
     background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.4); text-align: center; padding: 6px; font-size: 10px;
   }
   .cert-badge {
@@ -243,10 +243,9 @@
   @media (max-width: 576px) {
     .app-wrap { padding: 20px 10px; }
     .card-glass { padding: 16px; }
-    #chat-window { height: min(62vh, 520px); padding: 8px 4px; }
+    #chat-window { max-height: calc(100vh - 150px); padding: 8px 4px; }
     .msg { max-width: 92%; }
-    .movie-card { flex-basis: 128px; width: 128px; min-width: 128px; }
-    .poster-wrap img, .poster-wrap .no-poster { height: 170px; }
+    .movie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
   }
   @media (max-width: 860px) {
     .workspace { display: block; }
@@ -255,7 +254,6 @@
   @media (min-width: 861px) and (max-width: 1180px) {
     .app-wrap { padding-left: 14px; padding-right: 14px; }
     .watchlist-panel { flex-basis: 220px; }
-    .movie-card { flex-basis: 133px; width: 133px; min-width: 133px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
