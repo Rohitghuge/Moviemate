@@ -15,6 +15,7 @@ import re
 import json
 import difflib
 import uuid
+import random
 import requests
 import psycopg2
 import psycopg2.extras
@@ -322,6 +323,10 @@ def is_info_query(query):
     return any(t in q for t in INFO_TRIGGERS)
 
 
+def is_surprise_query(query):
+    return "surprise me" in query.lower()
+
+
 def extract_number(query):
     match = re.search(r'\d+', query)
     return int(match.group()) if match else None
@@ -355,7 +360,7 @@ def get_trailer_url(movie_id):
     return url
 
 
-def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5):
+def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surprise=False):
     excluded_ids = excluded_ids or set()
     direct_matches = find_title_matches(query)
 
@@ -367,15 +372,29 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5):
     if reference_movie and str(reference_movie["id"]) in id_to_row:
         query_vector = tfidf_matrix[id_to_row[str(reference_movie["id"])]]
     else:
-        query_vector = vectorizer.transform([query])
+        query_vector = None if surprise else vectorizer.transform([query])
 
-    fetch_count = min((n + len(excluded_ids) + 2) * 4, len(index_ids))
-    sims = cosine_similarity(query_vector, tfidf_matrix)[0]
-    top_positions = sims.argsort()[::-1][:fetch_count]
-    semantic_raw = [
-        (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
-        for pos in top_positions
-    ]
+    if surprise:
+        # "Surprise me" carries no real semantic meaning to match against, so
+        # picking from the same top-similarity matches every time (even
+        # shuffled) draws from the same small deterministic pool and repeats
+        # often. Instead, sample randomly from a much wider pool of the
+        # catalog for genuine variety between clicks.
+        pool_size = min(300, len(index_ids))
+        sample_positions = random.sample(range(len(index_ids)), pool_size)
+        semantic_raw = [
+            (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
+            for pos in sample_positions
+        ]
+        random.shuffle(semantic_raw)
+    else:
+        fetch_count = min((n + len(excluded_ids) + 2) * 4, len(index_ids))
+        sims = cosine_similarity(query_vector, tfidf_matrix)[0]
+        top_positions = sims.argsort()[::-1][:fetch_count]
+        semantic_raw = [
+            (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
+            for pos in top_positions
+        ]
 
     def age_ok(m):
         return get_min_age(m["certification"]) <= user_age
@@ -656,6 +675,7 @@ def chat():
     last_movies = session.get("last_movies", [])
 
     info_query = is_info_query(user_query)
+    surprise_query = is_surprise_query(user_query)
 
     if info_query and last_movies:
         num = extract_number(user_query)
@@ -665,7 +685,9 @@ def chat():
             movies = last_movies
         blocked_count = 0
     else:
-        movies, blocked_count = retrieve_movies(user_query, user_age, travel_mode, excluded_ids)
+        movies, blocked_count = retrieve_movies(
+            user_query, user_age, travel_mode, excluded_ids, surprise=surprise_query
+        )
 
     session["last_movies"] = movies
     response_token = uuid.uuid4().hex
@@ -679,7 +701,12 @@ def chat():
         "is_info": info_query,
     }
 
-    return jsonify({"movies": movies, "blocked_count": blocked_count, "response_token": response_token})
+    return jsonify({
+        "movies": movies,
+        "blocked_count": blocked_count,
+        "response_token": response_token,
+        "is_info": info_query,
+    })
 
 
 @app.route("/chat/response", methods=["POST"])
