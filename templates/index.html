@@ -131,14 +131,40 @@
     50% { box-shadow: 0 0 14px rgba(157,140,255,0.7); }
   }
 
-  #chat-window {
-    height: clamp(380px, calc(100vh - 270px), 520px); overflow-y: auto; padding: 8px;
-    display: flex; flex-direction: column; gap: 12px;
-    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.04) transparent;
+  #chat-card {
+    height: calc(100vh - 118px);
+    min-height: 520px;
+    display: flex;
+    flex-direction: column;
   }
-  #chat-card { height: calc(100vh - 118px); min-height: 0; display: flex; flex-direction: column; }
-  #chat-card #chat-window { flex: 1 1 auto; min-height: 0; }
-  #chat-card .mood-chips, #chat-card #chat-form { flex-shrink: 0; }
+  #chat-card .top-bar {
+    flex-shrink: 0;
+  }
+  #chat-window {
+    flex: 1 1 0;
+    min-height: 0;
+    height: auto;
+    overflow-y: auto;
+    padding: 8px 6px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.04) transparent;
+  }
+  #chat-card .chat-status {
+    flex-shrink: 0;
+    margin: 4px 12px 2px;
+  }
+  #chat-card .mood-chips {
+    flex-shrink: 0;
+    margin-top: auto;
+    margin-bottom: 8px;
+  }
+  #chat-card #chat-form {
+    flex-shrink: 0;
+    margin-top: 0 !important;
+  }
   #chat-window::-webkit-scrollbar, .movie-grid::-webkit-scrollbar, .watchlist-panel::-webkit-scrollbar { width: 8px; height: 8px; }
   #chat-window::-webkit-scrollbar-track, .movie-grid::-webkit-scrollbar-track, .watchlist-panel::-webkit-scrollbar-track { background: transparent; }
   #chat-window::-webkit-scrollbar-thumb, .movie-grid::-webkit-scrollbar-thumb, .watchlist-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.04); border-radius: 10px; }
@@ -302,8 +328,8 @@
   @media (max-width: 576px) {
     .app-wrap { padding: 20px 10px; }
     .card-glass { padding: 16px; }
-    #chat-window { height: min(520px, calc(100vh - 150px)); padding: 8px 4px; }
-    #chat-card { height: calc(100vh - 110px); }
+    #chat-card { height: calc(100vh - 110px); min-height: 480px; }
+    #chat-window { padding: 6px 4px 10px; }
     .msg { max-width: 92%; }
     .movie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
   }
@@ -312,7 +338,6 @@
     .brand { margin-bottom: 12px; }
     .brand h1 { font-size: 2.35rem; margin-bottom: 2px; }
     .card-glass { padding: 14px; }
-    #chat-window { height: clamp(360px, calc(100vh - 250px), 430px); }
   }
   @media (max-width: 860px) {
     .workspace { display: block; min-height: 0; }
@@ -626,7 +651,7 @@ async function loadWatchlist() {
   try {
     const res = await fetch('/watchlist');
     if (!res.ok) return;
-    const data = await readJsonResponse(res);
+    const data = await readJsonResponse(res, 'Watchlist request');
     watchlistMovies.clear();
     (data.movies || []).forEach(movie => watchlistMovies.set(String(movie.id), movie));
     renderWatchlist();
@@ -635,10 +660,11 @@ async function loadWatchlist() {
   }
 }
 
-async function readJsonResponse(res) {
+async function readJsonResponse(res, action = 'Request') {
   const contentType = res.headers.get('content-type') || '';
   if (!contentType.includes('application/json')) {
-    throw new Error(`Watchlist request failed with HTTP ${res.status}. Check the Render service logs.`);
+    const text = (await res.text()).trim();
+    throw new Error(text || `${action} failed with HTTP ${res.status}. Check the Render service logs.`);
   }
   return res.json();
 }
@@ -693,7 +719,7 @@ async function loadTrailers(movies, grid) {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({movie_ids: movies.map(movie => movie.id)})
     });
-    const data = await readJsonResponse(res);
+    const data = await readJsonResponse(res, 'Trailer request');
     if (!res.ok) throw new Error(data.error || 'Could not load trailers.');
     Object.entries(data.trailers || {}).forEach(([movieId, trailerUrl]) => {
       const card = grid.querySelector(`[data-movie-id="${CSS.escape(String(movieId))}"]`);
@@ -945,6 +971,9 @@ function addMovieGrid(movies) {
       image.src = POSTER_BASE + m.poster_path;
       image.alt = `${m.title || 'Movie'} poster`;
       image.loading = 'lazy';
+      image.onload = () => {
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      };
       posterWrap.appendChild(image);
     } else {
       const noPoster = document.createElement('div');
@@ -1028,6 +1057,19 @@ function addMovieGrid(movies) {
   loadTrailers(movies, grid);
 }
 
+function scrollChatToBottom(targetElement) {
+  const doScroll = () => {
+    if (targetElement && typeof targetElement.scrollIntoView === 'function') {
+      targetElement.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    } else {
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+  };
+  requestAnimationFrame(doScroll);
+  setTimeout(doScroll, 120);
+  setTimeout(doScroll, 350);
+}
+
 function addMessage(text, sender) {
   const div = document.createElement('div');
   div.className = 'msg ' + sender;
@@ -1037,7 +1079,7 @@ function addMessage(text, sender) {
     div.textContent = text;
   }
   chatWindow.appendChild(div);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
+  scrollChatToBottom(div);
   return div;
 }
 
@@ -1046,7 +1088,7 @@ function addTypingIndicator() {
   div.className = 'typing-dots';
   div.innerHTML = '<span></span><span></span><span></span>';
   chatWindow.appendChild(div);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
+  scrollChatToBottom(div);
   return div;
 }
 
@@ -1078,7 +1120,7 @@ async function sendChatMessage(text) {
       method: 'POST', headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({message: text})
     });
-    const data = await readJsonResponse(res);
+    const data = await readChatResponse(res);
     typingDiv.remove();
 
     if (!res.ok) {
@@ -1086,8 +1128,13 @@ async function sendChatMessage(text) {
       return;
     }
 
-    addMovieGrid(data.movies);
-    if (data.blocked_count && (!data.movies || data.movies.length === 0)) {
+    if (!data.is_info) {
+      addMovieGrid(data.movies);
+    }
+
+    if (data.is_info) {
+      chatStatus.textContent = 'Writing details...';
+    } else if (data.blocked_count && (!data.movies || data.movies.length === 0)) {
       chatStatus.textContent = 'Some matches were filtered by your age setting or previous Seen it choices.';
     } else {
       chatStatus.textContent = 'Movies found. Writing your personal note...';
@@ -1114,14 +1161,17 @@ async function loadChatReply(responseToken) {
     const data = await readChatResponse(res);
     typingDiv.remove();
     if (!res.ok) {
-      addMessage('Error: ' + (data.error || 'The AI response failed.'), 'bot');
+      const errEl = addMessage('Error: ' + (data.error || 'The AI response failed.'), 'bot');
+      scrollChatToBottom(errEl);
       return;
     }
-    addMessage(data.reply, 'bot');
+    const replyEl = addMessage(data.reply, 'bot');
+    scrollChatToBottom(replyEl);
     chatStatus.textContent = '';
   } catch (err) {
     typingDiv.remove();
-    addMessage('The movies are ready, but the assistant message could not load.', 'bot');
+    const errEl = addMessage('The movies are ready, but the assistant message could not load.', 'bot');
+    scrollChatToBottom(errEl);
     chatStatus.textContent = 'Recommendations are ready. AI message unavailable.';
   }
 }
