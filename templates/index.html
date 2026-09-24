@@ -7,17 +7,24 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
-  html, body { scrollbar-width: none; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    scrollbar-width: none;
+  }
   html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; width: 0; height: 0; }
   body {
     background: linear-gradient(135deg, #0f9b8e, #142850);
     background-size: 200% 200%;
-    min-height: 100vh;
+    height: 100vh;
+    height: 100dvh;
     color: #f5f5f5;
     font-family: 'Segoe UI', sans-serif;
     transition: background 1.2s ease;
     animation: bgPulse 8s ease-in-out infinite, flicker 5.5s ease-in-out infinite;
-    overflow-x: hidden;
+    overflow: hidden;
   }
   body::before {
     content: '';
@@ -63,35 +70,93 @@
     50% { transform: translateY(-14px); }
   }
 
-  .app-wrap { width: 100%; margin: 0 auto; padding: 18px clamp(12px, 2vw, 28px); position: relative; z-index: 1; }
-  .brand { text-align: center; margin-bottom: 20px; }
+  .app-wrap {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0 auto;
+    padding: 10px clamp(12px, 2vw, 24px) 12px;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  .brand {
+    text-align: center;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+  }
   .brand h1 {
     font-family: 'Playfair Display', serif;
     font-weight: 900;
-    font-size: 2.8rem;
+    font-size: 2.1rem;
     color: #ff5fc1;
     text-shadow: 0 0 20px rgba(255,110,199,0.75), 0 0 44px rgba(255,110,199,0.35);
-    margin-bottom: 6px;
+    margin-bottom: 2px;
   }
-  .brand p { letter-spacing: 3px; font-size: 0.8rem; color: rgba(255,255,255,0.65); text-transform: uppercase; }
+  .brand p {
+    letter-spacing: 3px;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    margin-bottom: 0;
+  }
 
   .card-glass {
     background: rgba(20, 20, 40, 0.45);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 14px;
-    padding: 18px;
+    padding: 16px;
     backdrop-filter: blur(8px);
     animation: fadeInUp 0.6s ease;
   }
-  .workspace { display: flex; gap: 18px; align-items: stretch; width: 100%; min-height: calc(100vh - 100px); }
-  .main-column { flex: 1 1 800px; min-width: 0; min-height: calc(100vh - 100px); display: flex; flex-direction: column; }
-  .watchlist-panel {
-    display: none; order: -1; flex: 0 0 255px; position: sticky; top: 20px; max-height: calc(100vh - 40px);
-    overflow-y: auto; padding: 16px; background: rgba(20, 20, 40, 0.5);
-    border: 1px solid rgba(255,255,255,0.14); border-radius: 16px; backdrop-filter: blur(8px);
-    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.04) transparent;
+  .workspace {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    width: 100%;
+    flex: 1 1 0;
+    min-height: 0;
+    height: 100%;
+    overflow: hidden;
   }
-  .watchlist-panel.visible { display: block; }
+  .main-column {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .watchlist-panel {
+    display: none;
+    order: -1;
+    flex: 0 0 250px;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    padding: 14px;
+    background: rgba(20, 20, 40, 0.5);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    box-sizing: border-box;
+  }
+  .watchlist-panel.visible {
+    display: flex;
+    flex-direction: column;
+  }
+  #watchlist-items {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.08) transparent;
+  }
   .watchlist-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
   .watchlist-heading h2 { font-size: 1rem; margin: 0; }
   .watchlist-count { min-width: 22px; padding: 2px 7px; border-radius: 12px; background: rgba(255,255,255,0.14); text-align: center; font-size: 11px; }
@@ -131,30 +196,48 @@
     50% { box-shadow: 0 0 14px rgba(157,140,255,0.7); }
   }
 
+  #auth-card, #forgot-card, #setup-card {
+    max-width: 480px;
+    width: 100%;
+    margin: auto;
+    overflow-y: auto;
+    max-height: 100%;
+  }
+
   #chat-card {
-    height: calc(100vh - 118px);
-    min-height: 520px;
-    display: flex;
+    flex: 1 1 0;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    display: none;
     flex-direction: column;
+    overflow: hidden;
+    padding: 14px 18px 14px;
+    box-sizing: border-box;
+  }
+  #chat-card.visible, #chat-card[style*="display: flex"], #chat-card[style*="display:flex"] {
+    display: flex !important;
   }
   #chat-card .top-bar {
     flex-shrink: 0;
+    margin-bottom: 6px;
   }
   #chat-window {
     flex: 1 1 0;
     min-height: 0;
-    height: auto;
     overflow-y: auto;
-    padding: 8px 6px 12px;
+    overflow-x: hidden;
+    padding: 6px 8px 12px;
     display: flex;
     flex-direction: column;
     gap: 12px;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.04) transparent;
+    scrollbar-color: rgba(255,255,255,0.08) transparent;
   }
   #chat-card .chat-status {
     flex-shrink: 0;
-    margin: 4px 12px 2px;
+    min-height: 18px;
+    margin: 4px 6px 2px;
   }
   #chat-card .mood-chips {
     flex-shrink: 0;
@@ -326,26 +409,22 @@
     border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); color: #f5f5f5;
   }
   @media (max-width: 576px) {
-    .app-wrap { padding: 20px 10px; }
-    .card-glass { padding: 16px; }
-    #chat-card { height: calc(100vh - 110px); min-height: 480px; }
-    #chat-window { padding: 6px 4px 10px; }
+    .app-wrap { padding: 6px 6px 10px; }
+    .card-glass { padding: 12px; }
+    #chat-window { padding: 4px 4px 8px; }
     .msg { max-width: 92%; }
     .movie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
   }
   @media (min-width: 861px) and (max-height: 800px) {
-    .app-wrap { padding-top: 12px; }
-    .brand { margin-bottom: 12px; }
-    .brand h1 { font-size: 2.35rem; margin-bottom: 2px; }
-    .card-glass { padding: 14px; }
+    .brand h1 { font-size: 1.9rem; margin-bottom: 2px; }
+    .card-glass { padding: 12px; }
   }
   @media (max-width: 860px) {
-    .workspace { display: block; min-height: 0; }
-    .main-column { min-height: 0; }
-    .watchlist-panel { position: static; max-height: none; margin-top: 18px; }
+    .workspace { flex-direction: column; }
+    .watchlist-panel { order: 2; flex: 0 0 150px; max-height: 150px; }
   }
   @media (min-width: 861px) and (max-width: 1180px) {
-    .app-wrap { padding-left: 14px; padding-right: 14px; }
+    .app-wrap { padding-left: 12px; padding-right: 12px; }
     .watchlist-panel { flex-basis: 220px; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -477,7 +556,7 @@
       <button type="button" class="mood-chip" data-text="Suggest a horror movie">👻 Horror</button>
       <button type="button" class="mood-chip" data-text="Surprise me with something great">🎲 Surprise Me</button>
     </div>
-    <form id="chat-form" class="d-flex gap-2 mt-3">
+    <form id="chat-form" class="d-flex gap-2">
       <input type="text" id="chat-input" class="form-control" placeholder="What are you in the mood to watch?" autocomplete="off">
       <button type="submit" class="btn btn-primary">Send</button>
     </form>
@@ -596,7 +675,7 @@ function onAuthSuccess(username, state = {}) {
   loadWatchlist();
   if (state.has_started) {
     setupCard.style.display = 'none';
-    chatCard.style.display = 'block';
+    chatCard.style.display = 'flex';
     chatForm.style.display = 'flex';
   } else {
     setupCard.style.display = 'block';
@@ -894,7 +973,7 @@ document.getElementById('travel-form').addEventListener('submit', async (e) => {
     if (!res.ok) throw new Error(data.error || 'Could not start the chat.');
 
     setupCard.style.display = 'none';
-    chatCard.style.display = 'block';
+    chatCard.style.display = 'flex';
     chatForm.style.display = 'flex';
     chatWindow.innerHTML = '';
     addMessage(`Hey ${currentUsername}! Tell me what you're in the mood to watch — or try 'movies like [a movie you love]'.`, 'bot');
