@@ -324,8 +324,7 @@ def is_info_query(query):
 
 
 def is_surprise_query(query):
-    q = query.lower()
-    return any(phrase in q for phrase in ["surprise", "random", "feeling lucky", "pick something", "something great"])
+    return "surprise me" in query.lower()
 
 
 def extract_number(query):
@@ -361,46 +360,37 @@ def get_trailer_url(movie_id):
     return url
 
 
+_watch_link_cache = {}
+
+
+def get_watch_link(movie_id):
+    """
+    Free-tier 'Watch Now' target: TMDB's own watch-providers page for this
+    movie in India, listing every platform with clickable icons. TMDB does
+    not offer a free way to deep-link straight into a specific platform's
+    player, so this is the correct honest target without a paid partner API.
+    """
+    if movie_id in _watch_link_cache:
+        return _watch_link_cache[movie_id]
+    url = None
+    if TMDB_API_KEY:
+        try:
+            resp = requests.get(
+                f"https://api.themoviedb.org/3/movie/{movie_id}/watch/providers",
+                params={"api_key": TMDB_API_KEY},
+                timeout=8,
+            )
+            resp.raise_for_status()
+            region_data = resp.json().get("results", {}).get("IN", {})
+            url = region_data.get("link")
+        except requests.exceptions.RequestException:
+            url = None
+    _watch_link_cache[movie_id] = url
+    return url
+
+
 def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surprise=False):
     excluded_ids = excluded_ids or set()
-
-    def age_ok(m):
-        return get_min_age(m.get("certification")) <= user_age
-
-    if surprise:
-        # Surprise requests should not perform direct title matching (which falsely matches
-        # words like "surprise" to "Sunrise" via difflib) nor deterministic similarity search.
-        # Instead, sample genuinely random movies from the age-appropriate catalog.
-        candidates = []
-        blocked_count = 0
-        seen_titles = set()
-        for m in all_movies:
-            mid = str(m.get("id"))
-            if mid in excluded_ids:
-                continue
-            norm = normalize_movie(m, movie_id=mid)
-            if not age_ok(norm):
-                blocked_count += 1
-                continue
-            if norm["title"] not in seen_titles:
-                candidates.append(norm)
-                seen_titles.add(norm["title"])
-
-        if travel_mode:
-            light = [m for m in candidates if is_light_genre(m)]
-            if len(light) >= n:
-                candidates = light
-            else:
-                candidates.sort(key=lambda m: 0 if is_light_genre(m) else 1)
-
-        if len(candidates) > n:
-            combined = random.sample(candidates, n)
-        else:
-            random.shuffle(candidates)
-            combined = candidates[:n]
-
-        return combined, blocked_count
-
     direct_matches = find_title_matches(query)
 
     reference_movie = None
@@ -411,15 +401,32 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surpri
     if reference_movie and str(reference_movie["id"]) in id_to_row:
         query_vector = tfidf_matrix[id_to_row[str(reference_movie["id"])]]
     else:
-        query_vector = vectorizer.transform([query])
+        query_vector = None if surprise else vectorizer.transform([query])
 
-    fetch_count = min((n + len(excluded_ids) + 2) * 4, len(index_ids))
-    sims = cosine_similarity(query_vector, tfidf_matrix)[0]
-    top_positions = sims.argsort()[::-1][:fetch_count]
-    semantic_raw = [
-        (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
-        for pos in top_positions
-    ]
+    if surprise:
+        # "Surprise me" carries no real semantic meaning to match against, so
+        # picking from the same top-similarity matches every time (even
+        # shuffled) draws from the same small deterministic pool and repeats
+        # often. Instead, sample randomly from a much wider pool of the
+        # catalog for genuine variety between clicks.
+        pool_size = min(300, len(index_ids))
+        sample_positions = random.sample(range(len(index_ids)), pool_size)
+        semantic_raw = [
+            (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
+            for pos in sample_positions
+        ]
+        random.shuffle(semantic_raw)
+    else:
+        fetch_count = min((n + len(excluded_ids) + 2) * 4, len(index_ids))
+        sims = cosine_similarity(query_vector, tfidf_matrix)[0]
+        top_positions = sims.argsort()[::-1][:fetch_count]
+        semantic_raw = [
+            (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
+            for pos in top_positions
+        ]
+
+    def age_ok(m):
+        return get_min_age(m["certification"]) <= user_age
 
     seen_titles = set()
     blocked_count = 0
@@ -673,6 +680,7 @@ def start():
     session["travel_mode"] = travel_mode
     session["chat_started"] = True
     session["last_movies"] = []
+    session["shown_ids"] = []
     return jsonify({"message": "ok"})
 
 
@@ -693,32 +701,31 @@ def chat():
     user_age = session["user_age"]
     travel_mode = session.get("travel_mode", False)
     history = get_recent_history(user_id)
-    excluded_ids = get_excluded_ids(user_id)
+    watched_ids = get_excluded_ids(user_id)
+    shown_ids = set(session.get("shown_ids", []))
+    excluded_ids = watched_ids | shown_ids
     last_movies = session.get("last_movies", [])
 
     info_query = is_info_query(user_query)
     surprise_query = is_surprise_query(user_query)
 
-    is_info = False
     if info_query and last_movies:
         num = extract_number(user_query)
         if num and 1 <= num <= len(last_movies):
             movies = [last_movies[num - 1]]
         else:
-            query_lower = user_query.lower()
-            matched = [m for m in last_movies if m.get("title", "").lower() in query_lower]
-            if matched:
-                movies = [matched[0]]
-            else:
-                movies = last_movies
+            movies = last_movies
         blocked_count = 0
-        is_info = True
     else:
         movies, blocked_count = retrieve_movies(
             user_query, user_age, travel_mode, excluded_ids, surprise=surprise_query
         )
-        session["last_movies"] = movies
+        # Only newly-retrieved movies count toward "already shown this session" —
+        # info-query reuses of last_movies don't need to be re-added.
+        shown_ids.update(m["id"] for m in movies)
+        session["shown_ids"] = list(shown_ids)
 
+    session["last_movies"] = movies
     response_token = uuid.uuid4().hex
     _pending_chat_requests[response_token] = {
         "user_id": user_id,
@@ -727,14 +734,14 @@ def chat():
         "history": history,
         "user_age": user_age,
         "travel_mode": travel_mode,
-        "is_info": is_info,
+        "is_info": info_query,
     }
 
     return jsonify({
         "movies": movies,
         "blocked_count": blocked_count,
         "response_token": response_token,
-        "is_info": is_info,
+        "is_info": info_query,
     })
 
 
@@ -781,9 +788,15 @@ def trailers():
         return jsonify({"error": "Please log in first."}), 401
     data = request.get_json() or {}
     movie_ids = [str(movie_id) for movie_id in data.get("movie_ids", [])[:10] if movie_id]
-    with ThreadPoolExecutor(max_workers=min(5, len(movie_ids) or 1)) as executor:
-        trailer_urls = list(executor.map(get_trailer_url, movie_ids))
-    return jsonify({"trailers": dict(zip(movie_ids, trailer_urls))})
+    with ThreadPoolExecutor(max_workers=min(10, (len(movie_ids) or 1) * 2)) as executor:
+        trailer_future = executor.submit(lambda: list(executor.map(get_trailer_url, movie_ids)))
+        link_future = executor.submit(lambda: list(executor.map(get_watch_link, movie_ids)))
+        trailer_urls = trailer_future.result()
+        watch_links = link_future.result()
+    return jsonify({
+        "trailers": dict(zip(movie_ids, trailer_urls)),
+        "watch_links": dict(zip(movie_ids, watch_links)),
+    })
 
 
 @app.route("/exclude", methods=["POST"])
