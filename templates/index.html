@@ -229,6 +229,18 @@
   .card-actions .no-trailer-btn { opacity: 0.35; pointer-events: none; }
   .card-actions .watch-now-btn { background: rgba(46,204,113,0.18); border-color: rgba(46,204,113,0.5); }
   .card-actions .watch-now-btn:hover { background: rgba(46,204,113,0.3); }
+  .watch-now-wrap { position: relative; flex: 1; }
+  .watch-menu {
+    position: absolute; bottom: calc(100% + 4px); left: 0; right: 0; z-index: 5;
+    background: rgba(20,20,40,0.96); border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px; padding: 4px; display: flex; flex-direction: column; gap: 2px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  }
+  .watch-menu-item {
+    font-size: 10px; padding: 5px 6px; border-radius: 5px; border: none;
+    background: transparent; color: #f5f5f5; text-align: left; width: 100%;
+  }
+  .watch-menu-item:hover { background: rgba(255,255,255,0.14); }
 
   .mood-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .mood-chip {
@@ -477,6 +489,7 @@ const watchlistCount = document.getElementById('watchlist-count');
 let travelMode = false;
 let currentUsername = null;
 let cachedLocationName = null;
+let detectedState = null;
 const watchlistMovies = new Map();
 
 // ---------- Mood background ----------
@@ -511,6 +524,7 @@ function detectLocation() {
           const addr = geoData.address || {};
           const place = addr.city || addr.town || addr.village || addr.state || addr.country || null;
           cachedLocationName = place;
+          detectedState = addr.state || null;
           resolve(place);
         } catch (err) { resolve(null); }
       },
@@ -677,6 +691,33 @@ async function removeWatchlistMovie(movieId) {
   }
 }
 
+// Free-tier honest limit: no platform gives a public, free way to deep-link
+// straight into a specific title's player page. These are each platform's
+// own search page, which gets the user to the title in one more click.
+const PLATFORM_SEARCH_URLS = {
+  'netflix': (t) => `https://www.netflix.com/search?q=${encodeURIComponent(t)}`,
+  'amazon prime video': (t) => `https://www.primevideo.com/search/ref=atv_nb_sr?phrase=${encodeURIComponent(t)}`,
+  'amazon prime video with ads': (t) => `https://www.primevideo.com/search/ref=atv_nb_sr?phrase=${encodeURIComponent(t)}`,
+  'jiohotstar': (t) => `https://www.hotstar.com/in/search?q=${encodeURIComponent(t)}`,
+  'disney plus hotstar': (t) => `https://www.hotstar.com/in/search?q=${encodeURIComponent(t)}`,
+  'zee5': (t) => `https://www.zee5.com/search?q=${encodeURIComponent(t)}`,
+  'sonyliv': (t) => `https://www.sonyliv.com/search?searchTerm=${encodeURIComponent(t)}`,
+  'apple tv': (t) => `https://tv.apple.com/search?term=${encodeURIComponent(t)}`,
+  'apple tv plus': (t) => `https://tv.apple.com/search?term=${encodeURIComponent(t)}`,
+  'google play movies': (t) => `https://play.google.com/store/search?q=${encodeURIComponent(t)}&c=movies`,
+  'youtube': (t) => `https://www.youtube.com/results?search_query=${encodeURIComponent(t + ' full movie')}`,
+};
+
+function buildPlatformSearchUrl(provider, title) {
+  const key = provider.toLowerCase().trim();
+  if (PLATFORM_SEARCH_URLS[key]) return PLATFORM_SEARCH_URLS[key](title);
+  return `https://www.google.com/search?q=${encodeURIComponent('watch ' + title + ' on ' + provider)}`;
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.watch-menu').forEach(el => { el.style.display = 'none'; });
+});
+
 async function markWatched(movieId, movieTitle) {
   // Fire-and-forget: runs when "Watch Now" is clicked, never blocks the new tab opening
   try {
@@ -689,7 +730,7 @@ async function markWatched(movieId, movieTitle) {
   }
 }
 
-async function loadTrailersAndWatchLinks(movies, grid) {
+async function loadTrailers(movies, grid) {
   try {
     const res = await fetch('/trailers', {
       method: 'POST',
@@ -717,34 +758,9 @@ async function loadTrailersAndWatchLinks(movies, grid) {
         trailerControl.classList.add('no-trailer-btn');
       }
     });
-
-    Object.entries(data.watch_links || {}).forEach(([movieId, watchUrl]) => {
-      const card = grid.querySelector(`[data-movie-id="${CSS.escape(String(movieId))}"]`);
-      const watchControl = card && card.querySelector('.watch-now-control');
-      if (!watchControl) return;
-      if (watchUrl) {
-        const movieTitle = card.querySelector('.card-title').textContent;
-        const watchLink = document.createElement('a');
-        watchLink.href = watchUrl;
-        watchLink.target = '_blank';
-        watchLink.rel = 'noopener';
-        watchLink.className = 'watch-now-control watch-now-btn';
-        watchLink.textContent = 'Watch Now';
-        watchLink.setAttribute('aria-label', `Watch ${movieTitle} now`);
-        watchLink.addEventListener('click', () => markWatched(movieId, movieTitle));
-        watchControl.replaceWith(watchLink);
-      } else {
-        watchControl.textContent = 'Not available';
-        watchControl.classList.add('no-trailer-btn');
-      }
-    });
   } catch (err) {
     grid.querySelectorAll('.trailer-control').forEach(control => {
       control.textContent = 'Trailer unavailable';
-      control.classList.add('no-trailer-btn');
-    });
-    grid.querySelectorAll('.watch-now-control').forEach(control => {
-      control.textContent = 'Unavailable';
       control.classList.add('no-trailer-btn');
     });
   }
@@ -891,7 +907,7 @@ document.getElementById('travel-form').addEventListener('submit', async (e) => {
   try {
     const res = await fetch('/start', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({travel_mode: travelMode})
+      body: JSON.stringify({travel_mode: travelMode, location_state: detectedState})
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Could not start the chat.');
@@ -1026,13 +1042,50 @@ function addMovieGrid(movies) {
     watchlistButton.addEventListener('click', () => addWatchlistMovie(m, watchlistButton, card));
     actions.appendChild(watchlistButton);
 
-    // "Watch Now" starts as a loading placeholder, same pattern as the trailer
-    // control, and is swapped for the real link once /trailers resolves.
-    // This never blocks the rest of the card from rendering immediately.
-    const watchNow = document.createElement('span');
-    watchNow.className = 'watch-now-control';
-    watchNow.textContent = 'Loading...';
-    actions.appendChild(watchNow);
+    // Watch Now is instant (no loading state needed) since provider names
+    // are already present in the card data from the initial /chat response.
+    const watchWrap = document.createElement('div');
+    watchWrap.className = 'watch-now-wrap';
+
+    const watchBtn = document.createElement('button');
+    watchBtn.type = 'button';
+    watchBtn.className = 'watch-now-btn';
+
+    const providerNames = (m.watch_providers || '')
+      .split(',').map(p => p.trim()).filter(Boolean);
+
+    const watchMenu = document.createElement('div');
+    watchMenu.className = 'watch-menu';
+    watchMenu.style.display = 'none';
+
+    if (providerNames.length === 0) {
+      watchBtn.textContent = 'Not available';
+      watchBtn.classList.add('no-trailer-btn');
+      watchBtn.disabled = true;
+    } else {
+      watchBtn.textContent = 'Watch Now';
+      providerNames.forEach(provider => {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'watch-menu-item';
+        item.textContent = provider;
+        item.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          window.open(buildPlatformSearchUrl(provider, m.title), '_blank', 'noopener');
+          markWatched(m.id, m.title);
+          watchMenu.style.display = 'none';
+        });
+        watchMenu.appendChild(item);
+      });
+      watchBtn.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        document.querySelectorAll('.watch-menu').forEach(el => { if (el !== watchMenu) el.style.display = 'none'; });
+        watchMenu.style.display = watchMenu.style.display === 'none' ? 'flex' : 'none';
+      });
+    }
+
+    watchWrap.append(watchBtn, watchMenu);
+    actions.appendChild(watchWrap);
 
     body.append(title, genres, overview, meta, provider, actions);
     card.append(posterWrap, body);
@@ -1043,7 +1096,7 @@ function addMovieGrid(movies) {
   group.appendChild(grid);
   chatWindow.appendChild(group);
   chatWindow.scrollTop = chatWindow.scrollHeight;
-  loadTrailersAndWatchLinks(movies, grid);
+  loadTrailers(movies, grid);
 }
 
 function addMessage(text, sender) {
@@ -1055,13 +1108,17 @@ function addMessage(text, sender) {
     div.textContent = text;
   }
   chatWindow.appendChild(div);
-  // scrollIntoView on the element itself is more reliable than scrollTop =
-  // scrollHeight, since the movie grid above can still be growing in height
-  // (poster images loading async) at the moment this message is added.
-  requestAnimationFrame(() => {
-    div.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  });
+  scrollChatToBottom();
   return div;
+}
+
+function scrollChatToBottom() {
+  // Direct scrollTop assignment, deferred one frame so layout (including
+  // any still-loading poster images above) has settled first. This sits
+  // flush at the true bottom, unlike scrollIntoView which can stop short.
+  requestAnimationFrame(() => {
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  });
 }
 
 function addTypingIndicator() {
@@ -1069,9 +1126,7 @@ function addTypingIndicator() {
   div.className = 'typing-dots';
   div.innerHTML = '<span></span><span></span><span></span>';
   chatWindow.appendChild(div);
-  requestAnimationFrame(() => {
-    div.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  });
+  scrollChatToBottom();
   return div;
 }
 

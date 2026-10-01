@@ -360,36 +360,10 @@ def get_trailer_url(movie_id):
     return url
 
 
-_watch_link_cache = {}
 
 
-def get_watch_link(movie_id):
-    """
-    Free-tier 'Watch Now' target: TMDB's own watch-providers page for this
-    movie in India, listing every platform with clickable icons. TMDB does
-    not offer a free way to deep-link straight into a specific platform's
-    player, so this is the correct honest target without a paid partner API.
-    """
-    if movie_id in _watch_link_cache:
-        return _watch_link_cache[movie_id]
-    url = None
-    if TMDB_API_KEY:
-        try:
-            resp = requests.get(
-                f"https://api.themoviedb.org/3/movie/{movie_id}/watch/providers",
-                params={"api_key": TMDB_API_KEY},
-                timeout=8,
-            )
-            resp.raise_for_status()
-            region_data = resp.json().get("results", {}).get("IN", {})
-            url = region_data.get("link")
-        except requests.exceptions.RequestException:
-            url = None
-    _watch_link_cache[movie_id] = url
-    return url
 
-
-def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surprise=False):
+def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surprise=False, user_state=None):
     excluded_ids = excluded_ids or set()
     direct_matches = find_title_matches(query)
 
@@ -458,7 +432,17 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surpri
             semantic_kept.append(norm)
             seen_titles.add(norm["title"])
 
-    if travel_mode:
+    if user_state and user_state.strip().lower() == "maharashtra":
+        marathi = [m for m in semantic_kept if (m.get("original_language") or "").lower() == "mr"]
+        others = [m for m in semantic_kept if (m.get("original_language") or "").lower() != "mr"]
+        marathi_lead = min(3, len(marathi))
+        semantic_kept = (
+            marathi[:marathi_lead]
+            + others[: max(0, n - marathi_lead)]
+            + marathi[marathi_lead:]
+            + others[max(0, n - marathi_lead):]
+        )
+    elif travel_mode:
         semantic_kept.sort(key=lambda m: 0 if is_light_genre(m) else 1)
 
     combined = (direct_kept + semantic_kept)[:n]
@@ -677,7 +661,9 @@ def start():
         return jsonify({"error": "Please log in first."}), 401
     data = request.get_json()
     travel_mode = bool(data.get("travel_mode"))
+    location_state = (data.get("location_state") or "").strip() or None
     session["travel_mode"] = travel_mode
+    session["user_state"] = location_state
     session["chat_started"] = True
     session["last_movies"] = []
     session["shown_ids"] = []
@@ -700,6 +686,7 @@ def chat():
     user_id = session["user_id"]
     user_age = session["user_age"]
     travel_mode = session.get("travel_mode", False)
+    user_state = session.get("user_state")
     history = get_recent_history(user_id)
     watched_ids = get_excluded_ids(user_id)
     shown_ids = set(session.get("shown_ids", []))
@@ -718,7 +705,7 @@ def chat():
         blocked_count = 0
     else:
         movies, blocked_count = retrieve_movies(
-            user_query, user_age, travel_mode, excluded_ids, surprise=surprise_query
+            user_query, user_age, travel_mode, excluded_ids, surprise=surprise_query, user_state=user_state
         )
         # Only newly-retrieved movies count toward "already shown this session" —
         # info-query reuses of last_movies don't need to be re-added.
@@ -788,15 +775,9 @@ def trailers():
         return jsonify({"error": "Please log in first."}), 401
     data = request.get_json() or {}
     movie_ids = [str(movie_id) for movie_id in data.get("movie_ids", [])[:10] if movie_id]
-    with ThreadPoolExecutor(max_workers=min(10, (len(movie_ids) or 1) * 2)) as executor:
-        trailer_future = executor.submit(lambda: list(executor.map(get_trailer_url, movie_ids)))
-        link_future = executor.submit(lambda: list(executor.map(get_watch_link, movie_ids)))
-        trailer_urls = trailer_future.result()
-        watch_links = link_future.result()
-    return jsonify({
-        "trailers": dict(zip(movie_ids, trailer_urls)),
-        "watch_links": dict(zip(movie_ids, watch_links)),
-    })
+    with ThreadPoolExecutor(max_workers=min(5, len(movie_ids) or 1)) as executor:
+        trailer_urls = list(executor.map(get_trailer_url, movie_ids))
+    return jsonify({"trailers": dict(zip(movie_ids, trailer_urls))})
 
 
 @app.route("/exclude", methods=["POST"])
