@@ -39,6 +39,19 @@ GROQ_MODEL = "openai/gpt-oss-20b"
 HISTORY_LIMIT = 6
 
 LIGHT_GENRES = {"Comedy", "Animation", "Adventure", "Family", "Music", "Fantasy"}
+
+# Movies known to be set in / strongly associated with each state. Only
+# matters if the title actually exists in this catalog (movies.json) —
+# titles not present are silently skipped rather than breaking anything.
+STATE_MOVIES = {
+    "delhi": ["Delhi Belly", "Rang De Basanti", "Khosla Ka Ghosla", "Vicky Donor", "Band Baaja Baaraat", "Delhi-6"],
+    "goa": ["Go Goa Gone", "Dum Maaro Dum", "Finding Fanny", "Honeymoon Travels Pvt. Ltd."],
+    "punjab": ["Udta Punjab", "Jab We Met"],
+    "rajasthan": ["Dor", "Paheli", "Lamhe"],
+    "west bengal": ["Kahaani", "Piku"],
+    "uttar pradesh": ["Gangs of Wasseypur", "Dabangg", "Bareilly Ki Barfi"],
+    "maharashtra": ["Gully Boy", "Zindagi Na Milegi Dobara"],
+}
 SIMILARITY_TRIGGERS = ["like ", "similar to", "similar", "such as", "in the style of", "in the vein of"]
 INFO_TRIGGERS = ["info", "detail", "tell me more", "more about", "elaborate", "know more"]
 
@@ -267,6 +280,23 @@ def get_min_age(certification):
     return 0
 
 
+def get_state_movies(state, limit=3):
+    """Return up to `limit` movies connected to this state that actually
+    exist in the catalog. Titles not present in movies.json are skipped."""
+    if not state:
+        return []
+    titles = STATE_MOVIES.get(state.strip().lower(), [])
+    matched = []
+    for title in titles:
+        for m in all_movies:
+            if m["title"].strip().lower() == title.strip().lower():
+                matched.append(m)
+                break
+        if len(matched) >= limit:
+            break
+    return matched
+
+
 def is_light_genre(movie):
     genres = movie.get("genres", "")
     genre_list = [g.strip() for g in genres.split(",")] if isinstance(genres, str) else genres
@@ -363,7 +393,7 @@ def get_trailer_url(movie_id):
 
 
 
-def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surprise=False, user_state=None):
+def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surprise=False, user_state=None):
     excluded_ids = excluded_ids or set()
     direct_matches = find_title_matches(query)
 
@@ -417,6 +447,21 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surpri
             direct_kept.append(norm)
             seen_titles.add(norm["title"])
 
+    # State-connected titles get priority slots (up to 3), right after any
+    # direct title match — e.g. Delhi gets "Delhi Belly" etc. first.
+    state_kept = []
+    if user_state:
+        for raw in get_state_movies(user_state, limit=3):
+            norm = normalize_movie(raw, movie_id=raw["id"])
+            if norm["id"] in excluded_ids:
+                continue
+            if not age_ok(norm):
+                continue
+            if norm["title"] in seen_titles:
+                continue
+            state_kept.append(norm)
+            seen_titles.add(norm["title"])
+
     semantic_kept = []
     ref_title = reference_movie["title"] if reference_movie else None
     for mid, meta in semantic_raw:
@@ -432,20 +477,10 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surpri
             semantic_kept.append(norm)
             seen_titles.add(norm["title"])
 
-    if user_state and user_state.strip().lower() == "maharashtra":
-        marathi = [m for m in semantic_kept if (m.get("original_language") or "").lower() == "mr"]
-        others = [m for m in semantic_kept if (m.get("original_language") or "").lower() != "mr"]
-        marathi_lead = min(3, len(marathi))
-        semantic_kept = (
-            marathi[:marathi_lead]
-            + others[: max(0, n - marathi_lead)]
-            + marathi[marathi_lead:]
-            + others[max(0, n - marathi_lead):]
-        )
-    elif travel_mode:
+    if travel_mode:
         semantic_kept.sort(key=lambda m: 0 if is_light_genre(m) else 1)
 
-    combined = (direct_kept + semantic_kept)[:n]
+    combined = (direct_kept + state_kept + semantic_kept)[:n]
     return combined, blocked_count
 
 
@@ -481,9 +516,9 @@ it would be redundant. Just focus on rich, specific plot and appeal details."""
     else:
         instruction = """If this is a general mood, genre, or "movies like X" request, reply with ONE
 short, warm sentence reacting to what they asked for. Do NOT list movie titles, reasons, ratings, or
-platforms yourself — that information is shown separately as movie cards below your message, so listing
-it yourself would be redundant. If this is a specific follow-up question about one movie, answer that
-question directly and briefly instead."""
+platforms yourself — that information is shown separately as up to 6 movie cards below your message, so
+listing it yourself would be redundant. If this is a specific follow-up question about one movie, answer
+that question directly and briefly instead."""
 
     user_prompt = f"""The user just said: "{user_query}"
 
