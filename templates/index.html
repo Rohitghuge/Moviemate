@@ -217,6 +217,11 @@
   .card-overview { color: rgba(255,255,255,0.68); line-height: 1.35; margin-bottom: 7px; height: 2.7em; overflow: hidden; }
   .card-genres { opacity: 0.6; font-size: 10px; margin-bottom: 5px; max-height: 1.3em; overflow: hidden; }
   .card-provider { opacity: 0.72; font-size: 10px; line-height: 1.3; margin-bottom: 6px; overflow-wrap: anywhere; }
+  .platform-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-bottom: 6px; min-height: 18px; }
+  .platform-badge-item { display: flex; align-items: center; gap: 3px; }
+  .platform-badge { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 4px; font-size: 9.5px; font-weight: 800; color: #fff; flex: 0 0 auto; line-height: 1; }
+  .platform-badge-name { font-size: 9px; opacity: 0.78; }
+  .platform-none { font-size: 10px; opacity: 0.55; font-style: italic; }
   .card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 10.5px; }
   .card-meta .rating { color: #ffd166; font-weight: 700; }
   .card-actions { display: flex; gap: 4px; }
@@ -692,12 +697,17 @@ async function removeWatchlistMovie(movieId) {
 }
 
 // Free-tier honest limit: no platform gives a public, free way to deep-link
-// straight into a specific title's player page. These are each platform's
-// own search page, which gets the user to the title in one more click.
+// straight into a specific title's player page just from a guessed search
+// URL (that's why "Amazon Prime" used to just land on Prime's generic video
+// page). TMDB's own watch/providers "link" is the real fix: it's a
+// JustWatch-powered page built for this exact movie, and clicking a
+// platform there opens a genuine deep link into that title. We fetch that
+// live (see loadTrailers/providers below) and use it as the single
+// "Watch Now" target instead of guessing.
 const PLATFORM_SEARCH_URLS = {
   'netflix': (t) => `https://www.netflix.com/search?q=${encodeURIComponent(t)}`,
-  'amazon prime video': (t) => `https://www.primevideo.com/search/ref=atv_nb_sr?phrase=${encodeURIComponent(t)}`,
-  'amazon prime video with ads': (t) => `https://www.primevideo.com/search/ref=atv_nb_sr?phrase=${encodeURIComponent(t)}`,
+  'amazon prime video': (t) => `https://www.amazon.in/s?k=${encodeURIComponent(t)}&i=instant-video`,
+  'amazon prime video with ads': (t) => `https://www.amazon.in/s?k=${encodeURIComponent(t)}&i=instant-video`,
   'jiohotstar': (t) => `https://www.hotstar.com/in/search?q=${encodeURIComponent(t)}`,
   'disney plus hotstar': (t) => `https://www.hotstar.com/in/search?q=${encodeURIComponent(t)}`,
   'zee5': (t) => `https://www.zee5.com/search?q=${encodeURIComponent(t)}`,
@@ -714,9 +724,54 @@ function buildPlatformSearchUrl(provider, title) {
   return `https://www.google.com/search?q=${encodeURIComponent('watch ' + title + ' on ' + provider)}`;
 }
 
-document.addEventListener('click', () => {
-  document.querySelectorAll('.watch-menu').forEach(el => { el.style.display = 'none'; });
-});
+// Colored brand-initial badges, applied the same way to every platform.
+const PLATFORM_STYLES = {
+  'netflix': { letter: 'N', bg: '#E50914' },
+  'amazon prime video': { letter: 'P', bg: '#00A8E1' },
+  'amazon prime video with ads': { letter: 'P', bg: '#00A8E1' },
+  'jiohotstar': { letter: 'H', bg: '#0F1A2B' },
+  'disney plus hotstar': { letter: 'H', bg: '#0F1A2B' },
+  'zee5': { letter: 'Z', bg: '#6C2EB5' },
+  'sonyliv': { letter: 'S', bg: '#00B4D8' },
+  'apple tv': { letter: '', bg: '#1a1a1a' },
+  'apple tv plus': { letter: '', bg: '#1a1a1a' },
+  'google play movies': { letter: '▶', bg: '#00A853' },
+  'youtube': { letter: '▶', bg: '#FF0000' },
+};
+
+function platformStyleFor(name) {
+  const key = (name || '').toLowerCase().trim();
+  if (PLATFORM_STYLES[key]) return PLATFORM_STYLES[key];
+  return { letter: (name || '?').trim().charAt(0).toUpperCase() || '?', bg: '#5a5a7a' };
+}
+
+function platformBadge(name) {
+  const style = platformStyleFor(name);
+  const wrap = document.createElement('span');
+  wrap.className = 'platform-badge-item';
+  const dot = document.createElement('span');
+  dot.className = 'platform-badge';
+  dot.style.background = style.bg;
+  dot.textContent = style.letter;
+  dot.setAttribute('aria-hidden', 'true');
+  const label = document.createElement('span');
+  label.className = 'platform-badge-name';
+  label.textContent = name;
+  wrap.append(dot, label);
+  return wrap;
+}
+
+function renderPlatformBadges(container, providerNames) {
+  container.innerHTML = '';
+  if (!providerNames || providerNames.length === 0) {
+    const none = document.createElement('span');
+    none.className = 'platform-none';
+    none.textContent = 'Not listed for streaming right now';
+    container.appendChild(none);
+    return;
+  }
+  providerNames.forEach(name => container.appendChild(platformBadge(name)));
+}
 
 async function markWatched(movieId, movieTitle) {
   // Fire-and-forget: runs when "Watch Now" is clicked, never blocks the new tab opening
@@ -758,9 +813,47 @@ async function loadTrailers(movies, grid) {
         trailerControl.classList.add('no-trailer-btn');
       }
     });
+
+    Object.entries(data.providers || {}).forEach(([movieId, info]) => {
+      const card = grid.querySelector(`[data-movie-id="${CSS.escape(String(movieId))}"]`);
+      if (!card) return;
+      const movie = movies.find(m => String(m.id) === String(movieId));
+      const title = movie ? movie.title : '';
+
+      const badgesEl = card.querySelector('.platform-badges');
+      const liveNames = (info && info.names) || [];
+      if (badgesEl && liveNames.length > 0) {
+        renderPlatformBadges(badgesEl, liveNames);
+      }
+
+      const watchControl = card.querySelector('.watch-now-control');
+      if (!watchControl) return;
+      const liveLink = info && info.link;
+      const fallbackName = liveNames[0];
+
+      if (liveLink || fallbackName) {
+        const watchLink = document.createElement('a');
+        watchLink.className = 'watch-now-control watch-now-btn';
+        watchLink.href = liveLink || buildPlatformSearchUrl(fallbackName, title);
+        watchLink.target = '_blank';
+        watchLink.rel = 'noopener';
+        watchLink.textContent = 'Watch Now';
+        watchLink.addEventListener('click', () => markWatched(movieId, title));
+        watchControl.replaceWith(watchLink);
+      } else {
+        watchControl.textContent = 'Not available';
+        watchControl.classList.add('no-trailer-btn');
+      }
+    });
+
+    scrollChatToBottom();
   } catch (err) {
     grid.querySelectorAll('.trailer-control').forEach(control => {
       control.textContent = 'Trailer unavailable';
+      control.classList.add('no-trailer-btn');
+    });
+    grid.querySelectorAll('.watch-now-control').forEach(control => {
+      control.textContent = 'Not available';
       control.classList.add('no-trailer-btn');
     });
   }
@@ -963,7 +1056,7 @@ function addMovieGrid(movies) {
     empty.className = 'empty-results';
     empty.textContent = 'No new matches came back for that request. Try a broader mood, genre, or title.';
     chatWindow.appendChild(empty);
-    chatWindow.scrollTop = chatWindow.scrollHeight;
+    scrollChatToBottom();
     return;
   }
   const group = document.createElement('section');
@@ -982,7 +1075,6 @@ function addMovieGrid(movies) {
     card.className = 'movie-card';
     card.dataset.movieId = String(m.id);
 
-    const platform = m.watch_providers ? m.watch_providers.split(',')[0].trim() : 'Not listed';
     const posterWrap = document.createElement('div');
     posterWrap.className = 'poster-wrap';
     if (m.poster_path) {
@@ -1022,9 +1114,12 @@ function addMovieGrid(movies) {
     const year = document.createElement('span');
     year.textContent = (m.release_date || '').slice(0, 4) || 'Year n/a';
     meta.append(rating, year);
-    const provider = document.createElement('div');
-    provider.className = 'card-provider';
-    provider.textContent = `Watch in India: ${platform}`;
+
+    const providerBadges = document.createElement('div');
+    providerBadges.className = 'platform-badges';
+    const initialProviderNames = (m.watch_providers || '')
+      .split(',').map(p => p.trim()).filter(Boolean);
+    renderPlatformBadges(providerBadges, initialProviderNames);
 
     const actions = document.createElement('div');
     actions.className = 'card-actions';
@@ -1042,52 +1137,15 @@ function addMovieGrid(movies) {
     watchlistButton.addEventListener('click', () => addWatchlistMovie(m, watchlistButton, card));
     actions.appendChild(watchlistButton);
 
-    // Watch Now is instant (no loading state needed) since provider names
-    // are already present in the card data from the initial /chat response.
-    const watchWrap = document.createElement('div');
-    watchWrap.className = 'watch-now-wrap';
+    // Placeholder until /trailers resolves with the live TMDB/JustWatch
+    // link for this exact movie — same pattern as the trailer placeholder,
+    // so Watch Now always points at a real deep-link page, not a guess.
+    const watchNow = document.createElement('span');
+    watchNow.className = 'watch-now-control';
+    watchNow.textContent = 'Loading...';
+    actions.appendChild(watchNow);
 
-    const watchBtn = document.createElement('button');
-    watchBtn.type = 'button';
-    watchBtn.className = 'watch-now-btn';
-
-    const providerNames = (m.watch_providers || '')
-      .split(',').map(p => p.trim()).filter(Boolean);
-
-    const watchMenu = document.createElement('div');
-    watchMenu.className = 'watch-menu';
-    watchMenu.style.display = 'none';
-
-    if (providerNames.length === 0) {
-      watchBtn.textContent = 'Not available';
-      watchBtn.classList.add('no-trailer-btn');
-      watchBtn.disabled = true;
-    } else {
-      watchBtn.textContent = 'Watch Now';
-      providerNames.forEach(provider => {
-        const item = document.createElement('button');
-        item.type = 'button';
-        item.className = 'watch-menu-item';
-        item.textContent = provider;
-        item.addEventListener('click', (ev) => {
-          ev.stopPropagation();
-          window.open(buildPlatformSearchUrl(provider, m.title), '_blank', 'noopener');
-          markWatched(m.id, m.title);
-          watchMenu.style.display = 'none';
-        });
-        watchMenu.appendChild(item);
-      });
-      watchBtn.addEventListener('click', (ev) => {
-        ev.stopPropagation();
-        document.querySelectorAll('.watch-menu').forEach(el => { if (el !== watchMenu) el.style.display = 'none'; });
-        watchMenu.style.display = watchMenu.style.display === 'none' ? 'flex' : 'none';
-      });
-    }
-
-    watchWrap.append(watchBtn, watchMenu);
-    actions.appendChild(watchWrap);
-
-    body.append(title, genres, overview, meta, provider, actions);
+    body.append(title, genres, overview, meta, providerBadges, actions);
     card.append(posterWrap, body);
 
     grid.appendChild(card);
@@ -1095,7 +1153,13 @@ function addMovieGrid(movies) {
 
   group.appendChild(grid);
   chatWindow.appendChild(group);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
+  // Poster images load asynchronously and grow the layout after this point,
+  // so scroll again once each one finishes (in addition to the deferred
+  // scroll below) to keep the latest content flush at the bottom.
+  grid.querySelectorAll('img').forEach(img => {
+    img.addEventListener('load', scrollChatToBottom, { once: true });
+  });
+  scrollChatToBottom();
   loadTrailers(movies, grid);
 }
 

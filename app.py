@@ -39,19 +39,6 @@ GROQ_MODEL = "openai/gpt-oss-20b"
 HISTORY_LIMIT = 6
 
 LIGHT_GENRES = {"Comedy", "Animation", "Adventure", "Family", "Music", "Fantasy"}
-
-# Movies known to be set in / strongly associated with each state. Only
-# matters if the title actually exists in this catalog (movies.json) —
-# titles not present are silently skipped rather than breaking anything.
-STATE_MOVIES = {
-    "delhi": ["Delhi Belly", "Rang De Basanti", "Khosla Ka Ghosla", "Vicky Donor", "Band Baaja Baaraat", "Delhi-6"],
-    "goa": ["Go Goa Gone", "Dum Maaro Dum", "Finding Fanny", "Honeymoon Travels Pvt. Ltd."],
-    "punjab": ["Udta Punjab", "Jab We Met"],
-    "rajasthan": ["Dor", "Paheli", "Lamhe"],
-    "west bengal": ["Kahaani", "Piku"],
-    "uttar pradesh": ["Gangs of Wasseypur", "Dabangg", "Bareilly Ki Barfi"],
-    "maharashtra": ["Gully Boy", "Zindagi Na Milegi Dobara"],
-}
 SIMILARITY_TRIGGERS = ["like ", "similar to", "similar", "such as", "in the style of", "in the vein of"]
 INFO_TRIGGERS = ["info", "detail", "tell me more", "more about", "elaborate", "know more"]
 
@@ -280,23 +267,6 @@ def get_min_age(certification):
     return 0
 
 
-def get_state_movies(state, limit=3):
-    """Return up to `limit` movies connected to this state that actually
-    exist in the catalog. Titles not present in movies.json are skipped."""
-    if not state:
-        return []
-    titles = STATE_MOVIES.get(state.strip().lower(), [])
-    matched = []
-    for title in titles:
-        for m in all_movies:
-            if m["title"].strip().lower() == title.strip().lower():
-                matched.append(m)
-                break
-        if len(matched) >= limit:
-            break
-    return matched
-
-
 def is_light_genre(movie):
     genres = movie.get("genres", "")
     genre_list = [g.strip() for g in genres.split(",")] if isinstance(genres, str) else genres
@@ -353,10 +323,6 @@ def is_info_query(query):
     return any(t in q for t in INFO_TRIGGERS)
 
 
-def is_surprise_query(query):
-    return "surprise me" in query.lower()
-
-
 def extract_number(query):
     match = re.search(r'\d+', query)
     return int(match.group()) if match else None
@@ -390,10 +356,47 @@ def get_trailer_url(movie_id):
     return url
 
 
+_live_providers_cache = {}
 
 
+def get_live_providers(movie_id):
+    """
+    Fresh watch-provider info straight from TMDB, not the snapshot baked into
+    movies.json at fetch time (which goes stale as availability changes —
+    e.g. a movie added to Netflix after movies.json was built).
 
-def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surprise=False, user_state=None):
+    Returns {"names": [...], "link": "..."} where "link" is TMDB's own
+    JustWatch-powered page for this exact movie/region. That page shows every
+    real platform with a genuine deep link into the title on that platform —
+    which is the honest free alternative to guessing a platform's own search
+    URL (there is no free, official way to deep-link straight into a title on
+    Netflix/Prime/etc. from outside their apps).
+    """
+    if movie_id in _live_providers_cache:
+        return _live_providers_cache[movie_id]
+    result = {"names": [], "link": None}
+    if TMDB_API_KEY:
+        try:
+            resp = requests.get(
+                f"https://api.themoviedb.org/3/movie/{movie_id}/watch/providers",
+                params={"api_key": TMDB_API_KEY},
+                timeout=8,
+            )
+            resp.raise_for_status()
+            region_data = resp.json().get("results", {}).get("IN", {})
+            names = []
+            for category in ["flatrate", "free", "ads"]:
+                for p in region_data.get(category, []):
+                    names.append(p["provider_name"])
+            result["names"] = sorted(set(names))
+            result["link"] = region_data.get("link")
+        except requests.exceptions.RequestException:
+            pass
+    _live_providers_cache[movie_id] = result
+    return result
+
+
+def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surprise=False):
     excluded_ids = excluded_ids or set()
     direct_matches = find_title_matches(query)
 
@@ -405,29 +408,17 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surpri
     if reference_movie and str(reference_movie["id"]) in id_to_row:
         query_vector = tfidf_matrix[id_to_row[str(reference_movie["id"])]]
     else:
-        query_vector = None if surprise else vectorizer.transform([query])
+        query_vector = vectorizer.transform([query])
 
+    fetch_count = min((n + len(excluded_ids) + 2) * 4, len(index_ids))
+    sims = cosine_similarity(query_vector, tfidf_matrix)[0]
+    top_positions = sims.argsort()[::-1][:fetch_count]
+    semantic_raw = [
+        (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
+        for pos in top_positions
+    ]
     if surprise:
-        # "Surprise me" carries no real semantic meaning to match against, so
-        # picking from the same top-similarity matches every time (even
-        # shuffled) draws from the same small deterministic pool and repeats
-        # often. Instead, sample randomly from a much wider pool of the
-        # catalog for genuine variety between clicks.
-        pool_size = min(300, len(index_ids))
-        sample_positions = random.sample(range(len(index_ids)), pool_size)
-        semantic_raw = [
-            (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
-            for pos in sample_positions
-        ]
         random.shuffle(semantic_raw)
-    else:
-        fetch_count = min((n + len(excluded_ids) + 2) * 4, len(index_ids))
-        sims = cosine_similarity(query_vector, tfidf_matrix)[0]
-        top_positions = sims.argsort()[::-1][:fetch_count]
-        semantic_raw = [
-            (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
-            for pos in top_positions
-        ]
 
     def age_ok(m):
         return get_min_age(m["certification"]) <= user_age
@@ -445,21 +436,6 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surpri
             continue
         if norm["title"] not in seen_titles:
             direct_kept.append(norm)
-            seen_titles.add(norm["title"])
-
-    # State-connected titles get priority slots (up to 3), right after any
-    # direct title match — e.g. Delhi gets "Delhi Belly" etc. first.
-    state_kept = []
-    if user_state:
-        for raw in get_state_movies(user_state, limit=3):
-            norm = normalize_movie(raw, movie_id=raw["id"])
-            if norm["id"] in excluded_ids:
-                continue
-            if not age_ok(norm):
-                continue
-            if norm["title"] in seen_titles:
-                continue
-            state_kept.append(norm)
             seen_titles.add(norm["title"])
 
     semantic_kept = []
@@ -480,7 +456,7 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surpri
     if travel_mode:
         semantic_kept.sort(key=lambda m: 0 if is_light_genre(m) else 1)
 
-    combined = (direct_kept + state_kept + semantic_kept)[:n]
+    combined = (direct_kept + semantic_kept)[:n]
     return combined, blocked_count
 
 
@@ -516,9 +492,9 @@ it would be redundant. Just focus on rich, specific plot and appeal details."""
     else:
         instruction = """If this is a general mood, genre, or "movies like X" request, reply with ONE
 short, warm sentence reacting to what they asked for. Do NOT list movie titles, reasons, ratings, or
-platforms yourself — that information is shown separately as up to 6 movie cards below your message, so
-listing it yourself would be redundant. If this is a specific follow-up question about one movie, answer
-that question directly and briefly instead."""
+platforms yourself — that information is shown separately as movie cards below your message, so listing
+it yourself would be redundant. If this is a specific follow-up question about one movie, answer that
+question directly and briefly instead."""
 
     user_prompt = f"""The user just said: "{user_query}"
 
@@ -696,12 +672,9 @@ def start():
         return jsonify({"error": "Please log in first."}), 401
     data = request.get_json()
     travel_mode = bool(data.get("travel_mode"))
-    location_state = (data.get("location_state") or "").strip() or None
     session["travel_mode"] = travel_mode
-    session["user_state"] = location_state
     session["chat_started"] = True
     session["last_movies"] = []
-    session["shown_ids"] = []
     return jsonify({"message": "ok"})
 
 
@@ -721,15 +694,11 @@ def chat():
     user_id = session["user_id"]
     user_age = session["user_age"]
     travel_mode = session.get("travel_mode", False)
-    user_state = session.get("user_state")
     history = get_recent_history(user_id)
-    watched_ids = get_excluded_ids(user_id)
-    shown_ids = set(session.get("shown_ids", []))
-    excluded_ids = watched_ids | shown_ids
+    excluded_ids = get_excluded_ids(user_id)
     last_movies = session.get("last_movies", [])
 
     info_query = is_info_query(user_query)
-    surprise_query = is_surprise_query(user_query)
 
     if info_query and last_movies:
         num = extract_number(user_query)
@@ -739,13 +708,7 @@ def chat():
             movies = last_movies
         blocked_count = 0
     else:
-        movies, blocked_count = retrieve_movies(
-            user_query, user_age, travel_mode, excluded_ids, surprise=surprise_query, user_state=user_state
-        )
-        # Only newly-retrieved movies count toward "already shown this session" —
-        # info-query reuses of last_movies don't need to be re-added.
-        shown_ids.update(m["id"] for m in movies)
-        session["shown_ids"] = list(shown_ids)
+        movies, blocked_count = retrieve_movies(user_query, user_age, travel_mode, excluded_ids)
 
     session["last_movies"] = movies
     response_token = uuid.uuid4().hex
@@ -759,12 +722,7 @@ def chat():
         "is_info": info_query,
     }
 
-    return jsonify({
-        "movies": movies,
-        "blocked_count": blocked_count,
-        "response_token": response_token,
-        "is_info": info_query,
-    })
+    return jsonify({"movies": movies, "blocked_count": blocked_count, "response_token": response_token})
 
 
 @app.route("/chat/response", methods=["POST"])
@@ -810,9 +768,15 @@ def trailers():
         return jsonify({"error": "Please log in first."}), 401
     data = request.get_json() or {}
     movie_ids = [str(movie_id) for movie_id in data.get("movie_ids", [])[:10] if movie_id]
-    with ThreadPoolExecutor(max_workers=min(5, len(movie_ids) or 1)) as executor:
-        trailer_urls = list(executor.map(get_trailer_url, movie_ids))
-    return jsonify({"trailers": dict(zip(movie_ids, trailer_urls))})
+    with ThreadPoolExecutor(max_workers=min(10, (len(movie_ids) or 1) * 2)) as executor:
+        trailer_future = executor.submit(lambda: list(executor.map(get_trailer_url, movie_ids)))
+        providers_future = executor.submit(lambda: list(executor.map(get_live_providers, movie_ids)))
+        trailer_urls = trailer_future.result()
+        live_providers = providers_future.result()
+    return jsonify({
+        "trailers": dict(zip(movie_ids, trailer_urls)),
+        "providers": dict(zip(movie_ids, live_providers)),
+    })
 
 
 @app.route("/exclude", methods=["POST"])
