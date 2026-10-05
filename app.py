@@ -366,11 +366,11 @@ def get_live_providers(movie_id):
     e.g. a movie added to Netflix after movies.json was built).
 
     Returns {"names": [...], "link": "..."} where "link" is TMDB's own
-    JustWatch-powered page for this exact movie/region. That page shows every
-    real platform with a genuine deep link into the title on that platform —
-    which is the honest free alternative to guessing a platform's own search
-    URL (there is no free, official way to deep-link straight into a title on
-    Netflix/Prime/etc. from outside their apps).
+    JustWatch-powered page for this exact movie/region. There is no official,
+    free API from Netflix, Prime Video, Hotstar, Zee5, or SonyLIV that allows
+    an outside site to deep-link straight into a specific title in its app or
+    player. The JustWatch link is the closest honest option when available;
+    otherwise the UI sends users to each platform's own title search.
     """
     if movie_id in _live_providers_cache:
         return _live_providers_cache[movie_id]

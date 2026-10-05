@@ -132,7 +132,7 @@
   }
 
   #chat-window {
-    height: clamp(380px, calc(100vh - 270px), 520px); overflow-y: auto; padding: 8px;
+    height: clamp(380px, calc(100vh - 270px), 520px); overflow-y: auto; padding: 8px 8px 0;
     display: flex; flex-direction: column; gap: 12px;
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.04) transparent;
   }
@@ -195,11 +195,12 @@
     width: 100%; min-width: 0;
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.14);
-    border-radius: 12px; overflow: hidden; font-size: 11.5px;
+    border-radius: 12px; overflow: visible; font-size: 11.5px;
     transition: transform 0.2s ease;
   }
   .movie-card:hover { transform: translateY(-4px); }
-  .poster-wrap { position: relative; }
+  .movie-card:focus-within { z-index: 2; }
+  .poster-wrap { position: relative; overflow: hidden; border-radius: 11px 11px 0 0; }
   .poster-wrap img { width: 100%; aspect-ratio: 3 / 4; height: auto; object-fit: cover; display: block; background: rgba(255,255,255,0.08); }
   .poster-wrap .no-poster {
     width: 100%; aspect-ratio: 3 / 4; height: auto; display: flex; align-items: center; justify-content: center;
@@ -241,9 +242,11 @@
     border-radius: 8px; padding: 4px; display: flex; flex-direction: column; gap: 2px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.4);
   }
+  .watch-menu[hidden] { display: none; }
   .watch-menu-item {
-    font-size: 10px; padding: 5px 6px; border-radius: 5px; border: none;
+    display: flex; align-items: center; font-size: 10px; padding: 5px 6px; border-radius: 5px; border: none;
     background: transparent; color: #f5f5f5; text-align: left; width: 100%;
+    text-decoration: none;
   }
   .watch-menu-item:hover { background: rgba(255,255,255,0.14); }
 
@@ -310,7 +313,7 @@
   @media (max-width: 576px) {
     .app-wrap { padding: 20px 10px; }
     .card-glass { padding: 16px; }
-    #chat-window { height: min(520px, calc(100vh - 150px)); padding: 8px 4px; }
+    #chat-window { height: min(520px, calc(100vh - 150px)); padding: 8px 4px 0; }
     #chat-card { height: calc(100vh - 110px); }
     .msg { max-width: 92%; }
     .movie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
@@ -696,14 +699,11 @@ async function removeWatchlistMovie(movieId) {
   }
 }
 
-// Free-tier honest limit: no platform gives a public, free way to deep-link
-// straight into a specific title's player page just from a guessed search
-// URL (that's why "Amazon Prime" used to just land on Prime's generic video
-// page). TMDB's own watch/providers "link" is the real fix: it's a
-// JustWatch-powered page built for this exact movie, and clicking a
-// platform there opens a genuine deep link into that title. We fetch that
-// live (see loadTrailers/providers below) and use it as the single
-// "Watch Now" target instead of guessing.
+// Netflix, Prime Video, Hotstar, Zee5, and SonyLIV expose no official free API
+// for deep-linking from an outside site straight to a title in their app or
+// player. Use TMDB's live JustWatch link for the Netflix menu option when it
+// exists; otherwise (and for other providers) use the platform's own search
+// URL, which gets the user close without promising automatic title playback.
 const PLATFORM_SEARCH_URLS = {
   'netflix': (t) => `https://www.netflix.com/search?q=${encodeURIComponent(t)}`,
   'amazon prime video': (t) => `https://www.amazon.in/s?k=${encodeURIComponent(t)}&i=instant-video`,
@@ -761,20 +761,8 @@ function platformBadge(name) {
   return wrap;
 }
 
-function renderPlatformBadges(container, providerNames) {
-  container.innerHTML = '';
-  if (!providerNames || providerNames.length === 0) {
-    const none = document.createElement('span');
-    none.className = 'platform-none';
-    none.textContent = 'Not listed for streaming right now';
-    container.appendChild(none);
-    return;
-  }
-  providerNames.forEach(name => container.appendChild(platformBadge(name)));
-}
-
 async function markWatched(movieId, movieTitle) {
-  // Fire-and-forget: runs when "Watch Now" is clicked, never blocks the new tab opening
+  // Fire-and-forget: runs when a provider is selected and never blocks its new tab.
   try {
     await fetch('/exclude', {
       method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -820,29 +808,52 @@ async function loadTrailers(movies, grid) {
       const movie = movies.find(m => String(m.id) === String(movieId));
       const title = movie ? movie.title : '';
 
-      const badgesEl = card.querySelector('.platform-badges');
       const liveNames = (info && info.names) || [];
-      if (badgesEl && liveNames.length > 0) {
-        renderPlatformBadges(badgesEl, liveNames);
-      }
-
       const watchControl = card.querySelector('.watch-now-control');
       if (!watchControl) return;
       const liveLink = info && info.link;
-      const fallbackName = liveNames[0];
+      if (liveNames.length > 0) {
+        const menu = document.createElement('div');
+        menu.className = 'watch-menu';
+        menu.hidden = true;
+        menu.setAttribute('role', 'menu');
 
-      if (liveLink || fallbackName) {
-        const watchLink = document.createElement('a');
-        watchLink.className = 'watch-now-control watch-now-btn';
-        watchLink.href = liveLink || buildPlatformSearchUrl(fallbackName, title);
-        watchLink.target = '_blank';
-        watchLink.rel = 'noopener';
-        watchLink.textContent = 'Watch Now';
-        watchLink.addEventListener('click', () => markWatched(movieId, title));
-        watchControl.replaceWith(watchLink);
+        liveNames.forEach(providerName => {
+          const providerLink = document.createElement('a');
+          const useJustWatch = providerName.toLowerCase().trim() === 'netflix' && liveLink;
+          providerLink.className = 'watch-menu-item';
+          providerLink.href = useJustWatch ? liveLink : buildPlatformSearchUrl(providerName, title);
+          providerLink.target = '_blank';
+          providerLink.rel = 'noopener';
+          providerLink.setAttribute('role', 'menuitem');
+          providerLink.appendChild(platformBadge(providerName));
+          providerLink.addEventListener('click', () => {
+            menu.hidden = true;
+            watchControl.setAttribute('aria-expanded', 'false');
+            markWatched(movieId, title);
+          });
+          menu.appendChild(providerLink);
+        });
+
+        watchControl.textContent = 'Watch Now';
+        watchControl.classList.add('watch-now-btn');
+        watchControl.disabled = false;
+        watchControl.setAttribute('aria-haspopup', 'menu');
+        watchControl.setAttribute('aria-expanded', 'false');
+        watchControl.addEventListener('click', () => {
+          const willOpen = menu.hidden;
+          document.querySelectorAll('.watch-menu:not([hidden])').forEach(openMenu => {
+            openMenu.hidden = true;
+            openMenu.parentElement.querySelector('.watch-now-control')?.setAttribute('aria-expanded', 'false');
+          });
+          menu.hidden = !willOpen;
+          watchControl.setAttribute('aria-expanded', String(willOpen));
+        });
+        watchControl.parentElement.appendChild(menu);
       } else {
         watchControl.textContent = 'Not available';
         watchControl.classList.add('no-trailer-btn');
+        watchControl.disabled = true;
       }
     });
 
@@ -855,6 +866,7 @@ async function loadTrailers(movies, grid) {
     grid.querySelectorAll('.watch-now-control').forEach(control => {
       control.textContent = 'Not available';
       control.classList.add('no-trailer-btn');
+      control.disabled = true;
     });
   }
 }
@@ -1115,12 +1127,6 @@ function addMovieGrid(movies) {
     year.textContent = (m.release_date || '').slice(0, 4) || 'Year n/a';
     meta.append(rating, year);
 
-    const providerBadges = document.createElement('div');
-    providerBadges.className = 'platform-badges';
-    const initialProviderNames = (m.watch_providers || '')
-      .split(',').map(p => p.trim()).filter(Boolean);
-    renderPlatformBadges(providerBadges, initialProviderNames);
-
     const actions = document.createElement('div');
     actions.className = 'card-actions';
 
@@ -1137,15 +1143,17 @@ function addMovieGrid(movies) {
     watchlistButton.addEventListener('click', () => addWatchlistMovie(m, watchlistButton, card));
     actions.appendChild(watchlistButton);
 
-    // Placeholder until /trailers resolves with the live TMDB/JustWatch
-    // link for this exact movie — same pattern as the trailer placeholder,
-    // so Watch Now always points at a real deep-link page, not a guess.
-    const watchNow = document.createElement('span');
+    // Provider options are populated from the live TMDB response below.
+    const watchWrap = document.createElement('div');
+    watchWrap.className = 'watch-now-wrap';
+    const watchNow = document.createElement('button');
+    watchNow.type = 'button';
     watchNow.className = 'watch-now-control';
     watchNow.textContent = 'Loading...';
-    actions.appendChild(watchNow);
+    watchWrap.appendChild(watchNow);
+    actions.appendChild(watchWrap);
 
-    body.append(title, genres, overview, meta, providerBadges, actions);
+    body.append(title, genres, overview, meta, actions);
     card.append(posterWrap, body);
 
     grid.appendChild(card);
@@ -1177,13 +1185,22 @@ function addMessage(text, sender) {
 }
 
 function scrollChatToBottom() {
-  // Direct scrollTop assignment, deferred one frame so layout (including
-  // any still-loading poster images above) has settled first. This sits
-  // flush at the true bottom, unlike scrollIntoView which can stop short.
+  // Wait for the next layout pass as well as the current frame: async poster
+  // and provider updates can otherwise leave scrollHeight briefly stale.
   requestAnimationFrame(() => {
-    chatWindow.scrollTop = chatWindow.scrollHeight;
+    requestAnimationFrame(() => {
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    });
   });
 }
+
+document.addEventListener('click', event => {
+  if (event.target.closest('.watch-now-wrap')) return;
+  document.querySelectorAll('.watch-menu:not([hidden])').forEach(menu => {
+    menu.hidden = true;
+    menu.parentElement.querySelector('.watch-now-control')?.setAttribute('aria-expanded', 'false');
+  });
+});
 
 function addTypingIndicator() {
   const div = document.createElement('div');
