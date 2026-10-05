@@ -102,6 +102,13 @@
   .watchlist-item-content { min-width: 0; flex: 1; }
   .watchlist-item-title { font-size: 12px; font-weight: 700; line-height: 1.25; margin-bottom: 4px; }
   .watchlist-item-meta { color: rgba(255,255,255,0.6); font-size: 10px; margin-bottom: 6px; }
+  .watchlist-actions { display: flex; gap: 4px; align-items: center; margin-bottom: 6px; }
+  .watchlist-actions .trailer-control, .watchlist-actions .watch-now-control {
+    flex: 1; min-width: 0; padding: 3px 5px; border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 5px; background: rgba(255,255,255,0.08); color: #f5f5f5;
+    font-size: 10px; text-align: center; text-decoration: none;
+  }
+  .watchlist-actions .no-trailer-btn { opacity: 0.4; pointer-events: none; }
   .watchlist-remove { padding: 2px 6px; border: 1px solid rgba(255,255,255,0.2); border-radius: 5px; background: transparent; color: rgba(255,255,255,0.75); font-size: 10px; }
   .watchlist-remove:hover { background: rgba(255,255,255,0.12); }
   @keyframes fadeInUp {
@@ -503,6 +510,8 @@ let currentUsername = null;
 let cachedLocationName = null;
 let detectedState = null;
 const watchlistMovies = new Map();
+const watchlistActionData = new Map();
+const watchlistActionLoading = new Set();
 
 // ---------- Mood background ----------
 const LOVE_WORDS = ["love", "romance", "romantic", "date night"];
@@ -580,6 +589,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 function onAuthSuccess(username, state = {}) {
   currentUsername = username;
   travelMode = Boolean(state.travel_mode);
+  detectedState = state.location_state || detectedState;
   authCard.style.display = 'none';
   document.getElementById('welcome-username').textContent = username;
   document.getElementById('chat-username').textContent = username;
@@ -608,6 +618,7 @@ function renderWatchlist() {
   watchlistMovies.forEach(movie => {
     const item = document.createElement('div');
     item.className = 'watchlist-item';
+    item.dataset.movieId = String(movie.id);
     if (movie.poster_path) {
       const image = document.createElement('img');
       image.src = POSTER_BASE + movie.poster_path;
@@ -628,15 +639,95 @@ function renderWatchlist() {
     const meta = document.createElement('div');
     meta.className = 'watchlist-item-meta';
     meta.textContent = `${(movie.release_date || '').slice(0, 4) || 'Year n/a'} · ★ ${movie.rating ? Number(movie.rating).toFixed(1) : '–'}`;
+    const actions = document.createElement('div');
+    actions.className = 'watchlist-actions';
+    const trailer = document.createElement('span');
+    trailer.className = 'trailer-control';
+    trailer.textContent = 'Loading';
+    actions.appendChild(trailer);
+    const watchWrap = document.createElement('div');
+    watchWrap.className = 'watch-now-wrap';
+    const watchButton = document.createElement('button');
+    watchButton.type = 'button';
+    watchButton.className = 'watch-now-control';
+    watchButton.textContent = 'Loading';
+    watchWrap.appendChild(watchButton);
+    actions.appendChild(watchWrap);
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
     removeButton.className = 'watchlist-remove';
     removeButton.textContent = 'Remove';
     removeButton.addEventListener('click', () => removeWatchlistMovie(movie.id));
-    content.append(title, meta, removeButton);
+    content.append(title, meta, actions, removeButton);
     item.appendChild(content);
     watchlistItems.appendChild(item);
+    const actionData = watchlistActionData.get(String(movie.id));
+    if (actionData) applyWatchlistActions(item, movie, actionData);
   });
+  loadWatchlistActions();
+}
+
+function applyWatchlistActions(item, movie, actionData) {
+  const trailerControl = item.querySelector('.trailer-control');
+  const watchControl = item.querySelector('.watch-now-control');
+  if (actionData.trailer) {
+    const trailerLink = document.createElement('a');
+    trailerLink.href = actionData.trailer;
+    trailerLink.target = '_blank';
+    trailerLink.rel = 'noopener';
+    trailerLink.className = 'trailer-control';
+    trailerLink.textContent = 'Trailer';
+    trailerControl.replaceWith(trailerLink);
+  } else {
+    trailerControl.textContent = 'No trailer';
+    trailerControl.classList.add('no-trailer-btn');
+  }
+  configureWatchNow(watchControl.parentElement, watchControl, movie, actionData.providerInfo);
+}
+
+async function loadWatchlistActions() {
+  const uncachedMovies = [...watchlistMovies.values()].filter(
+    movie => !watchlistActionData.has(String(movie.id))
+      && !watchlistActionLoading.has(String(movie.id))
+  );
+  for (let index = 0; index < uncachedMovies.length; index += 10) {
+    const batch = uncachedMovies.slice(index, index + 10);
+    batch.forEach(movie => watchlistActionLoading.add(String(movie.id)));
+    try {
+      const res = await fetch('/trailers', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({movie_ids: batch.map(movie => movie.id)})
+      });
+      const data = await readJsonResponse(res, 'Watchlist actions');
+      if (!res.ok) throw new Error(data.error || 'Could not load watchlist actions.');
+      batch.forEach(movie => {
+        const movieId = String(movie.id);
+        const actionData = {
+          trailer: (data.trailers || {})[movieId],
+          providerInfo: (data.providers || {})[movieId] || {names: [], provider_links: {}}
+        };
+        watchlistActionData.set(movieId, actionData);
+        const item = watchlistItems.querySelector(`[data-movie-id="${CSS.escape(movieId)}"]`);
+        if (item) applyWatchlistActions(item, movie, actionData);
+      });
+    } catch (err) {
+      batch.forEach(movie => {
+        const item = watchlistItems.querySelector(`[data-movie-id="${CSS.escape(String(movie.id))}"]`);
+        if (!item) return;
+        const trailer = item.querySelector('.trailer-control');
+        trailer.textContent = 'Unavailable';
+        trailer.classList.add('no-trailer-btn');
+        const watch = item.querySelector('.watch-now-control');
+        watch.textContent = 'Unavailable';
+        watch.classList.add('no-trailer-btn');
+        watch.disabled = true;
+      });
+      console.warn('Could not load watchlist actions:', err);
+    } finally {
+      batch.forEach(movie => watchlistActionLoading.delete(String(movie.id)));
+    }
+  }
 }
 
 async function loadWatchlist() {
@@ -775,6 +866,54 @@ async function markWatched(movieId, movieTitle) {
   }
 }
 
+function configureWatchNow(wrap, watchControl, movie, info = {}) {
+  const liveNames = info.names || [];
+  const title = movie.title || '';
+  if (liveNames.length === 0) {
+    watchControl.textContent = 'Not available';
+    watchControl.classList.add('no-trailer-btn');
+    watchControl.disabled = true;
+    return;
+  }
+
+  const menu = document.createElement('div');
+  menu.className = 'watch-menu';
+  menu.hidden = true;
+  menu.setAttribute('role', 'menu');
+  liveNames.forEach(providerName => {
+    const providerLink = document.createElement('a');
+    providerLink.className = 'watch-menu-item';
+    providerLink.href = (info.provider_links || {})[providerName]
+      || buildPlatformSearchUrl(providerName, title);
+    providerLink.target = '_blank';
+    providerLink.rel = 'noopener';
+    providerLink.setAttribute('role', 'menuitem');
+    providerLink.appendChild(platformBadge(providerName));
+    providerLink.addEventListener('click', () => {
+      menu.hidden = true;
+      watchControl.setAttribute('aria-expanded', 'false');
+      markWatched(movie.id, title);
+    });
+    menu.appendChild(providerLink);
+  });
+
+  watchControl.textContent = 'Watch Now';
+  watchControl.classList.add('watch-now-btn');
+  watchControl.disabled = false;
+  watchControl.setAttribute('aria-haspopup', 'menu');
+  watchControl.setAttribute('aria-expanded', 'false');
+  watchControl.addEventListener('click', () => {
+    const willOpen = menu.hidden;
+    document.querySelectorAll('.watch-menu:not([hidden])').forEach(openMenu => {
+      openMenu.hidden = true;
+      openMenu.parentElement.querySelector('.watch-now-control')?.setAttribute('aria-expanded', 'false');
+    });
+    menu.hidden = !willOpen;
+    watchControl.setAttribute('aria-expanded', String(willOpen));
+  });
+  wrap.appendChild(menu);
+}
+
 async function loadTrailers(movies, grid) {
   try {
     const res = await fetch('/trailers', {
@@ -810,52 +949,9 @@ async function loadTrailers(movies, grid) {
       const movie = movies.find(m => String(m.id) === String(movieId));
       const title = movie ? movie.title : '';
 
-      const liveNames = (info && info.names) || [];
       const watchControl = card.querySelector('.watch-now-control');
       if (!watchControl) return;
-      if (liveNames.length > 0) {
-        const menu = document.createElement('div');
-        menu.className = 'watch-menu';
-        menu.hidden = true;
-        menu.setAttribute('role', 'menu');
-
-        liveNames.forEach(providerName => {
-          const providerLink = document.createElement('a');
-          providerLink.className = 'watch-menu-item';
-          providerLink.href = (info.provider_links || {})[providerName]
-            || buildPlatformSearchUrl(providerName, title);
-          providerLink.target = '_blank';
-          providerLink.rel = 'noopener';
-          providerLink.setAttribute('role', 'menuitem');
-          providerLink.appendChild(platformBadge(providerName));
-          providerLink.addEventListener('click', () => {
-            menu.hidden = true;
-            watchControl.setAttribute('aria-expanded', 'false');
-            markWatched(movieId, title);
-          });
-          menu.appendChild(providerLink);
-        });
-
-        watchControl.textContent = 'Watch Now';
-        watchControl.classList.add('watch-now-btn');
-        watchControl.disabled = false;
-        watchControl.setAttribute('aria-haspopup', 'menu');
-        watchControl.setAttribute('aria-expanded', 'false');
-        watchControl.addEventListener('click', () => {
-          const willOpen = menu.hidden;
-          document.querySelectorAll('.watch-menu:not([hidden])').forEach(openMenu => {
-            openMenu.hidden = true;
-            openMenu.parentElement.querySelector('.watch-now-control')?.setAttribute('aria-expanded', 'false');
-          });
-          menu.hidden = !willOpen;
-          watchControl.setAttribute('aria-expanded', String(willOpen));
-        });
-        watchControl.parentElement.appendChild(menu);
-      } else {
-        watchControl.textContent = 'Not available';
-        watchControl.classList.add('no-trailer-btn');
-        watchControl.disabled = true;
-      }
+      configureWatchNow(watchControl.parentElement, watchControl, movie || {id: movieId, title}, info);
     });
 
     scrollChatToBottom();

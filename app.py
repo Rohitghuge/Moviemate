@@ -275,6 +275,44 @@ def is_light_genre(movie):
     return any(g in LIGHT_GENRES for g in genre_list)
 
 
+LOCATION_PROFILES = {
+    "maharashtra": {
+        "languages": {"mr", "marathi"},
+        "keywords": ("maharashtra", "marathi", "mumbai", "pune", "kolhapur", "nashik", "nagpur"),
+    },
+    "goa": {"languages": set(), "keywords": ("goa", "goan", "panaji", "margao")},
+    "delhi": {"languages": set(), "keywords": ("delhi", "new delhi", "dilli")},
+}
+
+
+def get_location_profile(location_state):
+    location = re.sub(r"[^a-z]", "", (location_state or "").lower())
+    for name, profile in LOCATION_PROFILES.items():
+        if name in location:
+            return profile
+    if location_state:
+        return {"languages": set(), "keywords": (location_state.lower(),)}
+    return None
+
+
+def location_match_score(movie, profile):
+    if not profile:
+        return 0
+    source = {**movies_by_id.get(str(movie.get("id", "")), {}), **movie}
+    title = (source.get("title") or "").lower()
+    overview = (source.get("overview") or "").lower()
+    language = (source.get("original_language") or "").lower()
+    language_name = (source.get("original_language_name") or "").lower()
+    score = 3 if language in profile["languages"] or language_name in profile["languages"] else 0
+    for keyword in profile["keywords"]:
+        pattern = rf"\b{re.escape(keyword)}\b"
+        if re.search(pattern, title):
+            score += 5
+        elif re.search(pattern, overview):
+            score += 2
+    return score
+
+
 def normalize_movie(m, movie_id=None):
     catalog_movie = movies_by_id.get(str(movie_id if movie_id is not None else m.get("id", "")), {})
     source = {**catalog_movie, **m}
@@ -467,8 +505,10 @@ def get_live_providers(movie_id):
     return result
 
 
-def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surprise=False):
+def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surprise=False,
+                    location_state=None, recent_ids=None):
     excluded_ids = excluded_ids or set()
+    recent_ids = {str(movie_id) for movie_id in (recent_ids or [])}
     direct_matches = find_title_matches(query)
 
     reference_movie = None
@@ -481,15 +521,14 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surpri
     else:
         query_vector = vectorizer.transform([query])
 
-    fetch_count = min((n + len(excluded_ids) + 2) * 4, len(index_ids))
+    fetch_count = min((n + len(excluded_ids) + len(recent_ids) + 2) * 4, len(index_ids))
     sims = cosine_similarity(query_vector, tfidf_matrix)[0]
     top_positions = sims.argsort()[::-1][:fetch_count]
     semantic_raw = [
         (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
         for pos in top_positions
     ]
-    if surprise:
-        random.shuffle(semantic_raw)
+    random.shuffle(semantic_raw)
 
     def age_ok(m):
         return get_min_age(m["certification"]) <= user_age
@@ -500,7 +539,7 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surpri
     direct_kept = []
     for m in direct_matches:
         norm = normalize_movie(m, movie_id=m["id"])
-        if norm["id"] in excluded_ids:
+        if norm["id"] in excluded_ids or norm["id"] in recent_ids:
             continue
         if not age_ok(norm):
             blocked_count += 1
@@ -513,7 +552,7 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surpri
     ref_title = reference_movie["title"] if reference_movie else None
     for mid, meta in semantic_raw:
         norm = normalize_movie(meta, movie_id=mid)
-        if norm["id"] in excluded_ids:
+        if norm["id"] in excluded_ids or norm["id"] in recent_ids:
             continue
         if ref_title and norm["title"] == ref_title:
             continue
@@ -527,7 +566,38 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=5, surpri
     if travel_mode:
         semantic_kept.sort(key=lambda m: 0 if is_light_genre(m) else 1)
 
-    combined = (direct_kept + semantic_kept)[:n]
+    location_kept = []
+    profile = get_location_profile(location_state)
+    if profile:
+        location_titles = set()
+        regional_candidates = []
+        for movie in all_movies:
+            score = location_match_score(movie, profile)
+            if score:
+                regional_candidates.append((score, movie))
+        random.shuffle(regional_candidates)
+        regional_candidates.sort(key=lambda item: item[0], reverse=True)
+        for _, movie in regional_candidates:
+            norm = normalize_movie(movie, movie_id=movie["id"])
+            if norm["id"] in excluded_ids or norm["id"] in recent_ids:
+                continue
+            if not age_ok(norm):
+                blocked_count += 1
+                continue
+            if norm["title"] not in location_titles:
+                location_kept.append(norm)
+                location_titles.add(norm["title"])
+            if len(location_kept) == 3:
+                break
+
+    combined = []
+    combined_titles = set()
+    for movie in location_kept + direct_kept + semantic_kept:
+        if movie["title"] not in combined_titles:
+            combined.append(movie)
+            combined_titles.add(movie["title"])
+        if len(combined) == n:
+            break
     return combined, blocked_count
 
 
@@ -603,6 +673,7 @@ def session_state():
         "authenticated": True,
         "username": session.get("username"),
         "travel_mode": bool(session.get("travel_mode", False)),
+        "location_state": session.get("location_state"),
         "has_started": bool(session.get("chat_started", False)),
     })
 
@@ -649,8 +720,10 @@ def signup():
     session["username"] = username
     session["user_age"] = age
     session["travel_mode"] = False
+    session["location_state"] = None
     session["chat_started"] = False
     session["last_movies"] = []
+    session["recommendation_history"] = {}
 
     return jsonify({"message": "ok", "username": username, "age": age})
 
@@ -678,8 +751,10 @@ def login():
     session["username"] = user["username"]
     session["user_age"] = user["age"]
     session["travel_mode"] = False
+    session["location_state"] = None
     session["chat_started"] = False
     session["last_movies"] = []
+    session["recommendation_history"] = {}
 
     return jsonify({"message": "ok", "username": user["username"], "age": user["age"]})
 
@@ -741,8 +816,9 @@ def forgot_password_reset():
 def start():
     if "user_id" not in session:
         return jsonify({"error": "Please log in first."}), 401
-    data = request.get_json()
+    data = request.get_json() or {}
     travel_mode = bool(data.get("travel_mode"))
+    session["location_state"] = (data.get("location_state") or "").strip() or None
     session["travel_mode"] = travel_mode
     session["chat_started"] = True
     session["last_movies"] = []
@@ -765,13 +841,15 @@ def chat():
     user_id = session["user_id"]
     user_age = session["user_age"]
     travel_mode = session.get("travel_mode", False)
+    location_state = session.get("location_state")
     history = get_recent_history(user_id)
     excluded_ids = get_excluded_ids(user_id)
     last_movies = session.get("last_movies", [])
 
     info_query = is_info_query(user_query)
 
-    if info_query and last_movies:
+    is_movie_followup = info_query and bool(last_movies)
+    if is_movie_followup:
         num = extract_number(user_query)
         if num and 1 <= num <= len(last_movies):
             movies = [last_movies[num - 1]]
@@ -779,7 +857,25 @@ def chat():
             movies = last_movies
         blocked_count = 0
     else:
-        movies, blocked_count = retrieve_movies(user_query, user_age, travel_mode, excluded_ids)
+        query_key = user_query.lower()
+        recommendation_history = session.get("recommendation_history", {})
+        recent_ids = recommendation_history.get(query_key, [])
+        movies, blocked_count = retrieve_movies(
+            user_query,
+            user_age,
+            travel_mode,
+            excluded_ids,
+            n=6,
+            location_state=location_state,
+            recent_ids=recent_ids,
+        )
+        recommendation_history.pop(query_key, None)
+        recommendation_history[query_key] = (
+            recent_ids + [movie["id"] for movie in movies]
+        )[-18:]
+        while len(recommendation_history) > 6:
+            recommendation_history.pop(next(iter(recommendation_history)))
+        session["recommendation_history"] = recommendation_history
 
     session["last_movies"] = movies
     response_token = uuid.uuid4().hex
