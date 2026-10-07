@@ -705,7 +705,7 @@ async function loadWatchlistActions() {
         const movieId = String(movie.id);
         const actionData = {
           trailer: (data.trailers || {})[movieId],
-          providerInfo: (data.providers || {})[movieId] || {names: [], provider_links: {}}
+          providerInfo: (data.providers || {})[movieId] || {names: [], link: null}
         };
         watchlistActionData.set(movieId, actionData);
         const item = watchlistItems.querySelector(`[data-movie-id="${CSS.escape(movieId)}"]`);
@@ -881,10 +881,14 @@ function configureWatchNow(wrap, watchControl, movie, info = {}) {
   menu.hidden = true;
   menu.setAttribute('role', 'menu');
   liveNames.forEach(providerName => {
+    // No platform publishes a free API for linking straight into one
+    // specific title inside their own app/site, so this opens that
+    // platform's own search for the title — the honest ceiling without
+    // a paid deep-link API. If the user is already signed in to that
+    // platform in this browser, the title is usually the first result.
     const providerLink = document.createElement('a');
     providerLink.className = 'watch-menu-item';
-    providerLink.href = (info.provider_links || {})[providerName]
-      || buildPlatformSearchUrl(providerName, title);
+    providerLink.href = buildPlatformSearchUrl(providerName, title);
     providerLink.target = '_blank';
     providerLink.rel = 'noopener';
     providerLink.setAttribute('role', 'menuitem');
@@ -896,6 +900,29 @@ function configureWatchNow(wrap, watchControl, movie, info = {}) {
     });
     menu.appendChild(providerLink);
   });
+  if (info.link) {
+    // TMDB's own JustWatch page for this exact title. Unlike the per-platform
+    // search links above, this page is rendered live in the user's own
+    // browser (so its JavaScript runs normally) and shows genuine,
+    // clickable deep links into each platform for this specific movie.
+    const divider = document.createElement('div');
+    divider.style.cssText = 'border-top:1px solid rgba(255,255,255,0.14);margin:3px 2px;';
+    menu.appendChild(divider);
+    const moreLink = document.createElement('a');
+    moreLink.className = 'watch-menu-item';
+    moreLink.href = info.link;
+    moreLink.target = '_blank';
+    moreLink.rel = 'noopener';
+    moreLink.setAttribute('role', 'menuitem');
+    moreLink.style.opacity = '0.85';
+    moreLink.textContent = 'More streaming options ↗';
+    moreLink.addEventListener('click', () => {
+      menu.hidden = true;
+      watchControl.setAttribute('aria-expanded', 'false');
+      markWatched(movie.id, title);
+    });
+    menu.appendChild(moreLink);
+  }
 
   watchControl.textContent = 'Watch Now';
   watchControl.classList.add('watch-now-btn');

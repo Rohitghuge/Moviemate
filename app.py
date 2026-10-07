@@ -19,8 +19,6 @@ import random
 import requests
 import psycopg2
 import psycopg2.extras
-from html.parser import HTMLParser
-from urllib.parse import parse_qs, urlparse
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from flask import Flask, request, jsonify, session, render_template
@@ -398,74 +396,6 @@ def get_trailer_url(movie_id):
 
 _live_providers_cache = {}
 
-_PROVIDER_LINK_DOMAINS = {
-    "netflix": ("netflix.com",),
-    "amazonprimevideo": ("primevideo.com", "amazon.com"),
-    "amazonprimevideowithads": ("primevideo.com", "amazon.com"),
-    "jiohotstar": ("hotstar.com",),
-    "disneyplushotstar": ("hotstar.com",),
-    "zee5": ("zee5.com",),
-    "sonyliv": ("sonyliv.com",),
-    "vimoviesandtv": ("myvi.in",),
-    "appletv": ("tv.apple.com",),
-    "appletvplus": ("tv.apple.com",),
-    "googleplaymovies": ("play.google.com",),
-    "youtube": ("youtube.com",),
-}
-
-
-class _JustWatchOutgoingLinksParser(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.targets = []
-
-    def handle_starttag(self, tag, attrs):
-        if tag != "a":
-            return
-        href = dict(attrs).get("href", "")
-        parsed = urlparse(href)
-        if parsed.hostname not in {"t.justwatch.com", "e.justwatch.com"}:
-            return
-        target = parse_qs(parsed.query).get("r", [None])[0]
-        if target:
-            self.targets.append(target)
-
-
-def get_justwatch_provider_links(link, provider_names):
-    """Extract provider destinations from JustWatch's public title-page HTML.
-
-    This is not an official API and may stop working if JustWatch changes its
-    page markup. Only HTTPS targets on a domain matching the provider are used.
-    """
-    if not link or not provider_names:
-        return {}
-    try:
-        response = requests.get(
-            link,
-            headers={"User-Agent": "Mozilla/5.0 MovieMate provider link lookup"},
-            timeout=8,
-        )
-        response.raise_for_status()
-        parser = _JustWatchOutgoingLinksParser()
-        parser.feed(response.text)
-    except (requests.exceptions.RequestException, ValueError):
-        return {}
-
-    provider_links = {}
-    for provider in provider_names:
-        key = re.sub(r"[^a-z0-9]", "", provider.lower())
-        domains = _PROVIDER_LINK_DOMAINS.get(key, ())
-        for target in parser.targets:
-            parsed = urlparse(target)
-            host = (parsed.hostname or "").lower()
-            if parsed.scheme == "https" and any(
-                host == domain or host.endswith("." + domain)
-                for domain in domains
-            ):
-                provider_links[provider] = target
-                break
-    return provider_links
-
 
 def get_live_providers(movie_id):
     """
@@ -473,14 +403,26 @@ def get_live_providers(movie_id):
     movies.json at fetch time (which goes stale as availability changes —
     e.g. a movie added to Netflix after movies.json was built).
 
-    Returns live provider names, TMDB's JustWatch page URL, and best-effort
-    provider URLs extracted from that page. The latter avoids displaying the
-    JustWatch page, but relies on unofficial public HTML rather than a stable
-    provider API; callers must retain their platform-search fallback.
+    Returns live provider names and TMDB's own JustWatch page link for this
+    title/region. We deliberately do NOT try to scrape per-provider deep
+    links out of that JustWatch page server-side: JustWatch's page content is
+    rendered client-side by its own JavaScript, so a plain server-to-server
+    HTTP fetch (requests.get) only ever receives the empty page shell, never
+    the real "open in Netflix" / "open in Prime Video" links a browser would
+    show after running that JavaScript. That approach was tried and always
+    silently returned nothing, while still spending a network round trip on
+    every single card.
+
+    Instead, the frontend sends the user straight to each platform's own
+    site (see PLATFORM_SEARCH_URLS in index.html), with that title's name
+    pre-filled into the platform's own search. That is the honest ceiling
+    for a free, unauthenticated integration: no platform (Netflix, Prime
+    Video, Hotstar, Zee5, SonyLIV, ...) publishes a free API for linking
+    straight into one specific title's page from outside their own app/site.
     """
     if movie_id in _live_providers_cache:
         return _live_providers_cache[movie_id]
-    result = {"names": [], "link": None, "provider_links": {}}
+    result = {"names": [], "link": None}
     if TMDB_API_KEY:
         try:
             resp = requests.get(
@@ -498,9 +440,6 @@ def get_live_providers(movie_id):
             result["link"] = region_data.get("link")
         except requests.exceptions.RequestException:
             pass
-    result["provider_links"] = get_justwatch_provider_links(
-        result["link"], result["names"]
-    )
     _live_providers_cache[movie_id] = result
     return result
 
