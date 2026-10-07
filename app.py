@@ -520,6 +520,7 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surpri
 
     fetch_count = min((n + len(excluded_ids) + len(recent_ids) + 2) * 4, len(index_ids))
     sims = cosine_similarity(query_vector, tfidf_matrix)[0]
+    general_positions = list(sims.argsort()[::-1][:fetch_count])
 
     target_genre = None if reference_movie else detect_target_genre(query)
     if target_genre:
@@ -527,16 +528,24 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surpri
             pos for pos, mid in enumerate(index_ids)
             if movie_has_genre(movies_by_id.get(mid, {}), target_genre)
         ]
-        if genre_positions:
-            # Rank only the movies that actually carry this genre, best
-            # text-similarity first, instead of ranking the whole catalogue
-            # and hoping the right genre floats to the top on its own.
-            genre_positions.sort(key=lambda pos: sims[pos], reverse=True)
-            top_positions = genre_positions[:fetch_count]
-        else:
-            top_positions = sims.argsort()[::-1][:fetch_count]
+        # Rank the movies that actually carry this genre first, best
+        # text-similarity first, instead of ranking the whole catalogue and
+        # hoping the right genre floats to the top on its own. But a genre
+        # like Horror is a small, often adult-certified slice of the
+        # catalogue -- if we restricted the pool to ONLY that genre and it
+        # got filtered down by age rating / already-watched / already-shown,
+        # there could be nothing left at all ("No new matches"), even though
+        # the catalogue clearly has other decent, age-appropriate picks. So
+        # genre-correct movies come first, and the general ranking fills in
+        # any remaining slots rather than leaving the user with nothing.
+        genre_positions.sort(key=lambda pos: sims[pos], reverse=True)
+        genre_positions = genre_positions[:fetch_count]
+        seen_positions = set(genre_positions)
+        top_positions = genre_positions + [
+            pos for pos in general_positions if pos not in seen_positions
+        ]
     else:
-        top_positions = sims.argsort()[::-1][:fetch_count]
+        top_positions = general_positions
 
     semantic_raw = [
         (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
