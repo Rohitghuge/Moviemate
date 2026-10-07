@@ -273,6 +273,45 @@ def is_light_genre(movie):
     return any(g in LIGHT_GENRES for g in genre_list)
 
 
+def movie_genre_list(movie):
+    genres = movie.get("genres", "")
+    if isinstance(genres, str):
+        return [g.strip() for g in genres.split(",") if g.strip()]
+    return list(genres or [])
+
+
+def movie_has_genre(movie, genre):
+    return genre.lower() in {g.lower() for g in movie_genre_list(movie)}
+
+
+# Mood-chip (and free-typed) queries like "Suggest a romantic movie" were
+# being answered almost entirely off TF-IDF text similarity, with no actual
+# check that the recommended movie's genre matched the mood asked for. Since
+# words like "suggest", "movie", "feeling" are common across nearly every
+# plot summary, the similarity score alone wasn't a reliable genre signal,
+# so comedies/crime films (Dhamaal, Welcome, Andhadhun, Jolly LLB) were
+# regularly turning up under "Romance". When a query clearly maps to one of
+# these moods, we now restrict the candidate pool to movies actually tagged
+# with that genre before ranking by similarity, instead of trusting
+# similarity alone to find genre-appropriate movies.
+MOOD_GENRE_TRIGGERS = (
+    (("romantic", "romance", "love story", "date night"), "Romance"),
+    (("horror", "scary", "spooky", "haunted", "creepy"), "Horror"),
+    (("action movie", "action film", "intense action", "action-packed"), "Action"),
+    (("feeling sad", "sad movie", "comforting"), "Drama"),
+    (("feeling happy", "feel-good", "feel good", "feelgood", "cheerful",
+      "lighthearted", "fun and feel"), "Comedy"),
+)
+
+
+def detect_target_genre(query):
+    q = query.lower()
+    for keywords, genre in MOOD_GENRE_TRIGGERS:
+        if any(re.search(rf"\b{re.escape(k)}\b", q) for k in keywords):
+            return genre
+    return None
+
+
 LOCATION_PROFILES = {
     "maharashtra": {
         "languages": {"mr", "marathi"},
@@ -481,7 +520,24 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surpri
 
     fetch_count = min((n + len(excluded_ids) + len(recent_ids) + 2) * 4, len(index_ids))
     sims = cosine_similarity(query_vector, tfidf_matrix)[0]
-    top_positions = sims.argsort()[::-1][:fetch_count]
+
+    target_genre = None if reference_movie else detect_target_genre(query)
+    if target_genre:
+        genre_positions = [
+            pos for pos, mid in enumerate(index_ids)
+            if movie_has_genre(movies_by_id.get(mid, {}), target_genre)
+        ]
+        if genre_positions:
+            # Rank only the movies that actually carry this genre, best
+            # text-similarity first, instead of ranking the whole catalogue
+            # and hoping the right genre floats to the top on its own.
+            genre_positions.sort(key=lambda pos: sims[pos], reverse=True)
+            top_positions = genre_positions[:fetch_count]
+        else:
+            top_positions = sims.argsort()[::-1][:fetch_count]
+    else:
+        top_positions = sims.argsort()[::-1][:fetch_count]
+
     semantic_raw = [
         (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
         for pos in top_positions
