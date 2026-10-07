@@ -293,6 +293,25 @@ def get_location_profile(location_state):
     return None
 
 
+# Only nudge in local/regional picks when the user actually asks for them —
+# not on every single mood/genre query. Without this check, a user whose
+# detected location is Maharashtra would get Marathi/Mumbai-set movies
+# force-inserted ahead of the real results for every query ("romance",
+# "happy", "horror", ...), which is what caused Marathi titles like
+# "Mumbai Pune Mumbai", "Pawankhind" and "Dhamaal" to show up everywhere
+# regardless of the mood actually asked for.
+LOCATION_TRIGGERS = (
+    "regional", "local movie", "local film", "near me", "my state",
+    "my city", "marathi", "maharashtrian", "set in mumbai", "set in pune",
+    "set in goa", "set in delhi", "based in mumbai", "based in pune",
+)
+
+
+def is_location_query(query):
+    q = query.lower()
+    return any(trigger in q for trigger in LOCATION_TRIGGERS)
+
+
 def location_match_score(movie, profile):
     if not profile:
         return 0
@@ -467,7 +486,16 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surpri
         (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
         for pos in top_positions
     ]
-    random.shuffle(semantic_raw)
+    # NOTE: top_positions is already sorted best-match-first (argsort on
+    # cosine similarity). We used to unconditionally shuffle this list,
+    # which threw away that relevance ordering and let a weakly-matching
+    # movie from near the bottom of the candidate pool get picked over a
+    # much better match — this was the main cause of odd/irrelevant picks
+    # showing up (e.g. action or comedy titles under "Romance"). Only
+    # shuffle for an actual "surprise me" request, where variety matters
+    # more than strict ranking.
+    if surprise:
+        random.shuffle(semantic_raw)
 
     def age_ok(m):
         return get_min_age(m["certification"]) <= user_age
@@ -506,7 +534,7 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surpri
         semantic_kept.sort(key=lambda m: 0 if is_light_genre(m) else 1)
 
     location_kept = []
-    profile = get_location_profile(location_state)
+    profile = get_location_profile(location_state) if is_location_query(query) else None
     if profile:
         location_titles = set()
         regional_candidates = []
@@ -874,14 +902,33 @@ def trailers():
         return jsonify({"error": "Please log in first."}), 401
     data = request.get_json() or {}
     movie_ids = [str(movie_id) for movie_id in data.get("movie_ids", [])[:10] if movie_id]
-    with ThreadPoolExecutor(max_workers=min(10, (len(movie_ids) or 1) * 2)) as executor:
-        trailer_future = executor.submit(lambda: list(executor.map(get_trailer_url, movie_ids)))
-        providers_future = executor.submit(lambda: list(executor.map(get_live_providers, movie_ids)))
-        trailer_urls = trailer_future.result()
-        live_providers = providers_future.result()
+    if not movie_ids:
+        return jsonify({"trailers": {}, "providers": {}})
+
+    # NOTE: this used to submit two OUTER jobs to the pool, each of which then
+    # called executor.map(...) on that very same pool and blocked waiting for
+    # its results. That's fine as long as there are still free worker threads
+    # left over to run the inner jobs -- but for a single movie (exactly what
+    # happens when a movie is added to the watchlist one at a time), the pool
+    # was sized to 2 workers, both outer jobs immediately claimed both of
+    # them, and the inner jobs they were each waiting on could never get a
+    # worker to run on. That's a permanent deadlock: the request just hangs
+    # until the server's own request timeout kills it, the frontend gets a
+    # non-JSON timeout page back, and the Trailer/Watch Now buttons show
+    # "Unavailable". The main recommendations grid never hit this because it
+    # always requests 6 movies at once, which happened to size the pool large
+    # enough to avoid the deadlock.
+    #
+    # Fix: submit every trailer/provider lookup directly and flatly to one
+    # pool, with no job ever waiting on another job in the same pool.
+    with ThreadPoolExecutor(max_workers=min(20, len(movie_ids) * 2)) as executor:
+        trailer_futures = {mid: executor.submit(get_trailer_url, mid) for mid in movie_ids}
+        provider_futures = {mid: executor.submit(get_live_providers, mid) for mid in movie_ids}
+        trailer_urls = {mid: future.result() for mid, future in trailer_futures.items()}
+        live_providers = {mid: future.result() for mid, future in provider_futures.items()}
     return jsonify({
-        "trailers": dict(zip(movie_ids, trailer_urls)),
-        "providers": dict(zip(movie_ids, live_providers)),
+        "trailers": trailer_urls,
+        "providers": live_providers,
     })
 
 
