@@ -1,224 +1,662 @@
-"""
-Fetch 300 highly rated, child-friendly movies from TMDB:
-150 Hindi, 75 English, and 75 Marathi.
-"""
 
-import requests
 import json
-import time
 import os
-from dotenv import load_dotenv
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+import time
+import requests
+from pathlib import Path
 
-load_dotenv()
+# ============================================================
+# MovieMate Movie Database Builder
+# Targets: 150 Marathi + 150 English + 100 Hindi = 400 movies
+# Horror movies are collected first for each language.
+# ============================================================
 
-TMDB_API_KEY = os.getenv("TMDB_API_KEY")
-BASE_URL = "https://api.themoviedb.org/3"
-OUTPUT_FILE = "movies.json"
+BASE_DIR = Path(__file__).resolve().parent
+OUTPUT_FILE = BASE_DIR / "movies.json"
+ENV_FILE = BASE_DIR / ".env"
 
-LANGUAGE_TARGETS = {"hi": 150, "en": 75, "mr": 75}
-LANGUAGE_NAMES = {"hi": "Hindi", "mr": "Marathi", "en": "English"}
+API_BASE = "https://api.themoviedb.org/3"
+TARGETS = {
+    "mr": 150,
+    "en": 150,
+    "hi": 100,
+}
 
-NUM_PAGES = 100
-MAX_VIEWING_AGE = 12
-MIN_VOTE_AVERAGE = 6.5
-MIN_VOTE_COUNT = 100
+LANGUAGE_NAMES = {
+    "mr": "Marathi",
+    "en": "English",
+    "hi": "Hindi",
+}
 
-CATEGORIES = [
-    {"name": "all_time_favorite", "sort_by": "vote_average.desc", "vote_average.gte": 7.0, "vote_count.gte": 300},
-    {"name": "blockbuster", "sort_by": "popularity.desc", "vote_average.gte": MIN_VOTE_AVERAGE, "vote_count.gte": 500},
-    {"name": "new", "sort_by": "primary_release_date.desc", "vote_average.gte": MIN_VOTE_AVERAGE, "vote_count.gte": MIN_VOTE_COUNT, "primary_release_date.lte": "2026-08-23"},
-    {"name": "all_time_blockbuster", "sort_by": "vote_count.desc", "vote_average.gte": MIN_VOTE_AVERAGE, "vote_count.gte": 1000},
-]
+MAX_PAGES = 500
+REQUEST_TIMEOUT = 25
+REQUEST_DELAY = 0.05
 
-REGIONAL_CATEGORIES = [
-    {"name": "regional_favorite", "sort_by": "vote_average.desc", "vote_average.gte": 6.0, "vote_count.gte": 5},
-    {"name": "regional_popular", "sort_by": "popularity.desc", "vote_average.gte": 5.0, "vote_count.gte": 2},
-    {"name": "regional_new", "sort_by": "primary_release_date.desc", "vote_average.gte": 5.0, "vote_count.gte": 1, "primary_release_date.lte": "2026-08-23"},
-]
+# TMDB genre IDs
+GENRES = {
+    28: "Action",
+    12: "Adventure",
+    16: "Animation",
+    35: "Comedy",
+    80: "Crime",
+    99: "Documentary",
+    18: "Drama",
+    10751: "Family",
+    14: "Fantasy",
+    36: "History",
+    27: "Horror",
+    10402: "Music",
+    9648: "Mystery",
+    10749: "Romance",
+    878: "Science Fiction",
+    53: "Thriller",
+    10752: "War",
+    37: "Western",
+}
 
-if not TMDB_API_KEY:
-    raise SystemExit(
-        "TMDB_API_KEY not found. Make sure your .env file exists in this "
-        "same folder and has a line like: TMDB_API_KEY=your_key_here"
-    )
+# Genres associated with each mood.
+MOOD_GENRES = {
+    "happy": [35, 10751, 16, 10402],
+    "sad": [18, 10749],
+    "action": [28, 12, 53],
+    "romance": [10749, 18],
+    "horror": [27, 53, 9648],
+}
 
 session = requests.Session()
-retry_strategy = Retry(total=5, backoff_factor=1.5,
-                        status_forcelist=[429, 500, 502, 503, 504],
-                        allowed_methods=["GET"])
-adapter = HTTPAdapter(max_retries=retry_strategy)
-session.mount("https://", adapter)
-session.mount("http://", adapter)
+API_KEY = None
 
 
-def safe_get(url, params, timeout=15):
-    try:
-        response = session.get(url, params=params, timeout=timeout)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"  Warning: request failed after retries ({e}). Skipping this one.")
-        return None
+# ------------------------------------------------------------
+# Load API key from environment or .env
+# ------------------------------------------------------------
+
+def load_api_key():
+    key = os.getenv("TMDB_API_KEY")
+
+    if key:
+        return key.strip().strip('"').strip("'")
+
+    if ENV_FILE.exists():
+        for line in ENV_FILE.read_text(
+            encoding="utf-8"
+        ).splitlines():
+            line = line.strip()
+
+            if line.startswith("TMDB_API_KEY="):
+                value = line.split("=", 1)[1].strip()
+                return value.strip('"').strip("'")
+
+    return None
 
 
-def get_genre_map():
-    data = safe_get(f"{BASE_URL}/genre/movie/list", {"api_key": TMDB_API_KEY, "language": "en-US"})
-    return {g["id"]: g["name"] for g in data["genres"]} if data else {}
+# ------------------------------------------------------------
+# Make a TMDB API request
+# ------------------------------------------------------------
+
+def tmdb_get(endpoint, params=None):
+    if not API_KEY:
+        raise RuntimeError(
+            "TMDB_API_KEY is missing. Add it to your .env file."
+        )
+
+    request_params = dict(params or {})
+    request_params["api_key"] = API_KEY
+
+    url = f"{API_BASE}{endpoint}"
+
+    for attempt in range(3):
+        try:
+            response = session.get(
+                url,
+                params=request_params,
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if response.status_code == 429:
+                wait_time = int(
+                    response.headers.get("Retry-After", 2)
+                )
+                time.sleep(max(wait_time, 2))
+                continue
+
+            response.raise_for_status()
+            time.sleep(REQUEST_DELAY)
+            return response.json()
+
+        except requests.RequestException as error:
+            print(f"  API request failed: {error}")
+
+            if attempt == 2:
+                return {}
+
+            time.sleep(2 * (attempt + 1))
+
+    return {}
 
 
-def get_certification(movie_id):
-    data = safe_get(f"{BASE_URL}/movie/{movie_id}/release_dates", {"api_key": TMDB_API_KEY})
-    if not data:
-        return "NR"
-    for country_code in ["IN", "US"]:
-        for entry in data.get("results", []):
-            if entry["iso_3166_1"] == country_code:
-                for rd in entry["release_dates"]:
-                    if rd.get("certification"):
-                        return rd["certification"]
+# ------------------------------------------------------------
+# Save progress so collected movies are not lost
+# ------------------------------------------------------------
+
+def save_movies(movie_database):
+    OUTPUT_FILE.write_text(
+        json.dumps(
+            movie_database,
+            indent=2,
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
+
+
+# ------------------------------------------------------------
+# Convert TMDB genre IDs into names
+# ------------------------------------------------------------
+
+def get_genre_names(genre_ids):
+    return [
+        GENRES[genre_id]
+        for genre_id in genre_ids
+        if genre_id in GENRES
+    ]
+
+
+# ------------------------------------------------------------
+# Assign moods using movie genres
+# ------------------------------------------------------------
+
+def get_moods(genre_ids):
+    moods = []
+
+    for mood, mood_genres in MOOD_GENRES.items():
+        if any(genre in genre_ids for genre in mood_genres):
+            moods.append(mood)
+
+    # Every movie can also be recommended for surprise-me.
+    moods.append("surprise_me")
+
+    return list(dict.fromkeys(moods))
+
+
+# ------------------------------------------------------------
+# Create a valid TMDB discover query
+# ------------------------------------------------------------
+
+def build_discover_params(
+    language,
+    page,
+    genre_ids=None,
+    sort_by="popularity.desc",
+):
+    params = {
+        "language": "en-US",
+        "with_original_language": language,
+        "sort_by": sort_by,
+        "include_adult": "true",
+        "include_video": "false",
+        "page": page,
+        "vote_count.gte": 0,
+    }
+
+    # TMDB expects a single with_genres parameter.
+    # The | symbol means match ANY selected genre.
+    if genre_ids:
+        params["with_genres"] = "|".join(
+            str(genre_id) for genre_id in genre_ids
+        )
+
+    return params
+
+
+# ------------------------------------------------------------
+# Fetch one discover page
+# ------------------------------------------------------------
+
+def fetch_discover_page(
+    language,
+    page,
+    genre_ids=None,
+    sort_by="popularity.desc",
+):
+    params = build_discover_params(
+        language=language,
+        page=page,
+        genre_ids=genre_ids,
+        sort_by=sort_by,
+    )
+
+    data = tmdb_get("/discover/movie", params)
+
+    return data.get("results", [])
+
+
+# ------------------------------------------------------------
+# Collect movies for one language and one genre search
+# ------------------------------------------------------------
+
+def collect_category(
+    language,
+    database,
+    target,
+    genre_ids=None,
+    category_name="General",
+):
+    page = 1
+    added = 0
+
+    while len(database) < target and page <= MAX_PAGES:
+        print(
+            f"  {LANGUAGE_NAMES[language]} | "
+            f"{category_name} | Page {page} | "
+            f"Total {len(database)}/{target}"
+        )
+
+        results = fetch_discover_page(
+            language=language,
+            page=page,
+            genre_ids=genre_ids,
+        )
+
+        if not results:
+            break
+
+        for movie in results:
+            movie_id = movie.get("id")
+
+            if not movie_id:
+                continue
+
+            # Avoid duplicates.
+            if movie_id in database:
+                continue
+
+            title = (
+                movie.get("title")
+                or movie.get("original_title")
+                or ""
+            ).strip()
+
+            if not title:
+                continue
+
+            movie_genre_ids = movie.get("genre_ids", [])
+            genre_names = get_genre_names(movie_genre_ids)
+
+            record = {
+                "id": movie_id,
+                "title": title,
+                "original_title": movie.get("original_title", title),
+                "overview": movie.get("overview", ""),
+                "original_language": language,
+                "language": LANGUAGE_NAMES[language],
+                "release_date": movie.get("release_date", ""),
+                "year": (
+                    movie.get("release_date", "")[:4]
+                    if movie.get("release_date")
+                    else None
+                ),
+                "poster_path": movie.get("poster_path"),
+                "backdrop_path": movie.get("backdrop_path"),
+                "vote_average": movie.get("vote_average", 0),
+                "vote_count": movie.get("vote_count", 0),
+                "popularity": movie.get("popularity", 0),
+                "adult": movie.get("adult", False),
+                "genres": genre_names,
+                "genre_ids": movie_genre_ids,
+                "moods": get_moods(movie_genre_ids),
+                "age_rating": "NR",
+                "certification": "NR",
+                "providers": [],
+                "source": "TMDB",
+            }
+
+            database[movie_id] = record
+            added += 1
+
+            if len(database) >= target:
+                break
+
+        # Stop if TMDB has no more pages.
+        total_pages = min(
+            data_page_count(results),
+            MAX_PAGES,
+        )
+
+        if page >= total_pages:
+            break
+
+        page += 1
+
+    return added
+
+
+def data_page_count(results):
+    # The result list itself does not include pagination metadata.
+    # The caller uses a separate check below when needed.
+    # Returning MAX_PAGES keeps pagination controlled by empty pages.
+    return MAX_PAGES
+
+
+# ------------------------------------------------------------
+# Fetch discover results with pagination metadata
+# ------------------------------------------------------------
+
+def collect_category(
+    language,
+    database,
+    target,
+    genre_ids=None,
+    category_name="General",
+):
+    page = 1
+    added = 0
+
+    while len(database) < target and page <= MAX_PAGES:
+        print(
+            f"  {LANGUAGE_NAMES[language]} | "
+            f"{category_name} | Page {page} | "
+            f"Total {len(database)}/{target}"
+        )
+
+        params = build_discover_params(
+            language=language,
+            page=page,
+            genre_ids=genre_ids,
+        )
+
+        data = tmdb_get("/discover/movie", params)
+        results = data.get("results", [])
+
+        if not results:
+            break
+
+        for movie in results:
+            movie_id = movie.get("id")
+
+            if not movie_id or movie_id in database:
+                continue
+
+            title = (
+                movie.get("title")
+                or movie.get("original_title")
+                or ""
+            ).strip()
+
+            if not title:
+                continue
+
+            genre_ids_for_movie = movie.get("genre_ids", [])
+            release_date = movie.get("release_date", "")
+
+            database[movie_id] = {
+                "id": movie_id,
+                "title": title,
+                "original_title": movie.get("original_title", title),
+                "overview": movie.get("overview", ""),
+                "original_language": language,
+                "language": LANGUAGE_NAMES[language],
+                "release_date": release_date,
+                "year": release_date[:4] if release_date else None,
+                "poster_path": movie.get("poster_path"),
+                "backdrop_path": movie.get("backdrop_path"),
+                "vote_average": movie.get("vote_average", 0),
+                "vote_count": movie.get("vote_count", 0),
+                "popularity": movie.get("popularity", 0),
+                "adult": movie.get("adult", False),
+                "genres": get_genre_names(genre_ids_for_movie),
+                "genre_ids": genre_ids_for_movie,
+                "moods": get_moods(genre_ids_for_movie),
+                "age_rating": "NR",
+                "certification": "NR",
+                "providers": [],
+                "source": "TMDB",
+            }
+
+            added += 1
+
+            if len(database) >= target:
+                break
+
+        save_movies_all_languages()
+
+        total_pages = data.get("total_pages", 1)
+
+        if page >= min(total_pages, MAX_PAGES):
+            break
+
+        page += 1
+
+    return added
+
+
+# ------------------------------------------------------------
+# Shared database for saving progress
+# ------------------------------------------------------------
+
+ALL_MOVIES = {}
+
+
+def save_movies_all_languages():
+    save_movies(ALL_MOVIES)
+
+
+# ------------------------------------------------------------
+# Collect horror movies first, then other moods
+# ------------------------------------------------------------
+
+def fetch_for_language(language, target):
+    print("\n" + "=" * 60)
+    print(f"FETCHING {LANGUAGE_NAMES[language].upper()} MOVIES")
+    print(f"Target: {target}")
+    print("Horror movies will be prioritized first.")
+    print("=" * 60)
+
+    database = {}
+
+    # Approximately 30% horror, where available.
+    horror_target = max(1, int(target * 0.30))
+
+    print(f"\n[1] Collecting {LANGUAGE_NAMES[language]} horror movies...")
+
+    collect_category(
+        language=language,
+        database=database,
+        target=horror_target,
+        genre_ids=[27],
+        category_name="Horror",
+    )
+
+    print(f"\nHorror collected: {len(database)}/{horror_target} target")
+
+    # Fill the database using the requested mood categories.
+    print("\n[2] Collecting movies for other moods...")
+
+    for mood in ["action", "romance", "happy", "sad"]:
+        if len(database) >= target:
+            break
+
+        print(f"\nSearching mood: {mood}")
+
+        collect_category(
+            language=language,
+            database=database,
+            target=target,
+            genre_ids=MOOD_GENRES[mood],
+            category_name=mood.title(),
+        )
+
+    # Final fallback: popular movies of the same language.
+    if len(database) < target:
+        print("\n[3] Filling remaining places with popular movies...")
+
+        collect_category(
+            language=language,
+            database=database,
+            target=target,
+            genre_ids=None,
+            category_name="Popular",
+        )
+
+    ALL_MOVIES.update(database)
+    save_movies_all_languages()
+
+    print(
+        f"\nFinished {LANGUAGE_NAMES[language]}: "
+        f"{len(database)}/{target} movies collected."
+    )
+
+    return database
+
+
+# ------------------------------------------------------------
+# Add certifications and streaming provider information
+# ------------------------------------------------------------
+
+def fetch_certification(movie_id):
+    data = tmdb_get(f"/movie/{movie_id}/release_dates")
+
+    results = data.get("results", [])
+
+    # Prefer Indian certification, then US certification.
+    for country_code in ["IN", "US", "GB"]:
+        for country in results:
+            if country.get("iso_3166_1") != country_code:
+                continue
+
+            for release in country.get("release_dates", []):
+                certification = (
+                    release.get("certification") or ""
+                ).strip()
+
+                if certification:
+                    return certification
+
     return "NR"
 
 
-def get_min_age(certification):
-    """
-    Map a certification string (Indian or US) to a minimum viewing age.
-    Real TMDB values look like 'U/A 7+', 'U/A 13+', 'U/A 16+', 'A', 'PG-13',
-    'R', 'NC-17', 'U', 'G', 'PG', or 'NR' — this checks for the relevant
-    substrings rather than requiring an exact match, since exact-match against
-    a fixed set (the old approach) almost never hits a real TMDB value.
-    """
-    cert = (certification or "").upper()
-    if "18" in cert or cert == "A" or "NC-17" in cert:
-        return 18
-    if cert == "R" or "R-" in cert:
-        return 17
-    if "16" in cert:
-        return 16
-    if "13" in cert:
-        return 13
-    if "7" in cert:
-        return 7
-    return 0  # U, G, PG, NR, or unrecognized -> treat as all-ages
+def fetch_providers(movie_id):
+    data = tmdb_get(f"/movie/{movie_id}/watch/providers")
+    results = data.get("results", {})
+
+    # India is the primary market for MovieMate.
+    india = results.get("IN", {})
+    provider_names = []
+
+    for section in ["flatrate", "rent", "buy", "free", "ads"]:
+        for provider in india.get(section, []):
+            name = provider.get("provider_name")
+
+            if name and name not in provider_names:
+                provider_names.append(name)
+
+    return provider_names
 
 
-def is_under_13(certification):
-    """Keep only certifications with no explicit age gate above MAX_VIEWING_AGE."""
-    return get_min_age(certification) <= MAX_VIEWING_AGE
+def enrich_movies():
+    print("\n" + "=" * 60)
+    print("ADDING CERTIFICATIONS AND STREAMING PROVIDERS")
+    print("=" * 60)
 
+    movies = list(ALL_MOVIES.values())
 
-def get_watch_providers(movie_id):
-    data = safe_get(f"{BASE_URL}/movie/{movie_id}/watch/providers", {"api_key": TMDB_API_KEY})
-    if not data:
-        return []
-    region_data = data.get("results", {}).get("IN", {})
-    providers = []
-    for category in ["flatrate", "free", "ads"]:
-        for p in region_data.get(category, []):
-            providers.append(p["provider_name"])
-    return sorted(set(providers))
+    for index, movie in enumerate(movies, start=1):
+        movie_id = movie["id"]
 
-
-def save_progress(movies):
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(movies, f, indent=2, ensure_ascii=False)
-
-
-def fetch_for_language(language_code, limit, categories, genre_map, all_movies, seen_ids):
-    """Fetch highly rated, under-13 movies for one exact language quota."""
-    start_count = len(all_movies)
-    lang_name = LANGUAGE_NAMES.get(language_code, language_code)
-
-    for category in categories:
-        if len(all_movies) - start_count >= limit:
-            break
-        print(f"\nFetching {category['name']} ({lang_name})...")
-
-        for page in range(1, NUM_PAGES + 1):
-            if len(all_movies) - start_count >= limit:
-                break
-
-            params = {
-                "api_key": TMDB_API_KEY,
-                "language": "en-US",
-                "sort_by": category["sort_by"],
-                **{k: v for k, v in category.items() if k != "name"},
-                "page": page,
-            }
-            if language_code:  # empty/None means "any language" for the topoff pass
-                params["with_original_language"] = language_code
-
-            data = safe_get(f"{BASE_URL}/discover/movie", params)
-            if not data or not data.get("results"):
-                break  # no more pages / no more supply for this filter combo
-
-            for movie in data["results"]:
-                if len(all_movies) - start_count >= limit:
-                    break
-                movie_id = movie["id"]
-                if movie_id in seen_ids:
-                    continue
-                seen_ids.add(movie_id)
-
-                genres = [genre_map.get(gid, "") for gid in movie.get("genre_ids", [])]
-                lang_code = movie.get("original_language")
-                certification = get_certification(movie_id)
-                if not is_under_13(certification):
-                    continue
-
-                all_movies.append({
-                    "id": movie_id,
-                    "title": movie.get("title"),
-                    "overview": movie.get("overview"),
-                    "original_language": lang_code,
-                    "original_language_name": LANGUAGE_NAMES.get(lang_code, lang_code),
-                    "categories": [category["name"]],
-                    "genres": genres,
-                    "release_date": movie.get("release_date"),
-                    "rating": movie.get("vote_average"),
-                    "certification": certification,
-                    "watch_providers": get_watch_providers(movie_id),
-                    "poster_path": movie.get("poster_path"),
-                })
-                time.sleep(0.3)
-
-            save_progress(all_movies)
-            print(f"  Page {page}: {len(all_movies) - start_count}/{limit} {lang_name} movies so far (saved)")
-
-    got = len(all_movies) - start_count
-    print(f"-> {lang_name}: got {got}/{limit}")
-    return got
-
-
-def fetch_movies():
-    print("Fetching genre list...")
-    genre_map = get_genre_map()
-
-    all_movies = []
-    seen_ids = set()
-
-    for language_code, limit in LANGUAGE_TARGETS.items():
-        categories = REGIONAL_CATEGORIES if language_code == "mr" else CATEGORIES
-        fetch_for_language(language_code, limit, categories, genre_map, all_movies, seen_ids)
-
-    counts = {code: sum(movie["original_language"] == code for movie in all_movies)
-              for code in LANGUAGE_TARGETS}
-    expected_total = sum(LANGUAGE_TARGETS.values())
-    if len(all_movies) != expected_total or counts != LANGUAGE_TARGETS:
         print(
-            f"\nWarning: didn't hit the exact target of {expected_total} movies "
-            f"(got {len(all_movies)}, counts {counts}). This can happen if TMDB "
-            f"simply doesn't have enough qualifying titles for one language. "
-            f"Everything found so far has still been saved to {OUTPUT_FILE}."
+            f"[{index}/{len(movies)}] "
+            f"Updating {movie['title']}"
         )
-    else:
-        print("Final language counts:", counts)
 
-    return all_movies
+        certification = fetch_certification(movie_id)
+
+        movie["certification"] = certification
+        movie["age_rating"] = certification
+
+        movie["providers"] = fetch_providers(movie_id)
+
+        save_movies_all_languages()
+
+    print("Enrichment complete.")
+
+
+# ------------------------------------------------------------
+# Main
+# ------------------------------------------------------------
+
+def main():
+    global API_KEY
+
+    print("=" * 60)
+    print("MOVIEMATE MOVIE DATABASE BUILDER")
+    print("=" * 60)
+    print("Target: 400 unique movies")
+    print("Marathi: 150 | English: 150 | Hindi: 100")
+    print("Horror movies will be prioritized first.")
+    print()
+
+    API_KEY = load_api_key()
+
+    if not API_KEY:
+        print("ERROR: TMDB_API_KEY was not found.")
+        print("Add this to your .env file:")
+        print("TMDB_API_KEY=your_tmdb_api_key")
+        return
+
+    # Verify the API key before doing a large download.
+    test = tmdb_get("/configuration")
+
+    if not test:
+        print("ERROR: TMDB API check failed.")
+        print("Check your API key and internet connection.")
+        return
+
+    for language, target in TARGETS.items():
+        fetch_for_language(language, target)
+
+    save_movies_all_languages()
+
+    print("\n" + "=" * 60)
+    print("MOVIE COLLECTION SUMMARY")
+    print("=" * 60)
+
+    for language, target in TARGETS.items():
+        count = sum(
+            1
+            for movie in ALL_MOVIES.values()
+            if movie.get("original_language") == language
+        )
+
+        print(
+            f"{LANGUAGE_NAMES[language]}: {count}/{target}"
+        )
+
+    print(f"Total collected: {len(ALL_MOVIES)}")
+    print(f"Saved to: {OUTPUT_FILE}")
+
+    # Optional: fetch certification and providers for every movie.
+    # This makes many extra API requests and can take a while.
+    enrich_choice = input(
+        "\nFetch age certifications and streaming providers "
+        "for every movie? (y/n): "
+    ).strip().lower()
+
+    if enrich_choice == "y":
+        enrich_movies()
+
+    save_movies_all_languages()
+
+    print("\nDONE!")
+    print(f"Movie database saved at: {OUTPUT_FILE}")
 
 
 if __name__ == "__main__":
-    movies = fetch_movies()
-    save_progress(movies)
-    print(f"\nDone! Saved {len(movies)} movies to {OUTPUT_FILE}")
+    try:
+        main()
+    except KeyboardInterrupt:
+        save_movies_all_languages()
+        print("\nStopped by user. Progress has been saved.")
+    except Exception as error:
+        save_movies_all_languages()
+        print(f"\nERROR: {error}")
+        print("Any collected movies have been saved.")
