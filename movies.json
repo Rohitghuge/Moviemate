@@ -2,7 +2,7 @@
   {
     "id": 19404,
     "title": "Dilwale Dulhania Le Jayenge",
-    "overview": "Raj is a rich, carefree, happy-go-lucky second generation NRI. Simran is the daughter of Chaudhary Baldev Singh, who in spite of being an NRI is very strict about adherence to Indian values. Simran has left for India to be married to her childhood fiancÃ©. Raj leaves for India with a mission at his hands, to claim his lady love under the noses of her whole family. Thus begins a saga.",
+    "overview": "Raj is a rich, carefree, happy-go-lucky second generation NRI. Simran is the daughter of Chaudhary Baldev Singh, who in spite of being an NRI is very strict about adherence to Indian values. Simran has left for India to be married to her childhood fiancé. Raj leaves for India with a mission at his hands, to claim his lady love under the noses of her whole family. Thus begins a saga.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -35,7 +35,7 @@
       "Romance"
     ],
     "release_date": "2010-02-10",
-    "rating": 8.039,
+    "rating": 8.0,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -46,7 +46,7 @@
   {
     "id": 20453,
     "title": "3 Idiots",
-    "overview": "Rascal. Joker. Dreamer. Genius... You've never met a college student quite like \"Rancho.\" From the moment he arrives at India's most prestigious university, Rancho's outlandish schemes turn the campus upside downâ€”along with the lives of his two newfound best friends. Together, they make life miserable for \"Virus,\" the schoolâ€™s uptight and heartless dean. But when Rancho catches the eye of the dean's daughter, Virus sets his sights on flunking out the \"3 idiots\" once and for all.",
+    "overview": "Rascal. Joker. Dreamer. Genius... You've never met a college student quite like \"Rancho.\" From the moment he arrives at India's most prestigious university, Rancho's outlandish schemes turn the campus upside down—along with the lives of his two newfound best friends. Together, they make life miserable for \"Virus,\" the school’s uptight and heartless dean. But when Rancho catches the eye of the dean's daughter, Virus sets his sights on flunking out the \"3 idiots\" once and for all.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -57,7 +57,7 @@
       "Comedy"
     ],
     "release_date": "2009-12-23",
-    "rating": 8.008,
+    "rating": 8.0,
     "certification": "UA",
     "watch_providers": [],
     "poster_path": "/66A9MqXOyVFCssoloscw79z8Tew.jpg"
@@ -74,8 +74,8 @@
     "genres": [
       "Drama"
     ],
-    "release_date": "2007-12-21",
-    "rating": 7.987,
+    "release_date": "2007-12-20",
+    "rating": 7.992,
     "certification": "U",
     "watch_providers": [],
     "poster_path": "/puHRt6Raovm5ujGCdwLWvRv4NHU.jpg"
@@ -95,7 +95,7 @@
       "Comedy"
     ],
     "release_date": "2016-12-21",
-    "rating": 7.869,
+    "rating": 7.9,
     "certification": "U",
     "watch_providers": [
       "JioHotstar",
@@ -113,12 +113,11 @@
       "all_time_favorite"
     ],
     "genres": [
-      "Comedy",
-      "Drama",
-      "Adventure"
+      "Music",
+      "Drama"
     ],
-    "release_date": "2015-07-17",
-    "rating": 7.816,
+    "release_date": "2015-07-16",
+    "rating": 7.8,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -140,7 +139,7 @@
       "Science Fiction"
     ],
     "release_date": "2014-12-18",
-    "rating": 7.704,
+    "rating": 7.703,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -161,7 +160,7 @@
       "Drama"
     ],
     "release_date": "2001-12-14",
-    "rating": 7.68,
+    "rating": 7.7,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -169,6 +168,30 @@
       "Netflix"
     ],
     "poster_path": "/eJrD94E1msYEa0DygvkvdEKpChm.jpg"
+  },
+  {
+    "id": 127501,
+    "title": "Barfi!",
+    "overview": "The heartwarming tale of Barfi, a charming deaf-mute young man from 1970s Darjeeling, and two unalike women who can't help but fall for him.",
+    "original_language": "hi",
+    "original_language_name": "Hindi",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Romance",
+      "Comedy"
+    ],
+    "release_date": "2012-09-13",
+    "rating": 7.6,
+    "certification": "U",
+    "watch_providers": [
+      "Amazon Prime Video",
+      "Amazon Prime Video with Ads",
+      "JioHotstar"
+    ],
+    "poster_path": "/5cJIx2zKjDoUtPSliou23xsReb1.jpg"
   },
   {
     "id": 61202,
@@ -187,32 +210,10 @@
     "release_date": "2011-07-15",
     "rating": 7.6,
     "certification": "UA",
-    "watch_providers": [],
-    "poster_path": "/hKO9O715wYxjkQSEv47giCYcyO8.jpg"
-  },
-  {
-    "id": 127501,
-    "title": "Barfi!",
-    "overview": "The heartwarming tale of Barfi, a charming deaf-mute young man from 1970s Darjeeling, and two unalike women who can't help but fall for him.",
-    "original_language": "hi",
-    "original_language_name": "Hindi",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Drama",
-      "Romance",
-      "Comedy"
-    ],
-    "release_date": "2012-09-13",
-    "rating": 7.632,
-    "certification": "U",
     "watch_providers": [
-      "Amazon Prime Video",
-      "Amazon Prime Video with Ads",
-      "JioHotstar"
+      "Netflix"
     ],
-    "poster_path": "/5cJIx2zKjDoUtPSliou23xsReb1.jpg"
+    "poster_path": "/hKO9O715wYxjkQSEv47giCYcyO8.jpg"
   },
   {
     "id": 534780,
@@ -230,7 +231,7 @@
       "Comedy"
     ],
     "release_date": "2018-10-05",
-    "rating": 7.604,
+    "rating": 7.6,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -238,25 +239,6 @@
       "JioHotstar"
     ],
     "poster_path": "/dy3K6hNvwE05siGgiLJcEiwgpdO.jpg"
-  },
-  {
-    "id": 15917,
-    "title": "Devdas",
-    "overview": "In 1900s India, Calcuttan zamindar Devdas Mukherjee â€” unable to marry his lover â€” takes up alcohol and the company of a courtesan to alleviate the pain.",
-    "original_language": "hi",
-    "original_language_name": "Hindi",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Drama",
-      "Romance"
-    ],
-    "release_date": "2002-07-11",
-    "rating": 7.5,
-    "certification": "U",
-    "watch_providers": [],
-    "poster_path": "/dUBFi7bnLRfm4WaTh4ZoF2tbBJj.jpg"
   },
   {
     "id": 4251,
@@ -272,12 +254,55 @@
       "Romance"
     ],
     "release_date": "2004-11-12",
-    "rating": 7.483,
+    "rating": 7.5,
     "certification": "U",
     "watch_providers": [
       "Netflix"
     ],
     "poster_path": "/j267YqLvKAHeyykTflxzpgVgviQ.jpg"
+  },
+  {
+    "id": 15917,
+    "title": "Devdas",
+    "overview": "In 1900s India, Calcuttan zamindar Devdas Mukherjee — unable to marry his lover — takes up alcohol and the company of a courtesan to alleviate the pain.",
+    "original_language": "hi",
+    "original_language_name": "Hindi",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "release_date": "2002-07-11",
+    "rating": 7.5,
+    "certification": "U",
+    "watch_providers": [],
+    "poster_path": "/4IJObbE9c3rO0bZxMwMtt5n9g2n.jpg"
+  },
+  {
+    "id": 4254,
+    "title": "Kal Ho Naa Ho",
+    "overview": "An uptight MBA student falls for the charismatic new neighbor who charms her troubled family – but he has a secret that forces him to push her away.",
+    "original_language": "hi",
+    "original_language_name": "Hindi",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Romance"
+    ],
+    "release_date": "2003-11-27",
+    "rating": 7.5,
+    "certification": "U",
+    "watch_providers": [
+      "Amazon Prime Video",
+      "Amazon Prime Video with Ads",
+      "Netflix"
+    ],
+    "poster_path": "/zhMI6I0kSLnewTMwE0A8Tz3Cj2f.jpg"
   },
   {
     "id": 11854,
@@ -294,7 +319,7 @@
       "Comedy"
     ],
     "release_date": "1998-10-16",
-    "rating": 7.469,
+    "rating": 7.472,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -302,30 +327,6 @@
       "Netflix"
     ],
     "poster_path": "/5FmtHHDGPofW5Zjns1EM1D8503c.jpg"
-  },
-  {
-    "id": 4254,
-    "title": "Kal Ho Naa Ho",
-    "overview": "An uptight MBA student falls for the charismatic new neighbor who charms her troubled family â€“ but he has a secret that forces him to push her away.",
-    "original_language": "hi",
-    "original_language_name": "Hindi",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Comedy",
-      "Drama",
-      "Romance"
-    ],
-    "release_date": "2003-11-27",
-    "rating": 7.467,
-    "certification": "U",
-    "watch_providers": [
-      "Amazon Prime Video",
-      "Amazon Prime Video with Ads",
-      "Netflix"
-    ],
-    "poster_path": "/zhMI6I0kSLnewTMwE0A8Tz3Cj2f.jpg"
   },
   {
     "id": 191714,
@@ -341,7 +342,7 @@
       "Romance"
     ],
     "release_date": "2013-09-20",
-    "rating": 7.39,
+    "rating": 7.4,
     "certification": "U",
     "watch_providers": [
       "JioHotstar"
@@ -361,7 +362,7 @@
       "Drama"
     ],
     "release_date": "2004-12-17",
-    "rating": 7.343,
+    "rating": 7.4,
     "certification": "U",
     "watch_providers": [
       "Netflix"
@@ -371,7 +372,7 @@
   {
     "id": 247645,
     "title": "Queen",
-    "overview": "Rani, a 24-year-old homely girl, decides to go on her honeymoon alone when her fiancÃ© calls off the wedding. Traveling around Europe, she finds joy, makes friends, and gains new-found independence.",
+    "overview": "Rani, a 24-year-old homely girl, decides to go on her honeymoon alone when her fiancé calls off the wedding. Traveling around Europe, she finds joy, makes friends, and gains new-found independence.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -382,7 +383,7 @@
       "Drama"
     ],
     "release_date": "2014-03-07",
-    "rating": 7.321,
+    "rating": 7.338,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -405,40 +406,12 @@
       "Comedy"
     ],
     "release_date": "2013-05-31",
-    "rating": 7.296,
+    "rating": 7.299,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
     ],
     "poster_path": "/em39H81XLCDgXsI7V4IcBZseEO6.jpg"
-  },
-  {
-    "id": 11807,
-    "title": "Jab We Met",
-    "overview": "A depressed wealthy businessman and a spunky carefree young woman embark on an unexpected journey that changes their lives.",
-    "original_language": "hi",
-    "original_language_name": "Hindi",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Drama",
-      "Comedy",
-      "Romance"
-    ],
-    "release_date": "2007-10-26",
-    "rating": 7.287,
-    "certification": "U",
-    "watch_providers": [
-      "Amazon MX Player",
-      "Amazon Prime Video",
-      "Amazon Prime Video with Ads",
-      "JioHotstar",
-      "MX Player",
-      "ShemarooMe",
-      "VI movies and tv"
-    ],
-    "poster_path": "/sQ7A7jyTbkK90vjd8yCRuoyL9CK.jpg"
   },
   {
     "id": 135718,
@@ -454,7 +427,7 @@
       "Drama"
     ],
     "release_date": "2012-09-28",
-    "rating": 7.286,
+    "rating": 7.3,
     "certification": "U",
     "watch_providers": [
       "JioHotstar"
@@ -476,10 +449,39 @@
       "History"
     ],
     "release_date": "2001-06-15",
-    "rating": 7.28,
+    "rating": 7.3,
     "certification": "U",
     "watch_providers": [],
     "poster_path": "/yNX9lFRAFeNLNRIXdqZK9gYrYKa.jpg"
+  },
+  {
+    "id": 11807,
+    "title": "Jab We Met",
+    "overview": "A depressed wealthy businessman and a spunky carefree young woman embark on an unexpected journey that changes their lives.",
+    "original_language": "hi",
+    "original_language_name": "Hindi",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Comedy",
+      "Romance"
+    ],
+    "release_date": "2007-10-26",
+    "rating": 7.275,
+    "certification": "U",
+    "watch_providers": [
+      "Amazon MX Player",
+      "Amazon Prime Video",
+      "Amazon Prime Video Free with Ads",
+      "Amazon Prime Video with Ads",
+      "JioHotstar",
+      "MX Player",
+      "ShemarooMe",
+      "VI movies and tv"
+    ],
+    "poster_path": "/sQ7A7jyTbkK90vjd8yCRuoyL9CK.jpg"
   },
   {
     "id": 362045,
@@ -496,7 +498,7 @@
       "Drama"
     ],
     "release_date": "2015-12-18",
-    "rating": 7.248,
+    "rating": 7.2,
     "certification": "U",
     "watch_providers": [
       "Eros Now Select Apple TV channel"
@@ -518,7 +520,7 @@
       "Family"
     ],
     "release_date": "2012-09-21",
-    "rating": 7.245,
+    "rating": 7.2,
     "certification": "U",
     "watch_providers": [
       "Brew",
@@ -540,12 +542,33 @@
       "Drama"
     ],
     "release_date": "2007-08-09",
-    "rating": 7.208,
+    "rating": 7.214,
     "certification": "U",
     "watch_providers": [
       "Netflix"
     ],
     "poster_path": "/mmFMgEsTRCAGAtwffGpuo3mJsxN.jpg"
+  },
+  {
+    "id": 19625,
+    "title": "Munna Bhai M.B.B.S.",
+    "overview": "A gangster sets out to fulfill his father's dream of becoming a doctor.",
+    "original_language": "hi",
+    "original_language_name": "Hindi",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "release_date": "2003-12-19",
+    "rating": 7.211,
+    "certification": "U",
+    "watch_providers": [
+      "Zee5"
+    ],
+    "poster_path": "/OjJ2eZFMr0InHxjYCQXwxDoo4v.jpg"
   },
   {
     "id": 82825,
@@ -570,27 +593,6 @@
     "poster_path": "/e2eQVOrdQ8k7yYjjHKHP2nlwbTu.jpg"
   },
   {
-    "id": 19625,
-    "title": "Munna Bhai M.B.B.S.",
-    "overview": "A gangster sets out to fulfill his father's dream of becoming a doctor.",
-    "original_language": "hi",
-    "original_language_name": "Hindi",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Comedy",
-      "Drama"
-    ],
-    "release_date": "2003-12-19",
-    "rating": 7.188,
-    "certification": "U",
-    "watch_providers": [
-      "Zee5"
-    ],
-    "poster_path": "/OjJ2eZFMr0InHxjYCQXwxDoo4v.jpg"
-  },
-  {
     "id": 21614,
     "title": "Hera Pheri",
     "overview": "Two tenants and a landlord, in desperate need of money, chance upon a ransom call via a cross connection. They hatch a plan to claim the ransom for themselves.",
@@ -604,7 +606,7 @@
       "Crime"
     ],
     "release_date": "2000-03-31",
-    "rating": 7.127,
+    "rating": 7.143,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -671,7 +673,7 @@
       "Romance"
     ],
     "release_date": "2008-12-11",
-    "rating": 7.095,
+    "rating": 7.113,
     "certification": "U",
     "watch_providers": [
       "Netflix"
@@ -694,7 +696,7 @@
       "Romance"
     ],
     "release_date": "2006-01-26",
-    "rating": 7.089,
+    "rating": 7.1,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -716,7 +718,7 @@
       "Action"
     ],
     "release_date": "1975-08-15",
-    "rating": 7.061,
+    "rating": 7.075,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -741,7 +743,7 @@
       "War"
     ],
     "release_date": "2019-01-11",
-    "rating": 7.048,
+    "rating": 7.1,
     "certification": "UA",
     "watch_providers": [
       "Zee5"
@@ -762,7 +764,7 @@
       "Thriller"
     ],
     "release_date": "2023-09-07",
-    "rating": 7.043,
+    "rating": 7.0,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -796,6 +798,27 @@
     "poster_path": "/cPLzHxPFRjzNvoyncdtDGBAxjp.jpg"
   },
   {
+    "id": 132316,
+    "title": "Jab Tak Hai Jaan",
+    "overview": "Samar Anand, a London-based struggling musician falls in love with Meera Thappar. After a severe accident, a panicked Meera promises God to leave Samar if he lives. Heartbroken, Samar leaves for India to become a fearless bomb disposal expert in the army.",
+    "original_language": "hi",
+    "original_language_name": "Hindi",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "release_date": "2012-11-13",
+    "rating": 7.0,
+    "certification": "UA",
+    "watch_providers": [
+      "Netflix"
+    ],
+    "poster_path": "/1TlzJZrzUlaC95Noqt3oMoxQxCu.jpg"
+  },
+  {
     "id": 19703,
     "title": "A Wednesday!",
     "overview": "Prakash Rathod, a retired police commissioner recounts the most memorable case of his career wherein he was informed about a bomb scare in Mumbai by an ordinary commoner.",
@@ -809,7 +832,7 @@
       "Thriller"
     ],
     "release_date": "2008-09-05",
-    "rating": 7.003,
+    "rating": 7.016,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -832,7 +855,7 @@
       "Comedy"
     ],
     "release_date": "2024-08-15",
-    "rating": 6.701,
+    "rating": 6.7,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -855,7 +878,7 @@
       "Romance"
     ],
     "release_date": "2024-03-01",
-    "rating": 7.806,
+    "rating": 7.8,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -875,7 +898,7 @@
       "Drama"
     ],
     "release_date": "2023-08-11",
-    "rating": 7.909,
+    "rating": 7.9,
     "certification": "PG",
     "watch_providers": [
       "JioHotstar"
@@ -885,7 +908,7 @@
   {
     "id": 1018228,
     "title": "Chor Nikal Ke Bhaga",
-    "overview": "A flight attendant and her boyfriend must steal a cache of diamonds to clear an old debt â€” but the plan spins into a mayhem when the plane gets hijacked.",
+    "overview": "A flight attendant and her boyfriend must steal a cache of diamonds to clear an old debt — but the plan spins into a mayhem when the plane gets hijacked.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -896,7 +919,7 @@
       "Thriller"
     ],
     "release_date": "2023-03-24",
-    "rating": 6.893,
+    "rating": 6.895,
     "certification": "NR",
     "watch_providers": [
       "Netflix"
@@ -918,11 +941,12 @@
       "Mystery"
     ],
     "release_date": "2022-11-18",
-    "rating": 8.0,
+    "rating": 8.029,
     "certification": "UA",
     "watch_providers": [
       "Amazon MX Player",
       "Amazon Prime Video",
+      "Amazon Prime Video Free with Ads",
       "Amazon Prime Video with Ads",
       "MX Player"
     ],
@@ -931,7 +955,7 @@
   {
     "id": 799155,
     "title": "Attack",
-    "overview": "With the Parliament under siege, Indiaâ€™s first super soldier Arjun Shergill is tasked to get hold of the terrorists in time, save the Prime Minister from their clutches and stop a dirty bomb from exploding and destroying Delhi.",
+    "overview": "With the Parliament under siege, India’s first super soldier Arjun Shergill is tasked to get hold of the terrorists in time, save the Prime Minister from their clutches and stop a dirty bomb from exploding and destroying Delhi.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -943,7 +967,7 @@
       "Thriller"
     ],
     "release_date": "2022-04-01",
-    "rating": 6.765,
+    "rating": 6.772,
     "certification": "UA",
     "watch_providers": [
       "VI movies and tv",
@@ -965,7 +989,7 @@
       "Drama"
     ],
     "release_date": "2022-03-11",
-    "rating": 7.063,
+    "rating": 7.098,
     "certification": "UA",
     "watch_providers": [
       "Zee5"
@@ -986,7 +1010,7 @@
       "Drama"
     ],
     "release_date": "2022-02-24",
-    "rating": 7.467,
+    "rating": 7.458,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -996,7 +1020,7 @@
   {
     "id": 767377,
     "title": "Dhamaka",
-    "overview": "When a cynical ex-TV news anchor gets an alarming call on his radio show, he sees a chance for a career comeback â€” but it may cost his conscience.",
+    "overview": "When a cynical ex-TV news anchor gets an alarming call on his radio show, he sees a chance for a career comeback — but it may cost his conscience.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -1008,7 +1032,7 @@
       "Crime"
     ],
     "release_date": "2021-11-19",
-    "rating": 6.814,
+    "rating": 6.816,
     "certification": "NR",
     "watch_providers": [
       "Netflix"
@@ -1018,7 +1042,7 @@
   {
     "id": 598826,
     "title": "Sardar Udham",
-    "overview": "A young Sardar Udham Singh left deeply scarred by the Jallianwala Bagh massacre, escaped into the mountains of Afghanistan, reaching London in 1933-34. Carrying an unhealed wound for 21 years, the revolutionary assassinated Michael Oâ€™Dwyer on 13th March, 1940, the man at the helm of affairs in Punjab, April 1919 to avenge the lost lives of his beloved brethren.",
+    "overview": "A young Sardar Udham Singh left deeply scarred by the Jallianwala Bagh massacre, escaped into the mountains of Afghanistan, reaching London in 1933-34. Carrying an unhealed wound for 21 years, the revolutionary assassinated Michael O’Dwyer on 13th March, 1940, the man at the helm of affairs in Punjab, April 1919 to avenge the lost lives of his beloved brethren.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -1030,11 +1054,12 @@
       "History"
     ],
     "release_date": "2021-10-16",
-    "rating": 7.195,
+    "rating": 7.196,
     "certification": "UA",
     "watch_providers": [
       "Amazon MX Player",
       "Amazon Prime Video",
+      "Amazon Prime Video Free with Ads",
       "Amazon Prime Video with Ads",
       "MX Player"
     ],
@@ -1056,7 +1081,7 @@
       "War"
     ],
     "release_date": "2021-08-12",
-    "rating": 7.277,
+    "rating": 7.3,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -1078,7 +1103,7 @@
       "Drama"
     ],
     "release_date": "2021-07-26",
-    "rating": 6.872,
+    "rating": 6.864,
     "certification": "NR",
     "watch_providers": [
       "Netflix"
@@ -1099,7 +1124,7 @@
       "Comedy"
     ],
     "release_date": "2020-11-12",
-    "rating": 7.198,
+    "rating": 7.2,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -1107,26 +1132,26 @@
     "poster_path": "/zWq4HzuIcvoFss4BDkILYZqceuw.jpg"
   },
   {
-    "id": 645484,
-    "title": "Dil Bechara",
-    "overview": "Kizie and Manny, two ordinary people brought together by a tragic twist, embark on a bittersweet and extraordinary journey into the heart of that crazy little thing called 'life'.",
+    "id": 589615,
+    "title": "Raat Akeli Hai",
+    "overview": "When a newly married landlord is murdered, a misfit cop’s investigation is complicated by the victim’s secretive family and his own conflicted heart.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
       "new"
     ],
     "genres": [
-      "Drama",
-      "Romance"
+      "Crime",
+      "Mystery",
+      "Thriller"
     ],
-    "release_date": "2020-07-24",
-    "rating": 6.756,
-    "certification": "U",
+    "release_date": "2020-07-31",
+    "rating": 6.833,
+    "certification": "NR",
     "watch_providers": [
-      "JioHotstar",
-      "VI movies and tv"
+      "Netflix"
     ],
-    "poster_path": "/lMFjMrc8Bn0CQhtJDORfspXrWrK.jpg"
+    "poster_path": "/lQPWcvQiv1D1xBlpnn5o0hepXkX.jpg"
   },
   {
     "id": 643534,
@@ -1144,13 +1169,34 @@
       "Drama"
     ],
     "release_date": "2019-12-27",
-    "rating": 6.525,
+    "rating": 6.519,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
       "Amazon Prime Video with Ads"
     ],
     "poster_path": "/1YWp8MdXZAZvXgnWyv2RgMaG3Ps.jpg"
+  },
+  {
+    "id": 579230,
+    "title": "Bala",
+    "overview": "A man suffering from alopecia copes with his lack of self-confidence and the societal pressure that comes with being bald.",
+    "original_language": "hi",
+    "original_language_name": "Hindi",
+    "categories": [
+      "new"
+    ],
+    "genres": [
+      "Comedy",
+      "Romance"
+    ],
+    "release_date": "2019-11-07",
+    "rating": 6.518,
+    "certification": "UA",
+    "watch_providers": [
+      "JioHotstar"
+    ],
+    "poster_path": "/vWiqhvoCJsymKVe8vbZLuYfY4rg.jpg"
   },
   {
     "id": 585268,
@@ -1189,7 +1235,7 @@
       "Drama"
     ],
     "release_date": "2019-09-05",
-    "rating": 7.716,
+    "rating": 7.7,
     "certification": "U",
     "watch_providers": [
       "JioHotstar",
@@ -1210,7 +1256,7 @@
       "Drama"
     ],
     "release_date": "2019-07-12",
-    "rating": 7.286,
+    "rating": 7.302,
     "certification": "U",
     "watch_providers": [
       "JioHotstar",
@@ -1221,7 +1267,7 @@
   {
     "id": 597089,
     "title": "Article 15",
-    "overview": "A young IPS officerâ€™s new posting in rural India has him confronting caste disparities and uncomfortable truths in the face of a gruesome crime. When three girls go missing in the fictional village of Lalgaon, two of them are found dead and there is no trace of the third one. Where is she and who is responsible for this heinous act?",
+    "overview": "A young IPS officer’s new posting in rural India has him confronting caste disparities and uncomfortable truths in the face of a gruesome crime. When three girls go missing in the fictional village of Lalgaon, two of them are found dead and there is no trace of the third one. Where is she and who is responsible for this heinous act?",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -1233,7 +1279,7 @@
       "Thriller"
     ],
     "release_date": "2019-05-28",
-    "rating": 7.577,
+    "rating": 7.6,
     "certification": "UA",
     "watch_providers": [],
     "poster_path": "/puyn1J1NOTG7P2dYxpOIl1583yf.jpg"
@@ -1252,7 +1298,7 @@
       "Adventure"
     ],
     "release_date": "2019-03-29",
-    "rating": 6.778,
+    "rating": 6.7,
     "certification": "UA",
     "watch_providers": [
       "JioHotstar",
@@ -1276,7 +1322,7 @@
       "War"
     ],
     "release_date": "2019-03-21",
-    "rating": 7.114,
+    "rating": 7.1,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -1296,9 +1342,7 @@
     ],
     "genres": [
       "Crime",
-      "Thriller",
-      "Mystery",
-      "Drama"
+      "Thriller"
     ],
     "release_date": "2019-03-08",
     "rating": 7.254,
@@ -1318,14 +1362,14 @@
       "new"
     ],
     "genres": [
-      "Drama",
-      "Music"
+      "Music",
+      "Drama"
     ],
     "release_date": "2019-02-14",
     "rating": 7.3,
     "certification": "UA",
     "watch_providers": [],
-    "poster_path": "/4RE7TD5TqEXbPKyUHcn7CSeMlrJ.jpg"
+    "poster_path": "/h57EzPdrDvtUkvbTj6ar5yZOPic.jpg"
   },
   {
     "id": 547654,
@@ -1342,7 +1386,7 @@
       "Drama"
     ],
     "release_date": "2018-10-19",
-    "rating": 7.239,
+    "rating": 7.3,
     "certification": "UA",
     "watch_providers": [
       "JioHotstar",
@@ -1365,7 +1409,7 @@
       "Family"
     ],
     "release_date": "2018-09-28",
-    "rating": 7.238,
+    "rating": 7.252,
     "certification": "NR",
     "watch_providers": [
       "Netflix"
@@ -1386,7 +1430,7 @@
       "Comedy"
     ],
     "release_date": "2018-08-31",
-    "rating": 6.978,
+    "rating": 7.0,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -1398,7 +1442,7 @@
   {
     "id": 533237,
     "title": "Karwaan",
-    "overview": "Avinash, a dejected soul stuck in a dead-end job shares a strange relationship with his father. He holds him responsible for crushing his dreams. However, he is left pondering upon this longstanding hatred when he hears of his fatherâ€™s untimely demise.",
+    "overview": "Avinash, a dejected soul stuck in a dead-end job shares a strange relationship with his father. He holds him responsible for crushing his dreams. However, he is left pondering upon this longstanding hatred when he hears of his father’s untimely demise.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -1412,9 +1456,6 @@
     "rating": 7.1,
     "certification": "NR",
     "watch_providers": [
-      "Amazon MX Player",
-      "Amazon Prime Video",
-      "Amazon Prime Video with Ads",
       "MX Player"
     ],
     "poster_path": "/dS0ZFlqGbGGksSUdqk7niL7rywc.jpg"
@@ -1422,7 +1463,7 @@
   {
     "id": 496328,
     "title": "Sanju",
-    "overview": "Sanju explores some of the most crucial chapters from movie star Sanjay Duttâ€™s dramatic and controversial real life. It gives a lowdown on his tryst with drugs and his trials and tribulations in the Arms Acts case and the 1993 Mumbai blasts.",
+    "overview": "Sanju explores some of the most crucial chapters from movie star Sanjay Dutt’s dramatic and controversial real life. It gives a lowdown on his tryst with drugs and his trials and tribulations in the Arms Acts case and the 1993 Mumbai blasts.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -1432,7 +1473,7 @@
       "Drama"
     ],
     "release_date": "2018-06-28",
-    "rating": 7.215,
+    "rating": 7.2,
     "certification": "UA",
     "watch_providers": [
       "JioHotstar",
@@ -1455,7 +1496,7 @@
       "Thriller"
     ],
     "release_date": "2018-05-25",
-    "rating": 7.107,
+    "rating": 7.1,
     "certification": "U",
     "watch_providers": [
       "Zee5"
@@ -1477,7 +1518,7 @@
       "History"
     ],
     "release_date": "2018-05-10",
-    "rating": 7.264,
+    "rating": 7.262,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -1500,7 +1541,7 @@
       "Romance"
     ],
     "release_date": "2018-04-13",
-    "rating": 6.927,
+    "rating": 7.0,
     "certification": "U",
     "watch_providers": [],
     "poster_path": "/nHUBPUwXkHinq2rIXnnCHsPylD1.jpg"
@@ -1519,7 +1560,7 @@
       "Thriller"
     ],
     "release_date": "2018-04-06",
-    "rating": 6.8,
+    "rating": 6.9,
     "certification": "UA",
     "watch_providers": [],
     "poster_path": "/apt3peZIUjd56Rkt0HGxp6EaxKe.jpg"
@@ -1537,7 +1578,7 @@
       "Documentary"
     ],
     "release_date": "2018-04-05",
-    "rating": 7.777,
+    "rating": 7.7,
     "certification": "NR",
     "watch_providers": [
       "Netflix"
@@ -1558,7 +1599,7 @@
       "Comedy"
     ],
     "release_date": "2018-03-23",
-    "rating": 7.607,
+    "rating": 7.575,
     "certification": "NR",
     "watch_providers": [
       "Netflix"
@@ -1580,7 +1621,7 @@
       "Thriller"
     ],
     "release_date": "2018-03-16",
-    "rating": 7.172,
+    "rating": 7.168,
     "certification": "UA",
     "watch_providers": [
       "JioHotstar"
@@ -1601,7 +1642,7 @@
       "Comedy"
     ],
     "release_date": "2018-02-23",
-    "rating": 6.597,
+    "rating": 6.613,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/1nsVHEVKOag8syzGtqnlYlbMQdh.jpg"
@@ -1620,7 +1661,7 @@
       "Romance"
     ],
     "release_date": "2018-02-14",
-    "rating": 6.684,
+    "rating": 6.7,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -1641,7 +1682,7 @@
       "Drama"
     ],
     "release_date": "2018-02-09",
-    "rating": 7.47,
+    "rating": 7.5,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -1667,7 +1708,7 @@
       "Romance"
     ],
     "release_date": "2018-01-25",
-    "rating": 6.927,
+    "rating": 6.931,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -1688,12 +1729,12 @@
       "Thriller"
     ],
     "release_date": "2017-11-03",
-    "rating": 6.792,
+    "rating": 6.8,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
     ],
-    "poster_path": "/nwLVjxsBpTF6sDs1BJrx5OzJuAA.jpg"
+    "poster_path": "/riEnSoGJ1WubamfrNpj4N0wVdoW.jpg"
   },
   {
     "id": 441889,
@@ -1709,7 +1750,7 @@
       "Music"
     ],
     "release_date": "2017-10-19",
-    "rating": 7.27,
+    "rating": 7.3,
     "certification": "UA",
     "watch_providers": [],
     "poster_path": "/fkTeziNtc0uwE899uI1hlMOEdZL.jpg"
@@ -1728,7 +1769,7 @@
       "Drama"
     ],
     "release_date": "2017-09-22",
-    "rating": 7.168,
+    "rating": 7.2,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -1775,7 +1816,7 @@
       "Romance"
     ],
     "release_date": "2017-08-11",
-    "rating": 6.827,
+    "rating": 6.842,
     "certification": "UA",
     "watch_providers": [
       "Ultraplaybox Amazon Channel",
@@ -1798,7 +1839,7 @@
       "Thriller"
     ],
     "release_date": "2017-07-07",
-    "rating": 7.523,
+    "rating": 7.5,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -1813,7 +1854,7 @@
   {
     "id": 456570,
     "title": "Hindi Medium",
-    "overview": "Mita and Raj Batra, an affluent couple from Delhiâ€™s Chandni Chowk, are grappling with getting their daughter admission into an English medium school. But there is one big problem. Their zubaan is Hindi, and the elitist snobs wonâ€™t let the Hindi speaking hoi-polloi fit in.",
+    "overview": "Mita and Raj Batra, an affluent couple from Delhi’s Chandni Chowk, are grappling with getting their daughter admission into an English medium school. But there is one big problem. Their zubaan is Hindi, and the elitist snobs won’t let the Hindi speaking hoi-polloi fit in.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -1824,7 +1865,7 @@
       "Drama"
     ],
     "release_date": "2017-05-19",
-    "rating": 7.403,
+    "rating": 7.4,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -1846,7 +1887,7 @@
       "Drama"
     ],
     "release_date": "2017-03-17",
-    "rating": 6.975,
+    "rating": 7.0,
     "certification": "NR",
     "watch_providers": [
       "Zee5"
@@ -1867,7 +1908,7 @@
       "Crime"
     ],
     "release_date": "2017-02-09",
-    "rating": 6.976,
+    "rating": 7.0,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -1891,7 +1932,7 @@
       "Drama"
     ],
     "release_date": "2017-01-25",
-    "rating": 6.905,
+    "rating": 6.9,
     "certification": "UA",
     "watch_providers": [
       "JioHotstar"
@@ -1901,7 +1942,7 @@
   {
     "id": 363343,
     "title": "Raees",
-    "overview": "Set in the early â€™80s and â€™90s in Gujarat, India, â€˜Raeesâ€™ is a fictitious story of a crime lord named Raees, who builds an entire empire from scratch, and a police officer who is determined to bring him down.",
+    "overview": "Set in the early ’80s and ’90s in Gujarat, India, ‘Raees’ is a fictitious story of a crime lord named Raees, who builds an entire empire from scratch, and a police officer who is determined to bring him down.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -1932,7 +1973,7 @@
       "Romance"
     ],
     "release_date": "2016-11-23",
-    "rating": 7.025,
+    "rating": 7.0,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -1952,7 +1993,7 @@
       "Drama"
     ],
     "release_date": "2016-09-30",
-    "rating": 7.289,
+    "rating": 7.304,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -1976,7 +2017,7 @@
       "Thriller"
     ],
     "release_date": "2016-09-16",
-    "rating": 7.371,
+    "rating": 7.38,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2003,7 +2044,7 @@
       "Crime"
     ],
     "release_date": "2016-08-12",
-    "rating": 6.8,
+    "rating": 6.773,
     "certification": "NR",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2028,7 +2069,7 @@
       "Romance"
     ],
     "release_date": "2016-07-06",
-    "rating": 6.842,
+    "rating": 6.8,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -2057,12 +2098,12 @@
       "Amazon Prime Video with Ads",
       "VI movies and tv"
     ],
-    "poster_path": "/yWntREFdME1ctbtG2s7C3eSh9ph.jpg"
+    "poster_path": "/p4iXQlbAE9hfUgPNPqe9Bo8sp13.jpg"
   },
   {
     "id": 374173,
     "title": "Kapoor & Sons",
-    "overview": "Returning home to visit their ill grandfather, two estranged brothers must confront their unresolved rivalry while their parentsâ€™ marriage frays.",
+    "overview": "Returning home to visit their ill grandfather, two estranged brothers must confront their unresolved rivalry while their parents’ marriage frays.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -2075,7 +2116,7 @@
       "Family"
     ],
     "release_date": "2016-03-18",
-    "rating": 7.055,
+    "rating": 7.1,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2098,7 +2139,7 @@
       "Thriller"
     ],
     "release_date": "2016-02-19",
-    "rating": 7.3,
+    "rating": 7.275,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2120,7 +2161,7 @@
       "Romance"
     ],
     "release_date": "2016-02-05",
-    "rating": 7.916,
+    "rating": 7.9,
     "certification": "UA",
     "watch_providers": [
       "Eros Now Select Apple TV channel",
@@ -2142,7 +2183,7 @@
       "Thriller"
     ],
     "release_date": "2016-01-22",
-    "rating": 7.154,
+    "rating": 7.2,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2166,7 +2207,7 @@
       "Crime"
     ],
     "release_date": "2016-01-07",
-    "rating": 6.75,
+    "rating": 6.767,
     "certification": "UA",
     "watch_providers": [],
     "poster_path": "/wo5ASV73rrLr9z22P4nfqwPQPRA.jpg"
@@ -2231,7 +2272,7 @@
       "Drama"
     ],
     "release_date": "2015-11-14",
-    "rating": 7.327,
+    "rating": 7.32,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/cpuW4xGdUVZep3Otwo97xnEzdWi.jpg"
@@ -2251,7 +2292,7 @@
       "Mystery"
     ],
     "release_date": "2015-10-02",
-    "rating": 7.483,
+    "rating": 7.51,
     "certification": "UA",
     "watch_providers": [
       "Netflix",
@@ -2274,9 +2315,11 @@
       "Romance"
     ],
     "release_date": "2015-06-04",
-    "rating": 6.903,
+    "rating": 6.9,
     "certification": "UA",
-    "watch_providers": [],
+    "watch_providers": [
+      "Netflix"
+    ],
     "poster_path": "/AqFX6282JM2ollS4XTFp6t6Dwa9.jpg"
   },
   {
@@ -2293,10 +2336,11 @@
       "Romance"
     ],
     "release_date": "2015-05-22",
-    "rating": 6.847,
+    "rating": 6.865,
     "certification": "UA",
     "watch_providers": [
-      "Eros Now Select Apple TV channel"
+      "Eros Now Select Apple TV channel",
+      "Netflix"
     ],
     "poster_path": "/sO3XD6ZDZetb2N6YDQrHLTVQrfq.jpg"
   },
@@ -2333,7 +2377,7 @@
       "Action"
     ],
     "release_date": "2015-05-01",
-    "rating": 6.859,
+    "rating": 6.9,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2356,7 +2400,7 @@
       "Thriller"
     ],
     "release_date": "2015-04-02",
-    "rating": 6.795,
+    "rating": 6.8,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -2378,7 +2422,7 @@
       "Romance"
     ],
     "release_date": "2015-02-27",
-    "rating": 7.186,
+    "rating": 7.197,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -2422,9 +2466,11 @@
       "Thriller"
     ],
     "release_date": "2015-01-23",
-    "rating": 6.8,
+    "rating": 6.842,
     "certification": "NR",
     "watch_providers": [
+      "Amazon Prime Video",
+      "Amazon Prime Video with Ads",
       "JioHotstar"
     ],
     "poster_path": "/mcCAHyv4kuVJ7oYrgMpYvVPdLyf.jpg"
@@ -2443,7 +2489,7 @@
       "Drama"
     ],
     "release_date": "2014-10-02",
-    "rating": 7.219,
+    "rating": 7.3,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2456,7 +2502,7 @@
   {
     "id": 291157,
     "title": "Khoobsurat",
-    "overview": "A vibrant, hopelessly romantic physiotherapist meets a handsome young Rajput prince who is the complete opposite of her â€“ and is engaged to someone else.",
+    "overview": "A vibrant, hopelessly romantic physiotherapist meets a handsome young Rajput prince who is the complete opposite of her – and is engaged to someone else.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -2467,13 +2513,14 @@
       "Romance"
     ],
     "release_date": "2014-09-19",
-    "rating": 6.605,
+    "rating": 6.6,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
-      "Amazon Prime Video with Ads"
+      "Amazon Prime Video with Ads",
+      "JioHotstar"
     ],
-    "poster_path": "/fJnWRipBGa5p1UxBLShDF1SMw01.jpg"
+    "poster_path": "/wFrKBsp1jDHWIs3W8mEJNnVjOCT.jpg"
   },
   {
     "id": 284288,
@@ -2489,7 +2536,7 @@
       "Drama"
     ],
     "release_date": "2014-09-05",
-    "rating": 7.033,
+    "rating": 7.014,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2513,7 +2560,7 @@
       "Thriller"
     ],
     "release_date": "2014-06-27",
-    "rating": 6.545,
+    "rating": 6.56,
     "certification": "UA",
     "watch_providers": [
       "JioHotstar"
@@ -2535,7 +2582,7 @@
       "Drama"
     ],
     "release_date": "2014-04-17",
-    "rating": 6.566,
+    "rating": 6.6,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2559,11 +2606,12 @@
       "Crime"
     ],
     "release_date": "2014-02-13",
-    "rating": 7.218,
+    "rating": 7.23,
     "certification": "UA",
     "watch_providers": [
       "Amazon MX Player",
       "Amazon Prime Video",
+      "Amazon Prime Video Free with Ads",
       "Amazon Prime Video with Ads",
       "Brew",
       "MX Player",
@@ -2574,7 +2622,7 @@
   {
     "id": 251626,
     "title": "Hasee Toh Phasee",
-    "overview": "On the eve of Nikhil and Karishmaâ€™s engagement, Karishmaâ€™s wealthy father, Devesh Solanki, expresses his disapproval, believing Nikhil to be a lackadaisical young man. With one week to prove himself worthy to marry Karishma, Nikhil and Karishma's sister, Meeta, grow closer to each other.",
+    "overview": "On the eve of Nikhil and Karishma’s engagement, Karishma’s wealthy father, Devesh Solanki, expresses his disapproval, believing Nikhil to be a lackadaisical young man. With one week to prove himself worthy to marry Karishma, Nikhil and Karishma's sister, Meeta, grow closer to each other.",
     "original_language": "hi",
     "original_language_name": "Hindi",
     "categories": [
@@ -2585,14 +2633,14 @@
       "Romance"
     ],
     "release_date": "2014-02-07",
-    "rating": 6.613,
+    "rating": 6.607,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
       "Amazon Prime Video with Ads",
       "Netflix"
     ],
-    "poster_path": "/A6s9Nb0bfuH1KqXvnG22FCAgrP7.jpg"
+    "poster_path": "/umLscI7JOZECRY7G9sICOid6MFT.jpg"
   },
   {
     "id": 235984,
@@ -2608,12 +2656,12 @@
       "Romance"
     ],
     "release_date": "2013-11-14",
-    "rating": 6.964,
+    "rating": 6.959,
     "certification": "UA",
     "watch_providers": [
       "Eros Now Select Apple TV channel"
     ],
-    "poster_path": "/6Pph0xbOJvNPhWh1fdeWGHppSPH.jpg"
+    "poster_path": "/qqR1WMElj2kV4FCUmXanGRdTCXs.jpg"
   },
   {
     "id": 215776,
@@ -2630,7 +2678,7 @@
       "Action"
     ],
     "release_date": "2013-08-23",
-    "rating": 6.691,
+    "rating": 6.711,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2653,7 +2701,7 @@
       "Action"
     ],
     "release_date": "2013-08-08",
-    "rating": 6.503,
+    "rating": 6.5,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -2673,7 +2721,7 @@
       "Drama"
     ],
     "release_date": "2013-07-12",
-    "rating": 7.505,
+    "rating": 7.5,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2701,7 +2749,7 @@
       "Eros Now Select Apple TV channel",
       "Zee5"
     ],
-    "poster_path": "/wi1Qv5nPo0ddJgjA0baD9MR3NC0.jpg"
+    "poster_path": "/xhrxK6RvGwhuGUegOUnymEbVEbu.jpg"
   },
   {
     "id": 192558,
@@ -2717,10 +2765,10 @@
       "Romance"
     ],
     "release_date": "2013-04-26",
-    "rating": 6.841,
+    "rating": 6.849,
     "certification": "U",
     "watch_providers": [],
-    "poster_path": "/lMblq8xcQIRRIVdaMg1XC283gU0.jpg"
+    "poster_path": "/z18DWXBRxn3kz00sIVhC7ZK39Qm.jpg"
   },
   {
     "id": 177358,
@@ -2736,7 +2784,7 @@
       "Drama"
     ],
     "release_date": "2013-03-15",
-    "rating": 7.097,
+    "rating": 7.115,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2758,7 +2806,7 @@
       "Drama"
     ],
     "release_date": "2013-02-13",
-    "rating": 7.077,
+    "rating": 7.1,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -2782,7 +2830,7 @@
       "Thriller"
     ],
     "release_date": "2013-02-07",
-    "rating": 7.3,
+    "rating": 7.309,
     "certification": "UA",
     "watch_providers": [],
     "poster_path": "/cOo6lOiZXO0zldPKsih9asKPWDo.jpg"
@@ -2802,31 +2850,12 @@
       "Thriller"
     ],
     "release_date": "2012-11-30",
-    "rating": 6.781,
-    "certification": "UA",
-    "watch_providers": [],
-    "poster_path": "/oCxyN7HmJ7zWp8jtJeMRHABnutF.jpg"
-  },
-  {
-    "id": 132316,
-    "title": "Jab Tak Hai Jaan",
-    "overview": "Samar Anand, a London-based struggling musician falls in love with Meera Thappar. After a severe accident, a panicked Meera promises God to leave Samar if he lives. Heartbroken, Samar leaves for India to become a fearless bomb disposal expert in the army.",
-    "original_language": "hi",
-    "original_language_name": "Hindi",
-    "categories": [
-      "new"
-    ],
-    "genres": [
-      "Drama",
-      "Romance"
-    ],
-    "release_date": "2012-11-13",
-    "rating": 7.039,
+    "rating": 6.789,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
     ],
-    "poster_path": "/1TlzJZrzUlaC95Noqt3oMoxQxCu.jpg"
+    "poster_path": "/oCxyN7HmJ7zWp8jtJeMRHABnutF.jpg"
   },
   {
     "id": 103243,
@@ -2842,7 +2871,7 @@
       "Romance"
     ],
     "release_date": "2012-04-20",
-    "rating": 6.801,
+    "rating": 6.813,
     "certification": "UA",
     "watch_providers": [
       "Eros Now Select Apple TV channel"
@@ -2863,9 +2892,11 @@
       "Drama"
     ],
     "release_date": "2012-03-02",
-    "rating": 7.408,
+    "rating": 7.4,
     "certification": "NR",
     "watch_providers": [
+      "Amazon Prime Video",
+      "Amazon Prime Video with Ads",
       "JioHotstar"
     ],
     "poster_path": "/ii2KMVvGmcmJrqwYcT5nKn92bD5.jpg"
@@ -2884,9 +2915,11 @@
       "Thriller"
     ],
     "release_date": "2011-12-23",
-    "rating": 6.991,
+    "rating": 6.995,
     "certification": "UA",
-    "watch_providers": [],
+    "watch_providers": [
+      "Netflix"
+    ],
     "poster_path": "/2gBM8c36HIwn4vc2UuMeliqiCKY.jpg"
   },
   {
@@ -2954,7 +2987,7 @@
       "Comedy"
     ],
     "release_date": "2011-07-01",
-    "rating": 7.066,
+    "rating": 7.073,
     "certification": "UA",
     "watch_providers": [],
     "poster_path": "/hGmjlOFPaqwxAxR3XDvalExTlXd.jpg"
@@ -2974,7 +3007,7 @@
       "Romance"
     ],
     "release_date": "2011-05-20",
-    "rating": 6.772,
+    "rating": 6.8,
     "certification": "NR",
     "watch_providers": [
       "Netflix"
@@ -2996,10 +3029,11 @@
       "Drama"
     ],
     "release_date": "2011-02-25",
-    "rating": 6.737,
+    "rating": 6.759,
     "certification": "UA",
     "watch_providers": [
-      "Brew"
+      "Brew",
+      "Netflix"
     ],
     "poster_path": "/jSp16ilrwEyeBorFcBdFtYjhMUr.jpg"
   },
@@ -3018,7 +3052,7 @@
       "Romance"
     ],
     "release_date": "2010-12-10",
-    "rating": 6.7,
+    "rating": 6.674,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -3062,11 +3096,12 @@
       "Crime"
     ],
     "release_date": "2010-07-30",
-    "rating": 6.7,
+    "rating": 6.701,
     "certification": "UA",
     "watch_providers": [
       "Amazon MX Player",
       "Amazon Prime Video",
+      "Amazon Prime Video Free with Ads",
       "Amazon Prime Video with Ads",
       "Hungama Play",
       "JioHotstar",
@@ -3114,7 +3149,7 @@
       "Romance"
     ],
     "release_date": "2009-12-10",
-    "rating": 6.886,
+    "rating": 6.895,
     "certification": "UA",
     "watch_providers": [
       "Netflix"
@@ -3136,7 +3171,7 @@
       "Romance"
     ],
     "release_date": "2009-10-02",
-    "rating": 7.233,
+    "rating": 7.237,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -3162,7 +3197,8 @@
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
-      "Amazon Prime Video with Ads"
+      "Amazon Prime Video with Ads",
+      "JioHotstar"
     ],
     "poster_path": "/rtuw7H9ACOfs9BtRGF9okrr8yJH.jpg"
   },
@@ -3179,9 +3215,11 @@
       "Drama"
     ],
     "release_date": "2008-08-29",
-    "rating": 6.855,
+    "rating": 6.848,
     "certification": "U",
-    "watch_providers": [],
+    "watch_providers": [
+      "Netflix"
+    ],
     "poster_path": "/cckTZXVpchMrljPouFf7u2wqUTX.jpg"
   },
   {
@@ -3199,7 +3237,7 @@
       "Romance"
     ],
     "release_date": "2008-07-04",
-    "rating": 6.838,
+    "rating": 6.833,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/iV1W0IEtQYuBnnxNmZxSmPHK3Pu.jpg"
@@ -3219,7 +3257,7 @@
       "Drama"
     ],
     "release_date": "2008-02-13",
-    "rating": 7.296,
+    "rating": 7.3,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -3242,7 +3280,7 @@
       "Family"
     ],
     "release_date": "2007-12-21",
-    "rating": 6.894,
+    "rating": 6.886,
     "certification": "UA",
     "watch_providers": [
       "Amazon MX Player",
@@ -3270,7 +3308,7 @@
       "Thriller"
     ],
     "release_date": "2007-10-12",
-    "rating": 6.769,
+    "rating": 6.772,
     "certification": "NR",
     "watch_providers": [
       "JioHotstar",
@@ -3293,38 +3331,18 @@
       "Adventure"
     ],
     "release_date": "2007-09-07",
-    "rating": 6.738,
+    "rating": 6.757,
     "certification": "UA",
     "watch_providers": [
       "Amazon MX Player",
       "Amazon Prime Video",
+      "Amazon Prime Video Free with Ads",
       "Amazon Prime Video with Ads",
       "MX Player",
       "ShemarooMe",
       "Zee5"
     ],
     "poster_path": "/pQgU9W1OyHDxBOZcJpVLc2E8gQa.jpg"
-  },
-  {
-    "id": 15772,
-    "title": "Guru",
-    "overview": "A villager, Gurukant Desai, arrives in Bombay in 1958, and rises from its streets to become the biggest tycoon in India.",
-    "original_language": "hi",
-    "original_language_name": "Hindi",
-    "categories": [
-      "new"
-    ],
-    "genres": [
-      "Drama",
-      "Romance"
-    ],
-    "release_date": "2007-01-12",
-    "rating": 6.9,
-    "certification": "U",
-    "watch_providers": [
-      "Netflix"
-    ],
-    "poster_path": "/xX2BJ5sn3ElTZqhnOEod8ZXsCQg.jpg"
   },
   {
     "id": 980431,
@@ -3339,10 +3357,10 @@
       "Animation",
       "Adventure",
       "Fantasy",
-      "Family"
+      "Action"
     ],
     "release_date": "2026-07-24",
-    "rating": 9.169,
+    "rating": 9.115,
     "certification": "PG",
     "watch_providers": [
       "Amazon Prime Video",
@@ -3353,7 +3371,7 @@
   {
     "id": 1007757,
     "title": "Swapped",
-    "overview": "A small woodland creature and a majestic bird, two natural sworn enemies of the Valley, magically trade places and set off on an adventure of a lifetime to switch back. Their journey soon uncovers a greater threatâ€”one that could endanger not only their species, but the entire valley they call home.",
+    "overview": "A small woodland creature and a majestic bird, two natural sworn enemies of the Valley, magically trade places and set off on an adventure of a lifetime to switch back. Their journey soon uncovers a greater threat—one that could endanger not only their species, but the entire valley they call home.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
@@ -3366,7 +3384,7 @@
       "Fantasy"
     ],
     "release_date": "2026-05-01",
-    "rating": 8.87,
+    "rating": 8.863,
     "certification": "U/A 7+",
     "watch_providers": [
       "Netflix"
@@ -3387,7 +3405,7 @@
       "Crime"
     ],
     "release_date": "1994-09-23",
-    "rating": 8.73,
+    "rating": 8.732,
     "certification": "U",
     "watch_providers": [],
     "poster_path": "/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg"
@@ -3405,7 +3423,7 @@
       "Drama"
     ],
     "release_date": "1957-04-10",
-    "rating": 8.572,
+    "rating": 8.574,
     "certification": "NR",
     "watch_providers": [
       "MGM Plus Amazon Channel"
@@ -3423,10 +3441,11 @@
     ],
     "genres": [
       "Action",
-      "Thriller"
+      "Thriller",
+      "Crime"
     ],
     "release_date": "2008-07-16",
-    "rating": 8.534,
+    "rating": 8.537,
     "certification": "UA ",
     "watch_providers": [
       "Amazon Prime Video",
@@ -3449,8 +3468,8 @@
       "Drama",
       "Science Fiction"
     ],
-    "release_date": "2014-11-05",
-    "rating": 8.487,
+    "release_date": "2014-11-04",
+    "rating": 8.49,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -3473,7 +3492,7 @@
       "Drama"
     ],
     "release_date": "2020-09-28",
-    "rating": 8.431,
+    "rating": 8.44,
     "certification": "PG",
     "watch_providers": [
       "Netflix"
@@ -3482,7 +3501,7 @@
   },
   {
     "id": 576712,
-    "title": "Everybodyâ€™s Everything",
+    "title": "Everybody’s Everything",
     "overview": "The story of artist Lil Peep from his birth in Long Island and meteoric rise as a genre blending pop star & style icon, to his death due to an accidental opioid overdose in Arizona at just 21 years of age.",
     "original_language": "en",
     "original_language_name": "English",
@@ -3493,10 +3512,31 @@
       "Documentary"
     ],
     "release_date": "2019-11-12",
-    "rating": 8.427,
+    "rating": 8.4,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/wbMkjkNX8VylPVLmQ2Dp6i5iayY.jpg"
+  },
+  {
+    "id": 770156,
+    "title": "Lucy Shimmers and the Prince of Peace",
+    "overview": "Second chances start when a hardened criminal crosses paths with a precocious little girl who is helped by an angel to change hearts during the holiday season.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Family"
+    ],
+    "release_date": "2020-10-19",
+    "rating": 8.408,
+    "certification": "NR",
+    "watch_providers": [
+      "Tubi TV"
+    ],
+    "poster_path": "/yfnJ5qIYx7q33fY4jqv9Pu95RSg.jpg"
   },
   {
     "id": 324857,
@@ -3514,7 +3554,7 @@
       "Science Fiction"
     ],
     "release_date": "2018-12-06",
-    "rating": 8.399,
+    "rating": 8.4,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -3541,33 +3581,12 @@
       "Science Fiction"
     ],
     "release_date": "1980-05-20",
-    "rating": 8.393,
+    "rating": 8.4,
     "certification": "PG",
     "watch_providers": [
       "JioHotstar"
     ],
     "poster_path": "/nNAeTmF4CtdSgMDplXTDPOpYzsX.jpg"
-  },
-  {
-    "id": 770156,
-    "title": "Lucy Shimmers and the Prince of Peace",
-    "overview": "Second chances start when a hardened criminal crosses paths with a precocious little girl who is helped by an angel to change hearts during the holiday season.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Drama",
-      "Family"
-    ],
-    "release_date": "2020-10-19",
-    "rating": 8.4,
-    "certification": "NR",
-    "watch_providers": [
-      "Tubi TV"
-    ],
-    "poster_path": "/yfnJ5qIYx7q33fY4jqv9Pu95RSg.jpg"
   },
   {
     "id": 696374,
@@ -3583,7 +3602,7 @@
       "Drama"
     ],
     "release_date": "2020-05-29",
-    "rating": 8.379,
+    "rating": 8.381,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/oyG9TL7FcRP4EZ9Vid6uKzwdndz.jpg"
@@ -3603,7 +3622,7 @@
       "Adventure"
     ],
     "release_date": "2010-07-15",
-    "rating": 8.373,
+    "rating": 8.4,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -3613,30 +3632,28 @@
     "poster_path": "/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg"
   },
   {
-    "id": 1084244,
-    "title": "Toy Story 5",
-    "overview": "When Bonnie receives a Lilypad tablet as a gift and becomes obsessed, Buzz, Woody, Jessie and the rest of the gang's jobs become exponentially harder when they have to go head to head with the all-new threat to playtime.",
+    "id": 24128,
+    "title": "Stop Making Sense",
+    "overview": "A concert film documenting Talking Heads at the height of their popularity, on tour for their 1983 album \"Speaking in Tongues.\" The band takes the stage one by one and is joined by a cadre of guest musicians for a career-spanning and cinematic performance that features creative choreography and visuals.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
       "all_time_favorite"
     ],
     "genres": [
-      "Animation",
-      "Family",
-      "Comedy",
-      "Adventure"
+      "Documentary",
+      "Music"
     ],
-    "release_date": "2026-06-17",
-    "rating": 8.3,
-    "certification": "U",
+    "release_date": "1984-10-19",
+    "rating": 8.343,
+    "certification": "PG",
     "watch_providers": [],
-    "poster_path": "/sfQtVlIHljToOwYjhe21KPGzZWK.jpg"
+    "poster_path": "/utNpurUe1MMjEaHqvpkfxgfpSnV.jpg"
   },
   {
     "id": 569094,
     "title": "Spider-Man: Across the Spider-Verse",
-    "overview": "After reuniting with Gwen Stacy, Brooklynâ€™s full-time, friendly neighborhood Spider-Man is catapulted across the Multiverse, where he encounters the Spider Society, a team of Spider-People charged with protecting the Multiverse's very existence. But when the heroes clash on how to handle a new threat, Miles finds himself pitted against the other Spiders and must set out on his own to save those he loves most.",
+    "overview": "After reuniting with Gwen Stacy, Brooklyn’s full-time, friendly neighborhood Spider-Man is catapulted across the Multiverse, where he encounters the Spider Society, a team of Spider-People charged with protecting the Multiverse's very existence. But when the heroes clash on how to handle a new threat, Miles finds himself pitted against the other Spiders and must set out on his own to save those he loves most.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
@@ -3649,31 +3666,12 @@
       "Science Fiction"
     ],
     "release_date": "2023-05-31",
-    "rating": 8.347,
+    "rating": 8.3,
     "certification": "UA",
     "watch_providers": [
-      "Netflix"
+      "Sony Pictures Amazon Channel"
     ],
     "poster_path": "/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg"
-  },
-  {
-    "id": 761053,
-    "title": "Gabriel's Inferno: Part III",
-    "overview": "The final part of the film adaption of the erotic romance novel Gabriel's Inferno written by an anonymous Canadian author under the pen name Sylvain Reynard.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Romance",
-      "Drama"
-    ],
-    "release_date": "2020-11-19",
-    "rating": 8.332,
-    "certification": "NR",
-    "watch_providers": [],
-    "poster_path": "/fYtHxTxlhzD4QWfEbrC1rypysSD.jpg"
   },
   {
     "id": 567,
@@ -3690,29 +3688,29 @@
       "Drama"
     ],
     "release_date": "1954-08-01",
-    "rating": 8.336,
+    "rating": 8.3,
     "certification": "PG",
     "watch_providers": [],
     "poster_path": "/ILVF0eJxHMddjxeQhswFtpMtqx.jpg"
   },
   {
-    "id": 24128,
-    "title": "Stop Making Sense",
-    "overview": "A concert film documenting Talking Heads at the height of their popularity, on tour for their 1983 album \"Speaking in Tongues.\" The band takes the stage one by one and is joined by a cadre of guest musicians for a career-spanning and cinematic performance that features creative choreography and visuals.",
+    "id": 761053,
+    "title": "Gabriel's Inferno: Part III",
+    "overview": "The final part of the film adaption of the erotic romance novel Gabriel's Inferno written by an anonymous Canadian author under the pen name Sylvain Reynard.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
       "all_time_favorite"
     ],
     "genres": [
-      "Documentary",
-      "Music"
+      "Romance",
+      "Drama"
     ],
-    "release_date": "1984-10-19",
-    "rating": 8.339,
-    "certification": "PG",
+    "release_date": "2020-11-19",
+    "rating": 8.3,
+    "certification": "NR",
     "watch_providers": [],
-    "poster_path": "/utNpurUe1MMjEaHqvpkfxgfpSnV.jpg"
+    "poster_path": "/fYtHxTxlhzD4QWfEbrC1rypysSD.jpg"
   },
   {
     "id": 105,
@@ -3729,7 +3727,7 @@
       "Science Fiction"
     ],
     "release_date": "1985-07-03",
-    "rating": 8.329,
+    "rating": 8.331,
     "certification": "PG",
     "watch_providers": [
       "JioHotstar"
@@ -3752,13 +3750,34 @@
       "Adventure"
     ],
     "release_date": "2024-09-12",
-    "rating": 8.307,
+    "rating": 8.311,
     "certification": "PG",
     "watch_providers": [
       "JioHotstar",
       "VI movies and tv"
     ],
     "poster_path": "/wTnV3PCVW5O92JMrFvvrRcV39RU.jpg"
+  },
+  {
+    "id": 1084244,
+    "title": "Toy Story 5",
+    "overview": "When Bonnie receives a Lilypad tablet as a gift and becomes obsessed, Buzz, Woody, Jessie and the rest of the gang's jobs become exponentially harder when they have to go head to head with the all-new threat to playtime.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Animation",
+      "Family",
+      "Comedy",
+      "Adventure"
+    ],
+    "release_date": "2026-06-17",
+    "rating": 8.303,
+    "certification": "U",
+    "watch_providers": [],
+    "poster_path": "/sfQtVlIHljToOwYjhe21KPGzZWK.jpg"
   },
   {
     "id": 207,
@@ -3773,7 +3792,7 @@
       "Drama"
     ],
     "release_date": "1989-06-02",
-    "rating": 8.296,
+    "rating": 8.3,
     "certification": "PG",
     "watch_providers": [
       "JioHotstar",
@@ -3795,7 +3814,7 @@
       "War"
     ],
     "release_date": "1940-10-15",
-    "rating": 8.284,
+    "rating": 8.3,
     "certification": "NR",
     "watch_providers": [
       "Lionsgate Play",
@@ -3844,7 +3863,7 @@
       "Fantasy"
     ],
     "release_date": "1946-12-20",
-    "rating": 8.276,
+    "rating": 8.278,
     "certification": "PG",
     "watch_providers": [],
     "poster_path": "/bSqt9rhDZx1Q7UZ86dBPKdNomp2.jpg"
@@ -3862,7 +3881,7 @@
       "Drama"
     ],
     "release_date": "1950-08-10",
-    "rating": 8.272,
+    "rating": 8.274,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/zt8aQ6ksqK6p1AopC5zVTDS9pKT.jpg"
@@ -3884,30 +3903,31 @@
       "Comedy"
     ],
     "release_date": "2023-09-24",
-    "rating": 8.256,
+    "rating": 8.3,
     "certification": "G",
     "watch_providers": [],
     "poster_path": "/aiy3G1cYWV3LgKZHY6a3jL8bjYL.jpg"
   },
   {
-    "id": 92060,
-    "title": "Michael Jackson's Thriller",
-    "overview": "A night at the movies turns terrifying when Michael and his date are attacked by zombies. Released at the height of Thrillerâ€™s success, the short film redefined the music video, broke racial barriers, and became the first inducted into the U.S. National Film Registry.",
+    "id": 975,
+    "title": "Paths of Glory",
+    "overview": "A commanding officer defends three scapegoats on trial for a failed offensive that occurred within the French Army in 1916.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
       "all_time_favorite"
     ],
     "genres": [
-      "Horror",
-      "Music",
-      "Thriller"
+      "War",
+      "Drama"
     ],
-    "release_date": "1983-11-21",
+    "release_date": "1957-10-25",
     "rating": 8.3,
-    "certification": "PG",
-    "watch_providers": [],
-    "poster_path": "/djv4LM6uanJriwpsOyJzaaSp4gf.jpg"
+    "certification": "NR",
+    "watch_providers": [
+      "MGM Plus Amazon Channel"
+    ],
+    "poster_path": "/hGg1UCQSHlXfv2HI9bDHT2OQBam.jpg"
   },
   {
     "id": 8587,
@@ -3924,7 +3944,7 @@
       "Drama"
     ],
     "release_date": "1994-06-15",
-    "rating": 8.251,
+    "rating": 8.2,
     "certification": "G",
     "watch_providers": [
       "JioHotstar"
@@ -3932,25 +3952,47 @@
     "poster_path": "/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg"
   },
   {
-    "id": 975,
-    "title": "Paths of Glory",
-    "overview": "A commanding officer defends three scapegoats on trial for a failed offensive that occurred within the French Army in 1916.",
+    "id": 92060,
+    "title": "Michael Jackson's Thriller",
+    "overview": "A night at the movies turns terrifying when Michael and his date are attacked by zombies. Released at the height of Thriller’s success, the short film redefined the music video, broke racial barriers, and became the first inducted into the U.S. National Film Registry.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
       "all_time_favorite"
     ],
     "genres": [
-      "War",
-      "Drama"
+      "Horror",
+      "Music",
+      "Thriller"
     ],
-    "release_date": "1957-10-25",
-    "rating": 8.25,
-    "certification": "NR",
+    "release_date": "1983-11-21",
+    "rating": 8.2,
+    "certification": "PG",
+    "watch_providers": [],
+    "poster_path": "/djv4LM6uanJriwpsOyJzaaSp4gf.jpg"
+  },
+  {
+    "id": 299534,
+    "title": "Avengers: Endgame",
+    "overview": "After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Adventure",
+      "Science Fiction",
+      "Action"
+    ],
+    "release_date": "2019-04-24",
+    "rating": 8.2,
+    "certification": "UA",
     "watch_providers": [
-      "MGM Plus Amazon Channel"
+      "JioHotstar",
+      "VI movies and tv"
     ],
-    "poster_path": "/hGg1UCQSHlXfv2HI9bDHT2OQBam.jpg"
+    "poster_path": "/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg"
   },
   {
     "id": 901,
@@ -3974,7 +4016,7 @@
       "Lionsgate Play Amazon Channel",
       "Lionsgate Play Apple TV Channel"
     ],
-    "poster_path": "/ugmakEL5y294I5bXgiBqApuZpwc.jpg"
+    "poster_path": "/bXNvzjULc9jrOVhGfjcc64uKZmZ.jpg"
   },
   {
     "id": 299536,
@@ -3991,7 +4033,7 @@
       "Science Fiction"
     ],
     "release_date": "2018-04-25",
-    "rating": 8.242,
+    "rating": 8.245,
     "certification": "UA",
     "watch_providers": [
       "JioHotstar",
@@ -4000,27 +4042,61 @@
     "poster_path": "/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg"
   },
   {
-    "id": 299534,
-    "title": "Avengers: Endgame",
-    "overview": "After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store.",
+    "id": 576017,
+    "title": "For Sama",
+    "overview": "A love letter from a young mother to her daughter, the film tells the story of Waad al-Kateab’s life through five years of the uprising in Aleppo, Syria as she falls in love, gets married and gives birth to Sama, all while cataclysmic conflict rises around her.  Her camera captures incredible stories of loss, laughter and survival as Waad wrestles with an impossible choice– whether or not to flee the city to protect her daughter’s life, when leaving means abandoning the struggle for freedom for which she has already sacrificed so much.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
       "all_time_favorite"
     ],
     "genres": [
-      "Adventure",
-      "Science Fiction",
-      "Action"
+      "Documentary",
+      "War"
     ],
-    "release_date": "2019-04-24",
-    "rating": 8.242,
+    "release_date": "2019-07-26",
+    "rating": 8.2,
+    "certification": "NR",
+    "watch_providers": [],
+    "poster_path": "/mDna51F8QfrJFZOgPGQUz3VKqsB.jpg"
+  },
+  {
+    "id": 14002,
+    "title": "Baraka",
+    "overview": "A paralysingly beautiful documentary with a global vision—an odyssey through landscape and time—that attempts to capture the essence of life.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Documentary"
+    ],
+    "release_date": "1992-09-15",
+    "rating": 8.2,
+    "certification": "NR",
+    "watch_providers": [],
+    "poster_path": "/ldEuJQ4z7zEvL7iXraESWBUfQcz.jpg"
+  },
+  {
+    "id": 490132,
+    "title": "Green Book",
+    "overview": "Tony Lip, a bouncer in 1962, is hired to drive pianist Don Shirley on a tour through the Deep South in the days when African Americans, forced to find alternate accommodations and services due to segregation laws below the Mason-Dixon Line, relied on a guide called The Negro Motorist Green Book.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Comedy",
+      "History"
+    ],
+    "release_date": "2018-11-16",
+    "rating": 8.2,
     "certification": "UA",
-    "watch_providers": [
-      "JioHotstar",
-      "VI movies and tv"
-    ],
-    "poster_path": "/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg"
+    "watch_providers": [],
+    "poster_path": "/7BsvSuDQuoqhWmU2fL7W2GOcZHU.jpg"
   },
   {
     "id": 1226863,
@@ -4047,85 +4123,6 @@
     "poster_path": "/eJGWx219ZcEMVQJhAgMiqo8tYY.jpg"
   },
   {
-    "id": 576017,
-    "title": "For Sama",
-    "overview": "A love letter from a young mother to her daughter, the film tells the story of Waad al-Kateabâ€™s life through five years of the uprising in Aleppo, Syria as she falls in love, gets married and gives birth to Sama, all while cataclysmic conflict rises around her.  Her camera captures incredible stories of loss, laughter and survival as Waad wrestles with an impossible choiceâ€“ whether or not to flee the city to protect her daughterâ€™s life, when leaving means abandoning the struggle for freedom for which she has already sacrificed so much.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Documentary",
-      "War"
-    ],
-    "release_date": "2019-07-26",
-    "rating": 8.232,
-    "certification": "NR",
-    "watch_providers": [],
-    "poster_path": "/mDna51F8QfrJFZOgPGQUz3VKqsB.jpg"
-  },
-  {
-    "id": 14002,
-    "title": "Baraka",
-    "overview": "A paralysingly beautiful documentary with a global visionâ€”an odyssey through landscape and timeâ€”that attempts to capture the essence of life.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Documentary"
-    ],
-    "release_date": "1992-09-15",
-    "rating": 8.231,
-    "certification": "NR",
-    "watch_providers": [],
-    "poster_path": "/ldEuJQ4z7zEvL7iXraESWBUfQcz.jpg"
-  },
-  {
-    "id": 490132,
-    "title": "Green Book",
-    "overview": "Tony Lip, a bouncer in 1962, is hired to drive pianist Don Shirley on a tour through the Deep South in the days when African Americans, forced to find alternate accommodations and services due to segregation laws below the Mason-Dixon Line, relied on a guide called The Negro Motorist Green Book.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Drama",
-      "Comedy",
-      "History"
-    ],
-    "release_date": "2018-11-16",
-    "rating": 8.222,
-    "certification": "UA",
-    "watch_providers": [],
-    "poster_path": "/7BsvSuDQuoqhWmU2fL7W2GOcZHU.jpg"
-  },
-  {
-    "id": 508965,
-    "title": "Klaus",
-    "overview": "A selfish postman and a reclusive toymaker form an unlikely friendship, delivering joy to a cold, dark town that desperately needs it.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Animation",
-      "Family",
-      "Comedy"
-    ],
-    "release_date": "2019-11-08",
-    "rating": 8.218,
-    "certification": "U/A 7+",
-    "watch_providers": [
-      "Netflix"
-    ],
-    "poster_path": "/q125RHUDgR4gjwh1QkfYuJLYkL.jpg"
-  },
-  {
     "id": 315162,
     "title": "Puss in Boots: The Last Wish",
     "overview": "Puss in Boots discovers that his passion for adventure has taken its toll: He has burned through eight of his nine lives, leaving him with only one life left. Puss sets out on an epic journey to find the mythical Last Wish and restore his nine lives.",
@@ -4142,7 +4139,7 @@
       "Family"
     ],
     "release_date": "2022-12-07",
-    "rating": 8.217,
+    "rating": 8.2,
     "certification": "U",
     "watch_providers": [
       "JioHotstar"
@@ -4150,9 +4147,9 @@
     "poster_path": "/kuf6dutpsT0vSVehic3EZIqkOBt.jpg"
   },
   {
-    "id": 995133,
-    "title": "The Boy, the Mole, the Fox and the Horse",
-    "overview": "The unlikely friendship of a boy, a mole, a fox and a horse traveling together in the boy's search for home.",
+    "id": 508965,
+    "title": "Klaus",
+    "overview": "A selfish postman and a reclusive toymaker form an unlikely friendship, delivering joy to a cold, dark town that desperately needs it.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
@@ -4161,17 +4158,34 @@
     "genres": [
       "Animation",
       "Family",
-      "Drama",
-      "Adventure"
+      "Comedy"
     ],
-    "release_date": "2022-12-25",
-    "rating": 8.212,
-    "certification": "U",
+    "release_date": "2019-11-08",
+    "rating": 8.2,
+    "certification": "U/A 7+",
     "watch_providers": [
-      "Apple TV",
-      "Apple TV Amazon Channel"
+      "Netflix"
     ],
-    "poster_path": "/wAKBWRhMmBtrCCuqmFwPm2RGTph.jpg"
+    "poster_path": "/q125RHUDgR4gjwh1QkfYuJLYkL.jpg"
+  },
+  {
+    "id": 164558,
+    "title": "One Direction: This Is Us",
+    "overview": "\"One Direction: This Is Us\" is a captivating and intimate all-access look at life on the road for the global music phenomenon. Weaved with stunning live concert footage, this inspiring feature film tells the remarkable story of Niall, Zayn, Liam, Harry and Louis' meteoric rise to fame, from their humble hometown beginnings and competing on the X-Factor, to conquering the world and performing at London’s famed O2 Arena. Hear it from the boys themselves and see through their own eyes what it's really like to be One Direction.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Documentary",
+      "Music"
+    ],
+    "release_date": "2013-08-20",
+    "rating": 8.2,
+    "certification": "PG",
+    "watch_providers": [],
+    "poster_path": "/b720e7DW3nqRJaUH9xpTtvYhnUj.jpg"
   },
   {
     "id": 1124,
@@ -4188,54 +4202,12 @@
       "Science Fiction"
     ],
     "release_date": "2006-10-19",
-    "rating": 8.211,
+    "rating": 8.2,
     "certification": "U",
     "watch_providers": [
       "Netflix"
     ],
     "poster_path": "/Ag2B2KHKQPukjH7WutmgnnSNurZ.jpg"
-  },
-  {
-    "id": 164558,
-    "title": "One Direction: This Is Us",
-    "overview": "\"One Direction: This Is Us\" is a captivating and intimate all-access look at life on the road for the global music phenomenon. Weaved with stunning live concert footage, this inspiring feature film tells the remarkable story of Niall, Zayn, Liam, Harry and Louis' meteoric rise to fame, from their humble hometown beginnings and competing on the X-Factor, to conquering the world and performing at Londonâ€™s famed O2 Arena. Hear it from the boys themselves and see through their own eyes what it's really like to be One Direction.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Documentary",
-      "Music"
-    ],
-    "release_date": "2013-08-20",
-    "rating": 8.21,
-    "certification": "PG",
-    "watch_providers": [],
-    "poster_path": "/b720e7DW3nqRJaUH9xpTtvYhnUj.jpg"
-  },
-  {
-    "id": 37257,
-    "title": "Witness for the Prosecution",
-    "overview": "An ailing barrister is thrust back into the courtroom in what becomes one of the most unusual and eventful murder cases of the lawyer's career when he finds himself defending a man being tried for the murder of a socialite.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Drama",
-      "Mystery",
-      "Crime"
-    ],
-    "release_date": "1957-12-17",
-    "rating": 8.2,
-    "certification": "NR",
-    "watch_providers": [
-      "Amazon Prime Video",
-      "Amazon Prime Video with Ads"
-    ],
-    "poster_path": "/bCj4EfuehAlgBwVd3diyWyhuuau.jpg"
   },
   {
     "id": 11,
@@ -4252,74 +4224,13 @@
       "Science Fiction"
     ],
     "release_date": "1977-05-25",
-    "rating": 8.208,
+    "rating": 8.2,
     "certification": "U",
     "watch_providers": [
       "JioHotstar",
       "VI movies and tv"
     ],
     "poster_path": "/fai0rspsNeJCS69wHNjOdWxcI7P.jpg"
-  },
-  {
-    "id": 1186532,
-    "title": "The Forge",
-    "overview": "19 year old Isaiah Wright lives for basketball and video games. A year out of high school, he has no job, no plans, and no idea how to be a man. At odds with his single mother Cynthia, Isaiah is given an ultimatum â€“ to step up or move out. Feeling the pull from his friends and the push from his mom, Isaiah is hired by Moore Fitness, unaware of how the owner will personally impact his life. With the prayers of his mother and unexpected guidance from his new mentor, Isaiah is forced to deal with his past, sacrifice his selfishness and discover how God might have a greater purpose for his life.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Drama",
-      "Family"
-    ],
-    "release_date": "2024-08-22",
-    "rating": 8.202,
-    "certification": "U/A 7+",
-    "watch_providers": [],
-    "poster_path": "/oranxontIQRmhuyQlkoAwxpeBYz.jpg"
-  },
-  {
-    "id": 568332,
-    "title": "Taylor Swift: Reputation Stadium Tour",
-    "overview": "Taylor Swift takes the stage in Dallas for the Reputation Stadium Tour and celebrates a monumental night of music, memories and visual magic.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Music"
-    ],
-    "release_date": "2018-12-31",
-    "rating": 8.199,
-    "certification": "PG",
-    "watch_providers": [],
-    "poster_path": "/u6oXUTtOuJRPdUgUuPAVVJPSKCo.jpg"
-  },
-  {
-    "id": 354912,
-    "title": "Coco",
-    "overview": "Despite his familyâ€™s baffling generations-old ban on music, Miguel dreams of becoming an accomplished musician like his idol, Ernesto de la Cruz. Desperate to prove his talent, Miguel finds himself in the stunning and colorful Land of the Dead following a mysterious chain of events. Along the way, he meets charming trickster Hector, and together, they set off on an extraordinary journey to unlock the real story behind Miguel's family history.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Family",
-      "Animation",
-      "Music",
-      "Adventure"
-    ],
-    "release_date": "2017-10-27",
-    "rating": 8.197,
-    "certification": "U",
-    "watch_providers": [
-      "JioHotstar",
-      "VI movies and tv"
-    ],
-    "poster_path": "/6Ryitt95xrO8KXuqRGm1fUuNwqF.jpg"
   },
   {
     "id": 537061,
@@ -4339,10 +4250,137 @@
       "TV Movie"
     ],
     "release_date": "2019-10-07",
-    "rating": 8.194,
+    "rating": 8.2,
     "certification": "PG",
     "watch_providers": [],
     "poster_path": "/8mRgpubxHqnqvENK4Bei30xMDvy.jpg"
+  },
+  {
+    "id": 37257,
+    "title": "Witness for the Prosecution",
+    "overview": "An ailing barrister is thrust back into the courtroom in what becomes one of the most unusual and eventful murder cases of the lawyer's career when he finds himself defending a man being tried for the murder of a socialite.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Mystery",
+      "Crime"
+    ],
+    "release_date": "1957-12-17",
+    "rating": 8.202,
+    "certification": "NR",
+    "watch_providers": [
+      "Amazon Prime Video",
+      "Amazon Prime Video with Ads"
+    ],
+    "poster_path": "/bCj4EfuehAlgBwVd3diyWyhuuau.jpg"
+  },
+  {
+    "id": 354912,
+    "title": "Coco",
+    "overview": "Despite his family’s baffling generations-old ban on music, Miguel dreams of becoming an accomplished musician like his idol, Ernesto de la Cruz. Desperate to prove his talent, Miguel finds himself in the stunning and colorful Land of the Dead following a mysterious chain of events. Along the way, he meets charming trickster Hector, and together, they set off on an extraordinary journey to unlock the real story behind Miguel's family history.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Family",
+      "Animation",
+      "Music",
+      "Adventure"
+    ],
+    "release_date": "2017-10-27",
+    "rating": 8.199,
+    "certification": "U",
+    "watch_providers": [
+      "JioHotstar",
+      "VI movies and tv"
+    ],
+    "poster_path": "/6Ryitt95xrO8KXuqRGm1fUuNwqF.jpg"
+  },
+  {
+    "id": 995133,
+    "title": "The Boy, the Mole, the Fox and the Horse",
+    "overview": "The unlikely friendship of a boy, a mole, a fox and a horse traveling together in the boy's search for home.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Animation",
+      "Family",
+      "Drama",
+      "Adventure"
+    ],
+    "release_date": "2022-12-25",
+    "rating": 8.2,
+    "certification": "U",
+    "watch_providers": [
+      "Apple TV",
+      "Apple TV Amazon Channel"
+    ],
+    "poster_path": "/wAKBWRhMmBtrCCuqmFwPm2RGTph.jpg"
+  },
+  {
+    "id": 1186532,
+    "title": "The Forge",
+    "overview": "19 year old Isaiah Wright lives for basketball and video games. A year out of high school, he has no job, no plans, and no idea how to be a man. At odds with his single mother Cynthia, Isaiah is given an ultimatum – to step up or move out. Feeling the pull from his friends and the push from his mom, Isaiah is hired by Moore Fitness, unaware of how the owner will personally impact his life. With the prayers of his mother and unexpected guidance from his new mentor, Isaiah is forced to deal with his past, sacrifice his selfishness and discover how God might have a greater purpose for his life.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Family"
+    ],
+    "release_date": "2024-08-22",
+    "rating": 8.189,
+    "certification": "U/A 7+",
+    "watch_providers": [],
+    "poster_path": "/oranxontIQRmhuyQlkoAwxpeBYz.jpg"
+  },
+  {
+    "id": 568332,
+    "title": "Taylor Swift: Reputation Stadium Tour",
+    "overview": "Taylor Swift takes the stage in Dallas for the Reputation Stadium Tour and celebrates a monumental night of music, memories and visual magic.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Music"
+    ],
+    "release_date": "2018-12-31",
+    "rating": 8.185,
+    "certification": "PG",
+    "watch_providers": [],
+    "poster_path": "/u6oXUTtOuJRPdUgUuPAVVJPSKCo.jpg"
+  },
+  {
+    "id": 313106,
+    "title": "Doctor Who: The Day of the Doctor",
+    "overview": "In 2013, something terrible is awakening in London's National Gallery; in 1562, a murderous plot is afoot in Elizabethan England; and somewhere in space an ancient battle reaches its devastating conclusion. All of reality is at stake as the Doctor's own dangerous past comes back to haunt him.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Science Fiction",
+      "Adventure"
+    ],
+    "release_date": "2013-11-23",
+    "rating": 8.184,
+    "certification": "NR",
+    "watch_providers": [],
+    "poster_path": "/6c0CjymaupC5xerJCemuaSV4CLj.jpg"
   },
   {
     "id": 284,
@@ -4367,25 +4405,6 @@
     "poster_path": "/hhSRt1KKfRT0yEhEtRW3qp31JFU.jpg"
   },
   {
-    "id": 313106,
-    "title": "Doctor Who: The Day of the Doctor",
-    "overview": "In 2013, something terrible is awakening in London's National Gallery; in 1562, a murderous plot is afoot in Elizabethan England; and somewhere in space an ancient battle reaches its devastating conclusion. All of reality is at stake as the Doctor's own dangerous past comes back to haunt him.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Science Fiction",
-      "Adventure"
-    ],
-    "release_date": "2013-11-23",
-    "rating": 8.182,
-    "certification": "NR",
-    "watch_providers": [],
-    "poster_path": "/6c0CjymaupC5xerJCemuaSV4CLj.jpg"
-  },
-  {
     "id": 441130,
     "title": "Wolfwalkers",
     "overview": "In a time of superstition and magic, when wolves are seen as demonic and nature an evil to be tamed, a young apprentice hunter comes to Ireland with her father to wipe out the last pack. But when she saves a wild native girl, their friendship leads her to discover the world of the Wolfwalkers and transform her into the very thing her father is tasked to destroy.",
@@ -4401,59 +4420,13 @@
       "Fantasy"
     ],
     "release_date": "2020-10-26",
-    "rating": 8.173,
+    "rating": 8.17,
     "certification": "U/A 7+",
     "watch_providers": [
       "Apple TV",
       "Apple TV Amazon Channel"
     ],
     "poster_path": "/vqGiNbdc2sDwsnivMMYzwAoSSu6.jpg"
-  },
-  {
-    "id": 77,
-    "title": "Memento",
-    "overview": "Leonard Shelby is tracking down the man who raped and murdered his wife. The difficulty of locating his wife's killer, however, is compounded by the fact that he suffers from a rare, untreatable form of short-term memory loss. Although he can recall details of life before his accident, Leonard cannot remember what happened fifteen minutes ago, where he's going, or why.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Mystery",
-      "Thriller"
-    ],
-    "release_date": "2000-10-11",
-    "rating": 8.173,
-    "certification": "UA",
-    "watch_providers": [
-      "Lionsgate Play",
-      "Lionsgate Play Amazon Channel",
-      "Lionsgate Play Apple TV Channel"
-    ],
-    "poster_path": "/nzlv62aC0octS5AklAiWpXLX9Z0.jpg"
-  },
-  {
-    "id": 361743,
-    "title": "Top Gun: Maverick",
-    "overview": "After more than thirty years of service as one of the Navyâ€™s top aviators, and dodging the advancement in rank that would ground him, Pete â€œMaverickâ€ Mitchell finds himself training a detachment of TOP GUN graduates for a specialized mission the likes of which no living pilot has ever seen.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Action",
-      "Drama"
-    ],
-    "release_date": "2022-05-21",
-    "rating": 8.158,
-    "certification": "UA",
-    "watch_providers": [
-      "Amazon Prime Video",
-      "Amazon Prime Video with Ads",
-      "JioHotstar"
-    ],
-    "poster_path": "/n0YuM4f5lvGAP6MAW2kBIzugXnc.jpg"
   },
   {
     "id": 37165,
@@ -4477,9 +4450,32 @@
     "poster_path": "/vuza0WqY239yBXOadKlGwJsZJFE.jpg"
   },
   {
+    "id": 361743,
+    "title": "Top Gun: Maverick",
+    "overview": "After more than thirty years of service as one of the Navy’s top aviators, and dodging the advancement in rank that would ground him, Pete “Maverick” Mitchell finds himself training a detachment of TOP GUN graduates for a specialized mission the likes of which no living pilot has ever seen.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Action",
+      "Drama"
+    ],
+    "release_date": "2022-05-21",
+    "rating": 8.158,
+    "certification": "UA",
+    "watch_providers": [
+      "Amazon Prime Video",
+      "Amazon Prime Video with Ads",
+      "JioHotstar"
+    ],
+    "poster_path": "/n0YuM4f5lvGAP6MAW2kBIzugXnc.jpg"
+  },
+  {
     "id": 522924,
     "title": "The Art of Racing in the Rain",
-    "overview": "A family dog â€“ with a near-human soul and a philosopher's mind â€“ evaluates his life through the lessons learned by his human owner, a race-car driver.",
+    "overview": "A family dog – with a near-human soul and a philosopher's mind – evaluates his life through the lessons learned by his human owner, a race-car driver.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
@@ -4490,7 +4486,7 @@
       "Romance"
     ],
     "release_date": "2019-08-08",
-    "rating": 8.156,
+    "rating": 8.144,
     "certification": "U",
     "watch_providers": [],
     "poster_path": "/mi5VN4ww0JZgRFJIaPxxTGKjUg7.jpg"
@@ -4512,12 +4508,55 @@
       "Science Fiction"
     ],
     "release_date": "2026-03-04",
-    "rating": 8.2,
+    "rating": 8.14,
     "certification": "U/A 7+",
     "watch_providers": [
       "JioHotstar"
     ],
     "poster_path": "/xjtWQ2CL1mpmMNwuU5HeS4Iuwuu.jpg"
+  },
+  {
+    "id": 289,
+    "title": "Casablanca",
+    "overview": "In Casablanca, Morocco in December 1941, a cynical American expatriate meets a former lover, with unforeseen complications.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "release_date": "1943-01-15",
+    "rating": 8.139,
+    "certification": "PG",
+    "watch_providers": [],
+    "poster_path": "/lGCEKlJo2CnWydQj7aamY7s1S7Q.jpg"
+  },
+  {
+    "id": 10098,
+    "title": "The Kid",
+    "overview": "A tramp cares for a boy after he's abandoned as a newborn by his mother. Later the mother has a change of heart and aches to be reunited with her son.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "release_date": "1921-01-21",
+    "rating": 8.1,
+    "certification": "NR",
+    "watch_providers": [
+      "JustWatch TV",
+      "Lionsgate Play",
+      "Lionsgate Play Amazon Channel",
+      "Lionsgate Play Apple TV Channel"
+    ],
+    "poster_path": "/drgMcyTsySQBnUPGaBThCHGdlWT.jpg"
   },
   {
     "id": 606856,
@@ -4534,73 +4573,10 @@
       "Drama"
     ],
     "release_date": "2019-12-20",
-    "rating": 8.139,
+    "rating": 8.136,
     "certification": "PG",
     "watch_providers": [],
     "poster_path": "/921q4gPNN4J6UxvKaw6SCNBe3F8.jpg"
-  },
-  {
-    "id": 10098,
-    "title": "The Kid",
-    "overview": "A tramp cares for a boy after he's abandoned as a newborn by his mother. Later the mother has a change of heart and aches to be reunited with her son.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Comedy",
-      "Drama"
-    ],
-    "release_date": "1921-01-21",
-    "rating": 8.139,
-    "certification": "NR",
-    "watch_providers": [
-      "JustWatch TV",
-      "Lionsgate Play",
-      "Lionsgate Play Amazon Channel",
-      "Lionsgate Play Apple TV Channel"
-    ],
-    "poster_path": "/A9NWYyn7eX0H9XIjaOvfWJ9mCGA.jpg"
-  },
-  {
-    "id": 289,
-    "title": "Casablanca",
-    "overview": "In Casablanca, Morocco in December 1941, a cynical American expatriate meets a former lover, with unforeseen complications.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Drama",
-      "Romance"
-    ],
-    "release_date": "1943-01-15",
-    "rating": 8.138,
-    "certification": "PG",
-    "watch_providers": [],
-    "poster_path": "/lGCEKlJo2CnWydQj7aamY7s1S7Q.jpg"
-  },
-  {
-    "id": 426,
-    "title": "Vertigo",
-    "overview": "A retired San Francisco detective suffering from acrophobia investigates the strange activities of an old friend's wife, all the while becoming dangerously obsessed with her.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Mystery",
-      "Romance",
-      "Thriller"
-    ],
-    "release_date": "1958-05-28",
-    "rating": 8.132,
-    "certification": "PG",
-    "watch_providers": [],
-    "poster_path": "/15uOEfqBNTVtDUT7hGBVCka0rZz.jpg"
   },
   {
     "id": 399106,
@@ -4622,6 +4598,48 @@
     "poster_path": "/5fu2d809jepLwEpES7wggiECLoQ.jpg"
   },
   {
+    "id": 426,
+    "title": "Vertigo",
+    "overview": "A retired San Francisco detective suffering from acrophobia investigates the strange activities of an old friend's wife, all the while becoming dangerously obsessed with her.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Mystery",
+      "Romance",
+      "Thriller"
+    ],
+    "release_date": "1958-05-28",
+    "rating": 8.1,
+    "certification": "PG",
+    "watch_providers": [],
+    "poster_path": "/15uOEfqBNTVtDUT7hGBVCka0rZz.jpg"
+  },
+  {
+    "id": 10681,
+    "title": "WALL·E",
+    "overview": "After hundreds of years doing what he was built for, WALL•E— a robot designed to clean up the earth—discovers a new purpose in life when he meets a sleek search robot named EVE. EVE comes to realize that WALL•E has inadvertently stumbled upon the key to the planet's future, and races back to space to report to the humans. Meanwhile, WALL•E chases EVE across the galaxy and sets into motion one of the most imaginative adventures ever brought to the big screen.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Animation",
+      "Family",
+      "Science Fiction"
+    ],
+    "release_date": "2008-06-26",
+    "rating": 8.126,
+    "certification": "G",
+    "watch_providers": [
+      "JioHotstar"
+    ],
+    "poster_path": "/hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg"
+  },
+  {
     "id": 872,
     "title": "Singin' in the Rain",
     "overview": "In 1927 Hollywood, a silent film star falls for a chorus girl just as he and his paranoid screen partner struggle to make the difficult transition to talking pictures.",
@@ -4635,50 +4653,48 @@
       "Romance"
     ],
     "release_date": "1952-04-10",
-    "rating": 8.129,
+    "rating": 8.1,
     "certification": "G",
     "watch_providers": [],
-    "poster_path": "/w03EiJVHP8Un77boQeE7hg9DVdU.jpg"
+    "poster_path": "/671EPwBsHGHBk0cdOeZqmOK0XB3.jpg"
   },
   {
-    "id": 30238,
-    "title": "Earthlings",
-    "overview": "Using hidden cameras and never-before-seen footage, Earthlings chronicles the day-to-day practices of the largest industries in the world, all of which rely entirely on animals for profit.",
+    "id": 935,
+    "title": "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb",
+    "overview": "After the insane General Jack D. Ripper initiates a nuclear strike on the Soviet Union, a war room full of politicians, generals and a Russian diplomat all frantically try to stop it.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
       "all_time_favorite"
     ],
     "genres": [
-      "Documentary"
+      "Comedy",
+      "War"
     ],
-    "release_date": "2005-09-24",
-    "rating": 8.126,
+    "release_date": "1964-01-29",
+    "rating": 8.119,
+    "certification": "PG",
+    "watch_providers": [],
+    "poster_path": "/gHm96BRW4GoI339rF1vYoYTB6Qe.jpg"
+  },
+  {
+    "id": 37793,
+    "title": "Ghosts",
+    "overview": "In the town of Normal Valley, an eccentric magician named Maestro entertains the local children every day in his spooky mansion. One stormy night, the town's mayor leads a group of angry citizens to the mansion in an attempt to run Maestro out of town.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Music",
+      "Horror"
+    ],
+    "release_date": "1997-09-04",
+    "rating": 8.1,
     "certification": "NR",
     "watch_providers": [],
-    "poster_path": "/fcRUYYyDWLJPlX7D6RPtQwdU7G2.jpg"
-  },
-  {
-    "id": 10681,
-    "title": "WALLÂ·E",
-    "overview": "After hundreds of years doing what he was built for, WALLâ€¢Eâ€” a robot designed to clean up the earthâ€”discovers a new purpose in life when he meets a sleek search robot named EVE. EVE comes to realize that WALLâ€¢E has inadvertently stumbled upon the key to the planet's future, and races back to space to report to the humans. Meanwhile, WALLâ€¢E chases EVE across the galaxy and sets into motion one of the most imaginative adventures ever brought to the big screen.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Animation",
-      "Family",
-      "Science Fiction"
-    ],
-    "release_date": "2008-06-26",
-    "rating": 8.122,
-    "certification": "G",
-    "watch_providers": [
-      "JioHotstar"
-    ],
-    "poster_path": "/hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg"
+    "poster_path": "/aLMS2GWnJwkAADd8Dnl2dK1eg13.jpg"
   },
   {
     "id": 414419,
@@ -4698,27 +4714,10 @@
     "release_date": "2011-03-27",
     "rating": 8.1,
     "certification": "NR",
-    "watch_providers": [],
+    "watch_providers": [
+      "Lionsgate+ Amazon Channel"
+    ],
     "poster_path": "/nSOJfWJCdVFZQwXQA7RXn7FIIiY.jpg"
-  },
-  {
-    "id": 935,
-    "title": "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb",
-    "overview": "After the insane General Jack D. Ripper initiates a nuclear strike on the Soviet Union, a war room full of politicians, generals and a Russian diplomat all frantically try to stop it.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Comedy",
-      "War"
-    ],
-    "release_date": "1964-01-29",
-    "rating": 8.121,
-    "certification": "PG",
-    "watch_providers": [],
-    "poster_path": "/gHm96BRW4GoI339rF1vYoYTB6Qe.jpg"
   },
   {
     "id": 500,
@@ -4734,7 +4733,7 @@
       "Thriller"
     ],
     "release_date": "1992-09-02",
-    "rating": 8.111,
+    "rating": 8.1,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -4743,9 +4742,27 @@
     "poster_path": "/xi8Iu6qyTfyZVDVy60raIOYJJmk.jpg"
   },
   {
+    "id": 30238,
+    "title": "Earthlings",
+    "overview": "Using hidden cameras and never-before-seen footage, Earthlings chronicles the day-to-day practices of the largest industries in the world, all of which rely entirely on animals for profit.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Documentary"
+    ],
+    "release_date": "2005-09-24",
+    "rating": 8.102,
+    "certification": "NR",
+    "watch_providers": [],
+    "poster_path": "/fcRUYYyDWLJPlX7D6RPtQwdU7G2.jpg"
+  },
+  {
     "id": 406997,
     "title": "Wonder",
-    "overview": "The story of August Pullman â€“ a boy with facial differences â€“ who enters fifth grade, attending a mainstream elementary school for the first time.",
+    "overview": "The story of August Pullman – a boy with facial differences – who enters fifth grade, attending a mainstream elementary school for the first time.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
@@ -4756,7 +4773,7 @@
       "Drama"
     ],
     "release_date": "2017-11-13",
-    "rating": 8.098,
+    "rating": 8.1,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -4784,7 +4801,7 @@
       "Fantasy"
     ],
     "release_date": "2020-12-25",
-    "rating": 8.089,
+    "rating": 8.1,
     "certification": "PG",
     "watch_providers": [
       "JioHotstar",
@@ -4806,7 +4823,7 @@
       "Thriller"
     ],
     "release_date": "1944-07-06",
-    "rating": 8.086,
+    "rating": 8.087,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/rVNYZZgfhwqVMMWlBmxOfWqnwCj.jpg"
@@ -4825,7 +4842,7 @@
       "War"
     ],
     "release_date": "2023-07-14",
-    "rating": 8.083,
+    "rating": 8.1,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/zIRp1IeuPh4GgqFCH3y0DQuY9xP.jpg"
@@ -4845,7 +4862,7 @@
       "Crime"
     ],
     "release_date": "1959-03-19",
-    "rating": 8.078,
+    "rating": 8.077,
     "certification": "NR",
     "watch_providers": [
       "MGM Plus Amazon Channel"
@@ -4853,46 +4870,24 @@
     "poster_path": "/hVIKyTK13AvOGv7ICmJjK44DTzp.jpg"
   },
   {
-    "id": 791373,
-    "title": "Zack Snyder's Justice League",
-    "overview": "Determined to ensure Superman's ultimate sacrifice was not in vain, Bruce Wayne aligns forces with Diana Prince with plans to recruit a team of metahumans to protect the world from an approaching threat of catastrophic proportions.",
+    "id": 282848,
+    "title": "Doctor Who: The Time of the Doctor",
+    "overview": "Orbiting a quiet backwater planet, the massed forces of the universe's deadliest species gather, drawn to a mysterious message that echoes out to the stars. And amongst them, the Doctor. Rescuing Clara from a family Christmas dinner, the Time Lord and his best friend must learn what this enigmatic signal means for his own fate and that of the universe.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
       "all_time_favorite"
     ],
     "genres": [
-      "Action",
-      "Adventure",
-      "Fantasy"
+      "Drama",
+      "Science Fiction",
+      "TV Movie"
     ],
-    "release_date": "2021-03-18",
-    "rating": 8.077,
-    "certification": "UA",
-    "watch_providers": [
-      "JioHotstar"
-    ],
-    "poster_path": "/tnAuB8q5vv7Ax9UAEje5Xi4BXik.jpg"
-  },
-  {
-    "id": 705,
-    "title": "All About Eve",
-    "overview": "From the moment she glimpses her idol at the stage door, Eve Harrington is determined to take the reins of power away from the great actress Margo Channing. Eve maneuvers her way into Margo's Broadway role, becomes a sensation and even causes turmoil in the lives of Margo's director boyfriend, her playwright and his wife. Only the cynical drama critic sees through Eve, admiring her audacity and perfect pattern of deceit.",
-    "original_language": "en",
-    "original_language_name": "English",
-    "categories": [
-      "all_time_favorite"
-    ],
-    "genres": [
-      "Drama"
-    ],
-    "release_date": "1950-11-09",
-    "rating": 8.074,
-    "certification": "PG",
-    "watch_providers": [
-      "Artiflix"
-    ],
-    "poster_path": "/blBzZaatPWVuWpXEnPscMA4Xp6m.jpg"
+    "release_date": "2013-12-25",
+    "rating": 8.076,
+    "certification": "NR",
+    "watch_providers": [],
+    "poster_path": "/8GSVpMPlvymndYheKMtQb1aLDBh.jpg"
   },
   {
     "id": 831827,
@@ -4914,24 +4909,46 @@
     "poster_path": "/39oaQUS0KxyXL6KYJ2o2u03PpHz.jpg"
   },
   {
-    "id": 282848,
-    "title": "Doctor Who: The Time of the Doctor",
-    "overview": "Orbiting a quiet backwater planet, the massed forces of the universe's deadliest species gather, drawn to a mysterious message that echoes out to the stars. And amongst them, the Doctor. Rescuing Clara from a family Christmas dinner, the Time Lord and his best friend must learn what this enigmatic signal means for his own fate and that of the universe.",
+    "id": 705,
+    "title": "All About Eve",
+    "overview": "From the moment she glimpses her idol at the stage door, Eve Harrington is determined to take the reins of power away from the great actress Margo Channing. Eve maneuvers her way into Margo's Broadway role, becomes a sensation and even causes turmoil in the lives of Margo's director boyfriend, her playwright and his wife. Only the cynical drama critic sees through Eve, admiring her audacity and perfect pattern of deceit.",
     "original_language": "en",
     "original_language_name": "English",
     "categories": [
       "all_time_favorite"
     ],
     "genres": [
-      "Drama",
-      "Science Fiction",
-      "TV Movie"
+      "Drama"
     ],
-    "release_date": "2013-12-25",
-    "rating": 8.07,
-    "certification": "NR",
-    "watch_providers": [],
-    "poster_path": "/8GSVpMPlvymndYheKMtQb1aLDBh.jpg"
+    "release_date": "1950-11-09",
+    "rating": 8.1,
+    "certification": "PG",
+    "watch_providers": [
+      "Artiflix"
+    ],
+    "poster_path": "/blBzZaatPWVuWpXEnPscMA4Xp6m.jpg"
+  },
+  {
+    "id": 791373,
+    "title": "Zack Snyder's Justice League",
+    "overview": "Determined to ensure Superman's ultimate sacrifice was not in vain, Bruce Wayne aligns forces with Diana Prince with plans to recruit a team of metahumans to protect the world from an approaching threat of catastrophic proportions.",
+    "original_language": "en",
+    "original_language_name": "English",
+    "categories": [
+      "all_time_favorite"
+    ],
+    "genres": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "release_date": "2021-03-18",
+    "rating": 8.1,
+    "certification": "UA",
+    "watch_providers": [
+      "JioHotstar"
+    ],
+    "poster_path": "/tnAuB8q5vv7Ax9UAEje5Xi4BXik.jpg"
   },
   {
     "id": 775098,
@@ -4993,7 +5010,7 @@
   {
     "id": 368330,
     "title": "Katyar Kaljat Ghusali",
-    "overview": "Katyar Kaljat Ghusli is a 2015 Marathi film based on a play by the same name. Directed by Subodh Bhave, the film stars Sachin Pilgaonkar, Shankar Mahadevan, and Subodh Bhave in lead roles. The film marks the acting debut for Mahadevan and directorial debut for Bhave. The original play premiered in 1967 in Mumbai, where Hindustani classical vocalist Vasantrao Deshpande played one of the protagonists. In 2010, the play was relaunched with protagonists essayed by Rahul Deshpande, grandson of Vasantrao Deshpande and singer Mahesh Kale. The film's music is composed by Shankarâ€“Ehsaanâ€“Loy, and retained some of the songs from the original play composed by Jitendra Abhisheki.",
+    "overview": "Katyar Kaljat Ghusli is a 2015 Marathi film based on a play by the same name. Directed by Subodh Bhave, the film stars Sachin Pilgaonkar, Shankar Mahadevan, and Subodh Bhave in lead roles. The film marks the acting debut for Mahadevan and directorial debut for Bhave. The original play premiered in 1967 in Mumbai, where Hindustani classical vocalist Vasantrao Deshpande played one of the protagonists. In 2010, the play was relaunched with protagonists essayed by Rahul Deshpande, grandson of Vasantrao Deshpande and singer Mahesh Kale. The film's music is composed by Shankar–Ehsaan–Loy, and retained some of the songs from the original play composed by Jitendra Abhisheki.",
     "original_language": "mr",
     "original_language_name": "Marathi",
     "categories": [
@@ -5009,7 +5026,7 @@
       "VI movies and tv",
       "Zee5"
     ],
-    "poster_path": "/vbpvvVX8EwzDSB6qjoCoiirvSMt.jpg"
+    "poster_path": "/8FwgAZTVVtqMbW4y2dBuoJjdNXt.jpg"
   },
   {
     "id": 959834,
@@ -5056,7 +5073,7 @@
   {
     "id": 383275,
     "title": "De Dhakka",
-    "overview": "A family traveling from Kolhapur to Mumbai will face many ups and down before they reach their destination.",
+    "overview": "A family loaded with quirky, colorful characters piles into an old tum-tum and road trips from Kolhapur to Mumbai for Sayali to compete in a dance competition.",
     "original_language": "mr",
     "original_language_name": "Marathi",
     "categories": [
@@ -5064,8 +5081,7 @@
     ],
     "genres": [
       "Comedy",
-      "Drama",
-      "Family"
+      "Drama"
     ],
     "release_date": "2008-05-16",
     "rating": 8.6,
@@ -5074,7 +5090,7 @@
       "VI movies and tv",
       "Zee5"
     ],
-    "poster_path": "/hEMp4mPS6nersQzjCy6Wkv5eRd2.jpg"
+    "poster_path": "/2biLtrfJYUpJprk6SG9RTyIaCNp.jpg"
   },
   {
     "id": 49492,
@@ -5090,7 +5106,7 @@
       "Romance"
     ],
     "release_date": "2009-09-25",
-    "rating": 8.571,
+    "rating": 8.5,
     "certification": "AA",
     "watch_providers": [],
     "poster_path": "/wofzhirwy0Tg1IxBDmlKUXIHxkI.jpg"
@@ -5132,7 +5148,7 @@
     "rating": 8.3,
     "certification": "U",
     "watch_providers": [],
-    "poster_path": "/idpdndC9eRM4CLH3rttMaMAeXv.jpg"
+    "poster_path": "/x4KvM8NBi8m44aqwEMgsJPzA5Ne.jpg"
   },
   {
     "id": 504967,
@@ -5166,7 +5182,7 @@
       "Thriller"
     ],
     "release_date": "2005-12-16",
-    "rating": 8.125,
+    "rating": 8.111,
     "certification": "NR",
     "watch_providers": [
       "Amazon Prime Video",
@@ -5174,7 +5190,7 @@
       "ShemarooMe",
       "Zee5"
     ],
-    "poster_path": "/geR4IU1xWnr9sdIBzHYqTjMqo5v.jpg"
+    "poster_path": "/7xiMtkgw69HnWDsQ9vCwz2nEmvb.jpg"
   },
   {
     "id": 497027,
@@ -5276,7 +5292,7 @@
       "Amazon Prime Video",
       "Amazon Prime Video with Ads"
     ],
-    "poster_path": "/yhrlCDfGHfVuqaBeJyGJUtOZO75.jpg"
+    "poster_path": "/yUpM3iEpLGZL2L3T7YSiYEUyvP.jpg"
   },
   {
     "id": 92198,
@@ -5311,7 +5327,7 @@
     ],
     "genres": [],
     "release_date": "2014-10-10",
-    "rating": 7.833,
+    "rating": 7.8,
     "certification": "U",
     "watch_providers": [],
     "poster_path": "/nv1co884L3deosL70pj3CDZiyVo.jpg"
@@ -5331,7 +5347,7 @@
       "Drama"
     ],
     "release_date": "2022-05-13",
-    "rating": 7.714,
+    "rating": 7.7,
     "certification": "UA",
     "watch_providers": [],
     "poster_path": "/x5kqbaZflZRJ7Jg8XZxzUAKyq9t.jpg"
@@ -5383,7 +5399,7 @@
   {
     "id": 192573,
     "title": "Zapatlela",
-    "overview": "Inspector Mahesh kills a gangster but his spirit enters into a near by doll. Later, a puppetry master receives this doll as a gift but this doll will turn his good life into hell.",
+    "overview": "After being shot in a toy store, a gangster transfers his soul into a doll. Lakshya, a puppetry master receives this doll as a gift, which unleashes terror upon the city.",
     "original_language": "mr",
     "original_language_name": "Marathi",
     "categories": [
@@ -5394,12 +5410,12 @@
       "Comedy"
     ],
     "release_date": "1993-04-16",
-    "rating": 7.667,
+    "rating": 7.7,
     "certification": "NR",
     "watch_providers": [
       "Zee5"
     ],
-    "poster_path": "/w4GMCJhPbrJN681t6UiaoQgsxo7.jpg"
+    "poster_path": "/b1SCilgz5SWVlUCH0DhzZLiept0.jpg"
   },
   {
     "id": 158503,
@@ -5415,7 +5431,7 @@
       "Music"
     ],
     "release_date": "2010-01-01",
-    "rating": 7.636,
+    "rating": 7.6,
     "certification": "NR",
     "watch_providers": [
       "VI movies and tv",
@@ -5483,15 +5499,13 @@
     "release_date": "2008-01-01",
     "rating": 7.6,
     "certification": "NR",
-    "watch_providers": [
-      "Sony Liv"
-    ],
+    "watch_providers": [],
     "poster_path": "/w0JLBe7a9MxaeZUNgWjgR18EPnb.jpg"
   },
   {
     "id": 383367,
     "title": "Sairat",
-    "overview": "Archi, a local politicianâ€™s daughter, and Parshya, a fishermanâ€™s son, fall in love resulting in violence between the families due to the stringent casteism in the village.",
+    "overview": "Archi, a local politician’s daughter, and Parshya, a fisherman’s son, fall in love resulting in violence between the families due to the stringent casteism in the village.",
     "original_language": "mr",
     "original_language_name": "Marathi",
     "categories": [
@@ -5502,7 +5516,7 @@
       "Romance"
     ],
     "release_date": "2016-04-29",
-    "rating": 7.6,
+    "rating": 7.573,
     "certification": "U",
     "watch_providers": [
       "Zee5"
@@ -5523,7 +5537,7 @@
       "Drama"
     ],
     "release_date": "2018-02-16",
-    "rating": 7.571,
+    "rating": 7.6,
     "certification": "UA",
     "watch_providers": [
       "VI movies and tv",
@@ -5545,7 +5559,7 @@
       "Drama"
     ],
     "release_date": "2015-11-12",
-    "rating": 7.571,
+    "rating": 7.6,
     "certification": "U",
     "watch_providers": [
       "Amazon Prime Video",
@@ -5553,6 +5567,25 @@
       "JioHotstar"
     ],
     "poster_path": "/7f0AJgU18vQoz8uEL7dXDhT4FPz.jpg"
+  },
+  {
+    "id": 139586,
+    "title": "Balak Palak",
+    "overview": "BP is about four teenage friends (Avya, Bhagya, Chiu and Dolly), who over hear that, a friend, a resident of their colony, Jyoti tai, has left their colony, as she has brought disgrace to her family.  Having received unsatisfactory explanations from their parents for Jyoti tai's exit. It becomes imperative to find out what exactly was her disgraceful act. Kids decide to take up this challenge.  In this journey to discover, they end-up bonding little too much with their over mature school-mate 'Vishu', the guiding star for the foursome. He enlightens them by throwing his divine light upon blue films. He feels, one has to read, watch, and if need be, perform to understand the true meaning of life (read SEX).",
+    "original_language": "mr",
+    "original_language_name": "Marathi",
+    "categories": [
+      "regional_favorite"
+    ],
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "release_date": "2013-01-04",
+    "rating": 7.5,
+    "certification": "U",
+    "watch_providers": [],
+    "poster_path": "/4evbEDDJuprAVUNxxtFeg2ejWWN.jpg"
   },
   {
     "id": 90532,
@@ -5576,25 +5609,6 @@
     "poster_path": "/5OeDB3LhNuFPmxewBMphNd9EoIZ.jpg"
   },
   {
-    "id": 139586,
-    "title": "Balak Palak",
-    "overview": "BP is about four teenage friends (Avya, Bhagya, Chiu and Dolly), who over hear that, a friend, a resident of their colony, Jyoti tai, has left their colony, as she has brought disgrace to her family.  Having received unsatisfactory explanations from their parents for Jyoti tai's exit. It becomes imperative to find out what exactly was her disgraceful act. Kids decide to take up this challenge.  In this journey to discover, they end-up bonding little too much with their over mature school-mate 'Vishu', the guiding star for the foursome. He enlightens them by throwing his divine light upon blue films. He feels, one has to read, watch, and if need be, perform to understand the true meaning of life (read SEX).",
-    "original_language": "mr",
-    "original_language_name": "Marathi",
-    "categories": [
-      "regional_favorite"
-    ],
-    "genres": [
-      "Comedy",
-      "Drama"
-    ],
-    "release_date": "2013-01-04",
-    "rating": 7.429,
-    "certification": "U",
-    "watch_providers": [],
-    "poster_path": "/4evbEDDJuprAVUNxxtFeg2ejWWN.jpg"
-  },
-  {
     "id": 116753,
     "title": "Shwaas",
     "overview": "This story follows an old man who, while facing the insurmountable challenge of cancer, strives to show his grandson the profound beauty and value of life. It highlights the power of maintaining a positive outlook, even in the darkest times.",
@@ -5607,31 +5621,10 @@
       "Drama"
     ],
     "release_date": "2004-12-10",
-    "rating": 7.417,
+    "rating": 7.4,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/6FgJ3PDXE955djB25zKz23fyko9.jpg"
-  },
-  {
-    "id": 562040,
-    "title": "Naal",
-    "overview": "Pampered by his loving and caring parents, an eight-year-old boy's life takes a turn for the worse when he learns a hidden truth about himself. Soon, he begins to distance himself from his mother.",
-    "original_language": "mr",
-    "original_language_name": "Marathi",
-    "categories": [
-      "regional_favorite"
-    ],
-    "genres": [
-      "Drama"
-    ],
-    "release_date": "2018-11-16",
-    "rating": 7.4,
-    "certification": "NR",
-    "watch_providers": [
-      "VI movies and tv",
-      "Zee5"
-    ],
-    "poster_path": "/zaCXIQ3Q68ik9qTSCVq3LJNHKp3.jpg"
   },
   {
     "id": 1539455,
@@ -5648,7 +5641,7 @@
       "Adventure"
     ],
     "release_date": "2025-09-12",
-    "rating": 7.333,
+    "rating": 7.3,
     "certification": "NR",
     "watch_providers": [
       "Zee5"
@@ -5678,30 +5671,30 @@
     "poster_path": "/txTAULwiztstw29PJUHgl5EBdxK.jpg"
   },
   {
-    "id": 284729,
-    "title": "Killa",
-    "overview": "An 11-year-old boy struggles to cope with the death of his father while trying to make new friends in an unfamiliar place, after his mother gets a job transfer.",
+    "id": 562040,
+    "title": "Naal",
+    "overview": "Pampered by his loving and caring parents, an eight-year-old boy's life takes a turn for the worse when he learns a hidden truth about himself. Soon, he begins to distance himself from his mother.",
     "original_language": "mr",
     "original_language_name": "Marathi",
     "categories": [
       "regional_favorite"
     ],
     "genres": [
-      "Comedy",
       "Drama"
     ],
-    "release_date": "2014-10-26",
-    "rating": 7.217,
+    "release_date": "2018-11-16",
+    "rating": 7.333,
     "certification": "NR",
     "watch_providers": [
+      "VI movies and tv",
       "Zee5"
     ],
-    "poster_path": "/9iVHqmYP2h8d4gDPW3r6bUjJEDS.jpg"
+    "poster_path": "/zaCXIQ3Q68ik9qTSCVq3LJNHKp3.jpg"
   },
   {
     "id": 362991,
     "title": "The Silence",
-    "overview": "Late at night on a local train in Mumbai, young Chini witnesses a woman being sexually abused. This experience forces her to face up to demons from her past. Based on a true story, the narrative revolves around a little girl growing up in poverty with her father in a rural area. When heâ€™s unable to manage caring for her himself, he sends Chini to her uncle in a nearby town, where life-changing events occur. Blending past and present and with forceful drama, the film tackles crucial, taboo topics, tracing the recurring question of responsibility â€“ or silence.",
+    "overview": "Late at night on a local train in Mumbai, young Chini witnesses a woman being sexually abused. This experience forces her to face up to demons from her past. Based on a true story, the narrative revolves around a little girl growing up in poverty with her father in a rural area. When he’s unable to manage caring for her himself, he sends Chini to her uncle in a nearby town, where life-changing events occur. Blending past and present and with forceful drama, the film tackles crucial, taboo topics, tracing the recurring question of responsibility – or silence.",
     "original_language": "mr",
     "original_language_name": "Marathi",
     "categories": [
@@ -5715,6 +5708,27 @@
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/eZ7S8gt9hrMGUJZ0BdqwYj769si.jpg"
+  },
+  {
+    "id": 284729,
+    "title": "Killa",
+    "overview": "An 11-year-old boy struggles to cope with the death of his father while trying to make new friends in an unfamiliar place, after his mother gets a job transfer.",
+    "original_language": "mr",
+    "original_language_name": "Marathi",
+    "categories": [
+      "regional_favorite"
+    ],
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "release_date": "2014-10-26",
+    "rating": 7.208,
+    "certification": "NR",
+    "watch_providers": [
+      "Zee5"
+    ],
+    "poster_path": "/9iVHqmYP2h8d4gDPW3r6bUjJEDS.jpg"
   },
   {
     "id": 436548,
@@ -5733,7 +5747,10 @@
     "release_date": "2016-08-12",
     "rating": 7.2,
     "certification": "NR",
-    "watch_providers": [],
+    "watch_providers": [
+      "Amazon Prime Video",
+      "Amazon Prime Video with Ads"
+    ],
     "poster_path": "/zZ4OjhqEoWQ4lRi6XiIrpTYP9ER.jpg"
   },
   {
@@ -5749,7 +5766,7 @@
       "Drama"
     ],
     "release_date": "2014-05-09",
-    "rating": 7.2,
+    "rating": 7.188,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/pNNxwXAReV4kh7TCZGqBrl9I72v.jpg"
@@ -5776,30 +5793,9 @@
     "poster_path": "/43Ylw8yEQdwTZBz6qzUEzAivBsL.jpg"
   },
   {
-    "id": 913544,
-    "title": "Ved",
-    "overview": "Satya lives in a railway colony who dreams of playing for the railway cricket team and eventually representing Team India. Soon he falls madly in love with Nisha. However, Satya`s life takes a drastic change when a local Politician Bhaskar creates havoc in his personal and professional life. 12 Years Later, Satya is a drunk miserable man hopelessly waiting for his love. He is married to Shravani who has been crazily in love with Satya since her childhood. Who`s love has more madness - Satya or Shravani?",
-    "original_language": "mr",
-    "original_language_name": "Marathi",
-    "categories": [
-      "regional_favorite"
-    ],
-    "genres": [
-      "Drama",
-      "Romance"
-    ],
-    "release_date": "2022-12-30",
-    "rating": 7.167,
-    "certification": "UA",
-    "watch_providers": [
-      "JioHotstar"
-    ],
-    "poster_path": "/kNd1IkaAVOvrkDqvCsjEiSrWn29.jpg"
-  },
-  {
     "id": 77745,
     "title": "Zenda",
-    "overview": "Zenda (Marathi: à¤à¥‡à¤‚à¤¡à¤¾) is 2010 Indian Marathi film directed by Avdhoot Gupte and starring Santosh Juvekar. Avdhoot Gupte himself composed the music for the film. The film depicts the journey of four young ambitious scholars to succeed in life and the impact of a split in a major political party on their journey. Zenda depicts a feud between two cousins in rival political parties, inspired by the real-life feud between Raj Thackeray, chief of Maharashtra Navnirman Sena (MNS) and his cousin, Uddhav Thackeray, Executive President of Shiv Sena. Avdhoot Gupte however believes that it is more about the Marathi youth, with just a couple of characters in the movie representing Uddhav Thackeray and Raj Thackeray. The film was released in early 2010, in theatres across Maharashtra state.",
+    "overview": "Zenda (Marathi: झेंडा) is 2010 Indian Marathi film directed by Avdhoot Gupte and starring Santosh Juvekar. Avdhoot Gupte himself composed the music for the film. The film depicts the journey of four young ambitious scholars to succeed in life and the impact of a split in a major political party on their journey. Zenda depicts a feud between two cousins in rival political parties, inspired by the real-life feud between Raj Thackeray, chief of Maharashtra Navnirman Sena (MNS) and his cousin, Uddhav Thackeray, Executive President of Shiv Sena. Avdhoot Gupte however believes that it is more about the Marathi youth, with just a couple of characters in the movie representing Uddhav Thackeray and Raj Thackeray. The film was released in early 2010, in theatres across Maharashtra state.",
     "original_language": "mr",
     "original_language_name": "Marathi",
     "categories": [
@@ -5819,6 +5815,27 @@
     "poster_path": "/5JIgjytHrwqM4Dbv6CPEdzbExiV.jpg"
   },
   {
+    "id": 913544,
+    "title": "Ved",
+    "overview": "Satya lives in a railway colony who dreams of playing for the railway cricket team and eventually representing Team India. Soon he falls madly in love with Nisha. However, Satya`s life takes a drastic change when a local Politician Bhaskar creates havoc in his personal and professional life. 12 Years Later, Satya is a drunk miserable man hopelessly waiting for his love. He is married to Shravani who has been crazily in love with Satya since her childhood. Who`s love has more madness - Satya or Shravani?",
+    "original_language": "mr",
+    "original_language_name": "Marathi",
+    "categories": [
+      "regional_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "release_date": "2022-12-30",
+    "rating": 7.154,
+    "certification": "UA",
+    "watch_providers": [
+      "JioHotstar"
+    ],
+    "poster_path": "/kNd1IkaAVOvrkDqvCsjEiSrWn29.jpg"
+  },
+  {
     "id": 249677,
     "title": "Timepass",
     "overview": "When Cupid strikes the very first time it sees no class or caste barrier. And though the path to reunite with a loved one seems arduous and almost impossible, it's this love which makes a person do good things. Love doesn't remain a Time Pass anymore.",
@@ -5832,7 +5849,7 @@
       "Comedy"
     ],
     "release_date": "2014-01-03",
-    "rating": 7.125,
+    "rating": 7.1,
     "certification": "U",
     "watch_providers": [],
     "poster_path": "/w2IaW55uiJNQTjsdoJU82Uk0Mn.jpg"
@@ -5840,7 +5857,7 @@
   {
     "id": 154636,
     "title": "Sant Tukaram",
-    "overview": "This classic film chronicles the life of Tukaram (17th C.), one of Maharashtraâ€™s most popular saint poets, activating the 20th century resonances of his turning away from courtly Sanskrit towards vernacular rhythms of religious poetry.",
+    "overview": "This classic film chronicles the life of Tukaram (17th C.), one of Maharashtra’s most popular saint poets, activating the 20th century resonances of his turning away from courtly Sanskrit towards vernacular rhythms of religious poetry.",
     "original_language": "mr",
     "original_language_name": "Marathi",
     "categories": [
@@ -5850,7 +5867,7 @@
       "Drama"
     ],
     "release_date": "1936-03-04",
-    "rating": 7.083,
+    "rating": 7.1,
     "certification": "NR",
     "watch_providers": [],
     "poster_path": "/8KpgTQ3y8dT8jDqNru5clqrybUj.jpg"
@@ -5955,44 +5972,6 @@
     "poster_path": "/dsiNfIj1ezIb6HNeGLCOIYHbS5t.jpg"
   },
   {
-    "id": 290815,
-    "title": "Court",
-    "overview": "A sewerage worker's dead body is found inside a manhole in Mumbai. An ageing folk singer is tried in court on charges of abetment of suicide. He is accused of performing an inflammatory song which might have incited the worker to commit the act. As the trial unfolds, the personal lives of the lawyers and the judge involved in the case are observed outside the court.",
-    "original_language": "mr",
-    "original_language_name": "Marathi",
-    "categories": [
-      "regional_favorite"
-    ],
-    "genres": [
-      "Drama"
-    ],
-    "release_date": "2015-04-17",
-    "rating": 6.932,
-    "certification": "NR",
-    "watch_providers": [],
-    "poster_path": "/ve1UFCZYu8WHmeGRH4ToEcGnj6e.jpg"
-  },
-  {
-    "id": 572931,
-    "title": "Mulshi Pattern",
-    "overview": "A stark portrayal of the hardships faced by farmers, Mulshi Pattern tackles some of the raging issues of our times. The film lays bare the deep flaws of the system which turns the farmer into a criminal and a social outcast.",
-    "original_language": "mr",
-    "original_language_name": "Marathi",
-    "categories": [
-      "regional_favorite"
-    ],
-    "genres": [
-      "Crime"
-    ],
-    "release_date": "2018-11-23",
-    "rating": 6.9,
-    "certification": "NR",
-    "watch_providers": [
-      "Zee5"
-    ],
-    "poster_path": "/hOlOUeQUATRo1qLqm8EUft4iv3Q.jpg"
-  },
-  {
     "id": 1073486,
     "title": "Vaalvi",
     "overview": "Vaalvi is a dark comedy that explores the profound human nature involving selfishness, apathy and self-preservation.",
@@ -6008,7 +5987,7 @@
       "Crime"
     ],
     "release_date": "2023-01-13",
-    "rating": 6.875,
+    "rating": 6.962,
     "certification": "NR",
     "watch_providers": [
       "VI movies and tv",
@@ -6017,9 +5996,9 @@
     "poster_path": "/32b2fSnrmDO9VfKFw1YHgSeICqR.jpg"
   },
   {
-    "id": 208632,
-    "title": "Umbartha",
-    "overview": "After her husbandâ€™s death, Mrs. Mahajan runs a prosperous household with her two sons, while her daughter-in-law Sulabha grows increasingly restless in her domestic role. When she accepts a job as a Superintendent of a distant womenâ€™s reformatory against her familyâ€™s wishes, she sets out to seek her independence and pursue a career in social service.",
+    "id": 290815,
+    "title": "Court",
+    "overview": "A sewerage worker's dead body is found inside a manhole in Mumbai. An ageing folk singer is tried in court on charges of abetment of suicide. He is accused of performing an inflammatory song which might have incited the worker to commit the act. As the trial unfolds, the personal lives of the lawyers and the judge involved in the case are observed outside the court.",
     "original_language": "mr",
     "original_language_name": "Marathi",
     "categories": [
@@ -6028,11 +6007,11 @@
     "genres": [
       "Drama"
     ],
-    "release_date": "1982-07-20",
-    "rating": 6.875,
-    "certification": "U",
+    "release_date": "2015-04-17",
+    "rating": 6.947,
+    "certification": "NR",
     "watch_providers": [],
-    "poster_path": "/aXPLUdFp5AKP7iO98h8S7NuyU3M.jpg"
+    "poster_path": "/ve1UFCZYu8WHmeGRH4ToEcGnj6e.jpg"
   },
   {
     "id": 230846,
@@ -6048,12 +6027,30 @@
       "Family"
     ],
     "release_date": "2013-10-09",
-    "rating": 6.8,
+    "rating": 6.905,
     "certification": "NR",
     "watch_providers": [
       "Zee5"
     ],
     "poster_path": "/zCeFTfyKDITgfYFg2gEyzubhOD9.jpg"
+  },
+  {
+    "id": 208632,
+    "title": "Umbartha",
+    "overview": "After her husband’s death, Mrs. Mahajan runs a prosperous household with her two sons, while her daughter-in-law Sulabha grows increasingly restless in her domestic role. When she accepts a job as a Superintendent of a distant women’s reformatory against her family’s wishes, she sets out to seek her independence and pursue a career in social service.",
+    "original_language": "mr",
+    "original_language_name": "Marathi",
+    "categories": [
+      "regional_favorite"
+    ],
+    "genres": [
+      "Drama"
+    ],
+    "release_date": "1982-07-20",
+    "rating": 6.9,
+    "certification": "U",
+    "watch_providers": [],
+    "poster_path": "/aXPLUdFp5AKP7iO98h8S7NuyU3M.jpg"
   },
   {
     "id": 1146339,
@@ -6078,6 +6075,26 @@
     "poster_path": "/lRT4McN9haKNzktzgTigehpb0TU.jpg"
   },
   {
+    "id": 572931,
+    "title": "Mulshi Pattern",
+    "overview": "A stark portrayal of the hardships faced by farmers, Mulshi Pattern tackles some of the raging issues of our times. The film lays bare the deep flaws of the system which turns the farmer into a criminal and a social outcast.",
+    "original_language": "mr",
+    "original_language_name": "Marathi",
+    "categories": [
+      "regional_favorite"
+    ],
+    "genres": [
+      "Crime"
+    ],
+    "release_date": "2018-11-23",
+    "rating": 6.813,
+    "certification": "NR",
+    "watch_providers": [
+      "Zee5"
+    ],
+    "poster_path": "/rIpi5rI94kizH7hIe7oPkUBRkbJ.jpg"
+  },
+  {
     "id": 584270,
     "title": "Anandi Gopal",
     "overview": "Anandibai Joshi, the First Indian woman who went against all odds to get herself educated and became a doctor to set an example and inspired generations to come. In times, when gender equality and feminism are raised at almost every forum and podium, a couple in the 1800's practiced and fought for these very ideas. Anandi Gopal is a love story more than a biopic about the struggle of a husband to teach his wife and her response and determination to become the first Indian Female Doctor.",
@@ -6096,7 +6113,7 @@
       "VI movies and tv",
       "Zee5"
     ],
-    "poster_path": "/k6CxpWfQn8Sec65dy9fkHRLs2XT.jpg"
+    "poster_path": "/e7yTU5G2EoDtT1udSiqGKur3qaF.jpg"
   },
   {
     "id": 728116,
@@ -6112,7 +6129,7 @@
       "Music"
     ],
     "release_date": "2020-09-27",
-    "rating": 6.746,
+    "rating": 6.8,
     "certification": "NR",
     "watch_providers": [
       "Netflix"
@@ -6133,7 +6150,7 @@
       "Romance"
     ],
     "release_date": "2023-10-06",
-    "rating": 6.714,
+    "rating": 6.7,
     "certification": "UA",
     "watch_providers": [
       "Amazon Prime Video",
@@ -6141,29 +6158,6 @@
       "Zee5"
     ],
     "poster_path": "/9iLqiPerNOU3eODq1LVRzmnq9Ro.jpg"
-  },
-  {
-    "id": 814609,
-    "title": "Zombivli",
-    "overview": "In the suburban neighborhood of Mumbai, a wall separates the haves and the have-nots. Sudhir and Seema, a newly married middle class couple, live a life without hardship while Vishwas, a slum dweller, dreams of dignity for his people. Their lives collide as post nightfall the town fills up with ominous cries and moans that don't belong to people - they belong to zombies.",
-    "original_language": "mr",
-    "original_language_name": "Marathi",
-    "categories": [
-      "regional_favorite"
-    ],
-    "genres": [
-      "Drama",
-      "Comedy",
-      "Horror"
-    ],
-    "release_date": "2022-01-26",
-    "rating": 6.667,
-    "certification": "UA",
-    "watch_providers": [
-      "VI movies and tv",
-      "Zee5"
-    ],
-    "poster_path": "/g6cOvmJvOg5cZr6YgkMTxgw14ve.jpg"
   },
   {
     "id": 170989,
@@ -6185,6 +6179,29 @@
     "poster_path": "/obVx6OcjfE0ABxDhF0Uc8I06Fh6.jpg"
   },
   {
+    "id": 814609,
+    "title": "Zombivli",
+    "overview": "In the suburban neighborhood of Mumbai, a wall separates the haves and the have-nots. Sudhir and Seema, a newly married middle class couple, live a life without hardship while Vishwas, a slum dweller, dreams of dignity for his people. Their lives collide as post nightfall the town fills up with ominous cries and moans that don't belong to people - they belong to zombies.",
+    "original_language": "mr",
+    "original_language_name": "Marathi",
+    "categories": [
+      "regional_favorite"
+    ],
+    "genres": [
+      "Drama",
+      "Comedy",
+      "Horror"
+    ],
+    "release_date": "2022-01-26",
+    "rating": 6.6,
+    "certification": "UA",
+    "watch_providers": [
+      "VI movies and tv",
+      "Zee5"
+    ],
+    "poster_path": "/g6cOvmJvOg5cZr6YgkMTxgw14ve.jpg"
+  },
+  {
     "id": 304274,
     "title": "Lai Bhaari",
     "overview": "Sumitra travels to Pandharpur to find a ray of hope, after Sangram killed her husband and son and took over their business.",
@@ -6199,7 +6216,7 @@
       "Family"
     ],
     "release_date": "2014-07-11",
-    "rating": 6.6,
+    "rating": 6.571,
     "certification": "U",
     "watch_providers": [],
     "poster_path": "/knRrQBBsDiFPPzENpHXU9eQgxGq.jpg"
@@ -6278,7 +6295,7 @@
     "genres": [
       "Drama"
     ],
-    "release_date": "2014-10-03",
+    "release_date": "2015-03-16",
     "rating": 6.2,
     "certification": "NR",
     "watch_providers": [
@@ -6348,86 +6365,6 @@
     "poster_path": "/8V05oR4NxyruSHaa1sg8jA53FuD.jpg"
   },
   {
-    "id": 534402,
-    "title": "Savita Damodar Paranjpe",
-    "overview": "The life of a married couple turns upside down after 8 years of marriage as some hard truths between them come to light. The answers to all these questions will be revealed in this psychological thriller based on true events.",
-    "original_language": "mr",
-    "original_language_name": "Marathi",
-    "categories": [
-      "regional_popular"
-    ],
-    "genres": [
-      "Thriller",
-      "Drama"
-    ],
-    "release_date": "2018-08-31",
-    "rating": 6.0,
-    "certification": "NR",
-    "watch_providers": [],
-    "poster_path": "/cSHzp0LiY7gd1ciaV7LStMG4i9b.jpg"
-  },
-  {
-    "id": 572958,
-    "title": "Bhai: Vyakti Ki Valli - Poorvardha",
-    "overview": "Biopic of Marathi comedian, India's first stand-up comedian P. L. Deshpande.",
-    "original_language": "mr",
-    "original_language_name": "Marathi",
-    "categories": [
-      "regional_popular"
-    ],
-    "genres": [
-      "Drama",
-      "Comedy"
-    ],
-    "release_date": "2019-01-04",
-    "rating": 9.0,
-    "certification": "U",
-    "watch_providers": [
-      "Amazon Prime Video",
-      "Amazon Prime Video with Ads"
-    ],
-    "poster_path": "/jCxwSfvy5QcMkDQNzTieKq14xr0.jpg"
-  },
-  {
-    "id": 300920,
-    "title": "Pinjra",
-    "overview": "A respected village schoolteacher falls for a travelling dancer and faces a moral dilemma.",
-    "original_language": "mr",
-    "original_language_name": "Marathi",
-    "categories": [
-      "regional_popular"
-    ],
-    "genres": [
-      "Drama"
-    ],
-    "release_date": "1972-03-31",
-    "rating": 9.5,
-    "certification": "U",
-    "watch_providers": [
-      "Amazon Prime Video",
-      "Amazon Prime Video with Ads"
-    ],
-    "poster_path": "/2v8tAvIgmcIb1PY1irSsg1GPtln.jpg"
-  },
-  {
-    "id": 700775,
-    "title": "Jeeva Sakha",
-    "overview": "In Dhangao village Jeeva and Sakha are inseparable brothers living with their widowed mother when Sakha gets a job as police inspector he is posted at other place hence brothers get separated.Jeeva is in love with Paro.Nagya is a spoil brat who tries to bluff village people by asking them to sell their land to DK for Dhangao Industrial Zone but villager's support Jeeva which irks him after Paro gets married to Jeeva,Nagya threatens to kill her brother and makes her father sign the property papers and does so with many villagers when Jeeva takes action DK kills his person and puts blame on Jeeva,Jeeva now hides in jungle and whereabouts are only known to his friend Baadshah,Nagya kills Jeeva 's mother when she refuses to sign on papers.Sakha returns to the village to perform final rights of his mother and is unaware about things happening in his village and thinks Jeeva should be punished for taking law in his hand.",
-    "original_language": "mr",
-    "original_language_name": "Marathi",
-    "categories": [
-      "regional_popular"
-    ],
-    "genres": [
-      "Drama"
-    ],
-    "release_date": "1992-10-30",
-    "rating": 6.5,
-    "certification": "NR",
-    "watch_providers": [],
-    "poster_path": "/1iP33EJeFO2P4Kj90QgMLYvySpy.jpg"
-  },
-  {
     "id": 1247165,
     "title": "Raja Shivaji",
     "overview": "Chronicles the rise of young Shivaji Bhonsale, who challenged the might of established empires to found the Maratha kingdom and lay the groundwork for 'Swarajya' (self-rule) during a turbulent period of Indian history.",
@@ -6450,21 +6387,103 @@
     "poster_path": "/hljQF3Ly6PzQe7iaNs9fmFuBYWj.jpg"
   },
   {
-    "id": 605787,
-    "title": "Bindhaast",
-    "overview": "Mayu and Vaiju decide to play a prank on their aunt.",
+    "id": 433537,
+    "title": "Half Ticket",
+    "overview": "Two young slum brothers are fascinated with the arrival of a new pizza shop in their locality, but getting in is harder than they thought.",
     "original_language": "mr",
     "original_language_name": "Marathi",
     "categories": [
       "regional_popular"
     ],
-    "genres": [],
-    "release_date": "1999-01-01",
-    "rating": 8.5,
+    "genres": [
+      "Comedy"
+    ],
+    "release_date": "2016-07-22",
+    "rating": 7.2,
     "certification": "NR",
     "watch_providers": [
-      "Zee5"
+      "JioHotstar",
+      "ShemarooMe"
     ],
-    "poster_path": "/wOYWewOauGfY7C0sx2X3mWG1Uaj.jpg"
+    "poster_path": "/stmKTXlPXl420knX3qW58R59GWO.jpg"
+  },
+  {
+    "id": 974713,
+    "title": "Nay Varan Bhat Loncha Kon Nai Koncha",
+    "overview": "This movie is a brutal look at coming of age in a city whose citizens have been famished by brutality and sin for centuries. It is said that the night sky of Mumbai has been forever haunted - hiding the beautiful twinkling stars by the curse of countless lives lost in a ruthlessly expanding city. The film, soaked in the fog of these ancestors, explores what it takes to grow up in a deprived community, looking to satiate the hunger of one's soul. Enacted by two young souls, The film is a director's masterpiece.",
+    "original_language": "mr",
+    "original_language_name": "Marathi",
+    "categories": [
+      "regional_popular"
+    ],
+    "genres": [
+      "Drama",
+      "Crime"
+    ],
+    "release_date": "2022-01-14",
+    "rating": 6.3,
+    "certification": "NR",
+    "watch_providers": [],
+    "poster_path": "/w44lbLfseKtOZWRDdGmPqEqMBsA.jpg"
+  },
+  {
+    "id": 191112,
+    "title": "Premachi Goshta",
+    "overview": "Premachi Goshta (Marathi: प्रेमाची गोष्ट , meaning: Story of Love) is a 2013 Marathi language film directed by Satish Rajwade.  The story is all about LOVE and discovering that correct person in life who can become the life partner. It's a story of believing on the person in front, its like a leap of faith.",
+    "original_language": "mr",
+    "original_language_name": "Marathi",
+    "categories": [
+      "regional_popular"
+    ],
+    "genres": [
+      "Romance",
+      "Drama"
+    ],
+    "release_date": "2013-02-01",
+    "rating": 6.8,
+    "certification": "U",
+    "watch_providers": [
+      "Amazon Prime Video",
+      "Amazon Prime Video with Ads"
+    ],
+    "poster_path": "/dLFFJtMtmxw78kX5l1wxQ6PGuIP.jpg"
+  },
+  {
+    "id": 529202,
+    "title": "Bucket List",
+    "overview": "'Bucket List' is a story of a woman trapped in the confines of her own choices and her journey to self discovery. Madhura Sane is a 40 y.o housewife (by choice) belonging to a quintessential middle/upper middle class family in Pune. One fine day, through a chance encounter, Madhura comes face to face with a choice that could potentially change her whole life. And that choice involves...a Bucket List.",
+    "original_language": "mr",
+    "original_language_name": "Marathi",
+    "categories": [
+      "regional_popular"
+    ],
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "release_date": "2018-05-25",
+    "rating": 5.7,
+    "certification": "U",
+    "watch_providers": [],
+    "poster_path": "/fBs8xMlFEaTvWW2FN3tJ7EboNcz.jpg"
+  },
+  {
+    "id": 483282,
+    "title": "Bhikari",
+    "overview": "An unfortunate event in Samrat's life puts him in a situation where he has to make a choice. A choice that very few will ever make. A choice to try and get back his mother's life.",
+    "original_language": "mr",
+    "original_language_name": "Marathi",
+    "categories": [
+      "regional_popular"
+    ],
+    "genres": [
+      "Drama",
+      "Action"
+    ],
+    "release_date": "2017-08-04",
+    "rating": 7.5,
+    "certification": "NR",
+    "watch_providers": [],
+    "poster_path": "/vSpmLgTHlTYb7bVURN6ZqUza6b3.jpg"
   }
 ]
