@@ -605,6 +605,20 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surpri
     if travel_mode:
         semantic_kept.sort(key=lambda m: 0 if is_light_genre(m) else 1)
 
+    if target_genre:
+        # The genre pool is ranked first in semantic_raw, but up to this
+        # point semantic_kept can still have non-genre fallback picks
+        # trailing behind it to top up the count. For a specific mood like
+        # Horror, mixing in Comedy/Romance just to hit 6 cards is worse
+        # than showing fewer, all genuinely Horror, movies -- so once we
+        # know there's at least one real genre match, drop everything that
+        # isn't actually that genre. Only keep the broader fallback results
+        # if there were truly zero genre matches at all (the "No new
+        # matches" case this was built to avoid).
+        pure_genre = [m for m in semantic_kept if movie_has_genre(m, target_genre)]
+        if pure_genre:
+            semantic_kept = pure_genre
+
     location_kept = []
     profile = get_location_profile(location_state) if is_location_query(query) else None
     if profile:
