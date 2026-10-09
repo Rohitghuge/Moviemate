@@ -547,9 +547,16 @@ def retrieve_movies(query, user_age, travel_mode, excluded_ids=None, n=6, surpri
     else:
         top_positions = general_positions
 
+    # Guard against movie_index.pkl being out of sync with movies.json (e.g.
+    # movies.json got re-fetched/regenerated but the index wasn't rebuilt
+    # and redeployed alongside it): an id the index knows about that no
+    # longer exists in the current catalogue would otherwise normalize to a
+    # blank "Unknown" card with no poster, genres or overview. Skip those
+    # rather than showing a broken card.
     semantic_raw = [
-        (index_ids[pos], movies_by_id.get(index_ids[pos], {}))
+        (index_ids[pos], movies_by_id[index_ids[pos]])
         for pos in top_positions
+        if index_ids[pos] in movies_by_id
     ]
     # NOTE: top_positions is already sorted best-match-first (argsort on
     # cosine similarity). We used to unconditionally shuffle this list,
